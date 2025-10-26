@@ -8,7 +8,8 @@ from django.contrib.auth.tokens import default_token_generator
 from django.urls import reverse
 from account.utils import send_activation_email
 from account.models import User
-from django.contrib.auth import authenticate, login
+from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth.forms import PasswordChangeForm
 
 
 def home(request):
@@ -123,3 +124,20 @@ def dashboard(request):
         return redirect('home')
     else:
         return redirect('home')
+    
+
+def password_change_view(request):
+    if request.method == 'POST':
+        form = PasswordChangeForm(user=request.user, data=request.POST)
+        if form.is_valid():
+            form.save()
+            # logout(request)
+            messages.success(request, "Password changed successfully.")
+            return redirect('dashboard')
+        else:
+            for field, errors in form.errors.items():
+                for error in errors:
+                    messages.error(request, error)
+    else:
+        form = PasswordChangeForm(user=request.user)
+    return redirect('dashboard')
