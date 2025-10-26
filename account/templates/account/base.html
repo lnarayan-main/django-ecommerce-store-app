@@ -17,12 +17,13 @@
     <link rel="stylesheet" href="{% static 'assets/css/styles.css' %}">
     <link rel="stylesheet" href="{% static 'assets/css/vendor/swiper-bundle.css' %}">
     <link rel="stylesheet" href="{% static 'assets/css/custom.css' %}">
-  
+    
+    {% block style %}{% endblock style %}
 
 </head>
 <body>
     {% include 'account/components/header.html' %}
-    <main class="relative min-h-screen">
+    <main class="relative">
         <div class="relative items-center">
             {% if messages %}
                 {% for message in messages %}
@@ -39,6 +40,9 @@
     <script src="{% static 'assets/js/vendor/swiper-bundle.js' %}"></script>
     <script src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
     <script src="{% static 'assets/js/script.js' %}"></script>
+
+    {% block script %}{% endblock script %}
+
 
 </body>
 </html>

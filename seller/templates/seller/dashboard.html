@@ -1,11 +1,365 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Seller Dashboard</title>
-</head>
-<body>
-    <h3>Welcome to Seller Dashboard</h3>
-</body>
-</html>
+{% extends "account/base.html" %}
+
+{% load static %} 
+
+{% block title %}
+    Seller Dashbaord
+{% endblock title %}
+
+{% block style %}
+
+
+    <style>
+        /* Custom Tailwind Configuration (to match your brand color) */
+        :root {
+            --color-primary: #F00060; /* Used as the brand color (pink/red) */
+        }
+        .bg-primary-500 { background-color: var(--color-primary); }
+        .text-primary-500 { color: var(--color-primary); }
+        .border-primary-500 { border-color: var(--color-primary); }
+        .hover\:bg-primary-600:hover { background-color: #d10053; }
+        .focus\:ring-primary-500:focus { --tw-ring-color: var(--color-primary); }
+
+        /* Ensure smooth transitions for tab switching */
+        .content-section {
+            display: none;
+            animation: fadeIn 0.3s ease-in-out;
+        }
+
+        .content-section.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(5px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+
+{% endblock style %}
+
+
+{% block content %}
+ <section id="shop">
+        <div class="container mx-auto">
+            <!-- Filter Toggle Button for Mobile -->
+            <div class="block md:hidden text-center mb-4">
+                <button id="products-toggle-filters"
+                    class="bg-primary text-white py-2 px-4 rounded-full focus:outline-none">Show Filters</button>
+            </div>
+            <div class="flex flex-col md:flex-row">
+                <!-- Filters -->
+                <div id="filters" class="w-full md:w-1/4 p-4 hidden md:block">
+                    <!-- Category Filter -->
+                    {% comment %} <div class="mb-6 pb-8 border-b border-gray-line"> {% endcomment %}
+                    <div class="bg-white p-6 rounded-xl shadow-lg  sticky top-4">
+                        {% comment %} <img src="{% static '/assets/images/profile-avtar.png' %}" alt="profile-image" class="h-40 w-40">
+                        <h3 class="text-lg font-semibold mb-6">Ramesh Kumar</h3> {% endcomment %}
+                        <div class="flex flex-col items-center border-b pb-4 mb-4">
+                            <div class="w-20 h-20 rounded-full bg-gray-200 flex items-center justify-center overflow-hidden mb-3 border-4 border-primary-500">
+                                <!-- Placeholder for Profile Picture -->
+                                <img src="{% static '/assets/images/profile-avtar.png' %}" alt="Profile Picture" class="w-full h-full object-cover" onerror="this.onerror=null; this.src='https://placehold.co/80x80/F00060/ffffff?text=JD';">
+                            </div>
+                            <p class="text-lg font-semibold text-gray-900">Ramesh Kumar</p>
+                            <p class="text-sm text-gray-500">ramesh.kumar@yopmail.com</p>
+                        </div>
+                        <div class="space-y-2">
+                            <!-- Navigation Menu -->
+                            <nav class="space-y-1">
+                                <!-- Navigation Item -->
+                                <a href="#" data-section="profile" class="nav-link flex items-center p-3 rounded-lg text-gray-700 font-medium transition duration-150 hover:bg-gray-100 active-class" data-icon="User">
+                                    <span data-lucide="User" class="w-5 h-5 mr-3"></span>
+                                    My Profile
+                                </a>
+                                <a href="#" data-section="orders" class="nav-link flex items-center p-3 rounded-lg text-gray-700 font-medium transition duration-150 hover:bg-gray-100" data-icon="Package">
+                                    <span data-lucide="Package" class="w-5 h-5 mr-3"></span>
+                                    Order History
+                                </a>
+                                <a href="#" data-section="wishlist" class="nav-link flex items-center p-3 rounded-lg text-gray-700 font-medium transition duration-150 hover:bg-gray-100" data-icon="Heart">
+                                    <span data-lucide="Heart" class="w-5 h-5 mr-3"></span>
+                                    My Wishlist
+                                </a>
+                                <a href="#" data-section="addresses" class="nav-link flex items-center p-3 rounded-lg text-gray-700 font-medium transition duration-150 hover:bg-gray-100" data-icon="MapPin">
+                                    <span data-lucide="MapPin" class="w-5 h-5 mr-3"></span>
+                                    Saved Addresses
+                                </a>
+                                <a href="#" data-section="settings" class="nav-link flex items-center p-3 rounded-lg text-gray-700 font-medium transition duration-150 hover:bg-gray-100" data-icon="Settings">
+                                    <span data-lucide="Settings" class="w-5 h-5 mr-3"></span>
+                                    Account Settings
+                                </a>
+                            </nav>
+                        </div>
+                    </div>
+                   
+                </div>
+                <!-- Products List -->
+                <div class="w-full md:w-3/4 p-4">
+                      <!-- 1. Profile Overview Section (Default) -->
+                    <div id="profile" class="content-section active bg-white p-6 rounded-xl shadow-lg ">
+                        <h2 class="text-2xl font-semibold text-gray-900 mb-6 flex items-center">
+                            <!-- Icon placeholder for User - replaced data-lucide with a simple SVG for robustness -->
+                            <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 mr-3 text-primary-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"></path>
+                                <circle cx="12" cy="7" r="4"></circle>
+                            </svg>
+                            Welcome Back, Jane!
+                        </h2>
+                        
+                        <!-- Key Metrics Cards: Highly responsive grid -->
+                        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 text-center">
+                            <div class="p-4 bg-gray-50 rounded-lg shadow-sm">
+                                <p class="text-3xl font-bold text-primary-500">4</p>
+                                <p class="text-sm text-gray-600">Total Orders</p>
+                            </div>
+                            <div class="p-4 bg-gray-50 rounded-lg shadow-sm">
+                                <p class="text-3xl font-bold text-primary-500">$549.99</p>
+                                <p class="text-sm text-gray-600">Total Spent</p>
+                            </div>
+                            <div class="p-4 bg-gray-50 rounded-lg shadow-sm">
+                                <p class="text-3xl font-bold text-primary-500">12</p>
+                                <p class="text-sm text-gray-600">Items in Wishlist</p>
+                            </div>
+                        </div>
+
+                        <!-- Quick Actions -->
+                        <div class="mt-8">
+                            <h3 class="text-xl font-semibold mb-3 border-t pt-4">Quick Actions</h3>
+                            <div class="flex flex-wrap gap-3 sm:gap-4">
+                                <button class="bg-primary-500 text-white px-5 py-2 rounded-full text-sm font-medium hover:bg-primary-600 transition shadow-md whitespace-nowrap">
+                                    Track Latest Order
+                                </button>
+                                <button class="border border-primary-500 text-primary-500 px-5 py-2 rounded-full text-sm font-medium hover:bg-primary-50 transition whitespace-nowrap">
+                                    Manage Subscription
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                     <!-- 2. Order History Section -->
+                    <div id="orders" class="content-section bg-white p-6 rounded-xl shadow-lg ">
+                        <h2 class="text-2xl font-semibold text-gray-900 mb-6 flex items-center">
+                            <!-- Icon placeholder for Package -->
+                            <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 mr-3 text-primary-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="m7.5 4.27 9 5.15"></path>
+                                <path d="M21 8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16Z"></path>
+                                <path d="m3.3 7 8.7 5 8.7-5"></path>
+                                <path d="M12 22V12"></path>
+                            </svg>
+                            My Order History
+                        </h2>
+                        
+                        <!-- Mock Order List -->
+                        <div class="space-y-4">
+                            <!-- Order 1 -->
+                            <div class="p-4 border border-gray-200 rounded-lg flex flex-col md:flex-row justify-between items-start md:items-center hover:bg-gray-50 transition">
+                                <div>
+                                    <p class="font-bold text-gray-900">Order #10056</p>
+                                    <p class="text-sm text-gray-500">Placed on: <span class="font-medium">Oct 20, 2025</span></p>
+                                    <p class="text-sm text-gray-700 mt-1">Total: <span class="font-semibold text-lg">$149.99</span> (3 items)</p>
+                                </div>
+                                <div class="flex flex-col items-start md:items-end space-y-2 mt-3 md:mt-0">
+                                    <span class="px-3 py-1 text-xs font-semibold bg-green-100 text-green-700 rounded-full whitespace-nowrap">Delivered</span>
+                                    <button class="text-primary-500 text-sm font-medium hover:underline whitespace-nowrap">View Details</button>
+                                </div>
+                            </div>
+                            <!-- Order 2 -->
+                            <div class="p-4 border border-gray-200 rounded-lg flex flex-col md:flex-row justify-between items-start md:items-center hover:bg-gray-50 transition">
+                                <div>
+                                    <p class="font-bold text-gray-900">Order #10057</p>
+                                    <p class="text-sm text-gray-500">Placed on: <span class="font-medium">Oct 25, 2025</span></p>
+                                    <p class="text-sm text-gray-700 mt-1">Total: <span class="font-semibold text-lg">$49.00</span> (1 item)</p>
+                                </div>
+                                <div class="flex flex-col items-start md:items-end space-y-2 mt-3 md:mt-0">
+                                    <span class="px-3 py-1 text-xs font-semibold bg-yellow-100 text-yellow-700 rounded-full whitespace-nowrap">Processing</span>
+                                    <button class="text-primary-500 text-sm font-medium hover:underline whitespace-nowrap">Track Order</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                     <!-- 3. Wishlist Section -->
+                     <div id="wishlist" class="content-section bg-white p-6 rounded-xl shadow-lg ">
+                        <h2 class="text-2xl font-semibold text-gray-900 mb-6 flex items-center">
+                            <!-- Icon placeholder for Heart -->
+                            <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 mr-3 text-primary-500 fill-primary-500" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"></path>
+                            </svg>
+                            My Wishlist (12 items)
+                        </h2>
+                        
+                        <!-- Mock Wishlist Items -->
+                        <div class="space-y-4">
+                            <!-- Item 1 -->
+                            <div class="flex items-center space-x-4 p-3 border border-gray-200 rounded-lg hover:bg-gray-50 transition">
+                                <img src="https://placehold.co/60x60/3498db/ffffff?text=Prod1" alt="Product 1" class="w-16 h-16 object-cover rounded">
+                                <div class="flex-1 min-w-0">
+                                    <p class="font-medium text-gray-900 truncate">Premium Mechanical Keyboard</p>
+                                    <p class="text-sm text-gray-500">$99.99 <span class="text-red-500 ml-2 font-semibold">50% off!</span></p>
+                                </div>
+                                <div class="flex space-x-3 items-center">
+                                    <button class="text-primary-500 text-sm font-medium hover:underline whitespace-nowrap border border-primary-500/0 hover:border-primary-500/20 px-3 py-1 rounded-full transition">Add to Cart</button>
+                                    <button aria-label="Remove item" class="text-gray-500 hover:text-red-500 transition p-1 rounded-full hover:bg-red-50">
+                                        <!-- Icon placeholder for X (Close/Delete) -->
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                            <path d="M18 6 6 18"></path>
+                                            <path d="m6 6 12 12"></path>
+                                        </svg>
+                                    </button>
+                                </div>
+                            </div>
+                            <!-- Item 2 -->
+                            <div class="flex items-center space-x-4 p-3 border border-gray-200 rounded-lg hover:bg-gray-50 transition">
+                                <img src="https://placehold.co/60x60/2ecc71/ffffff?text=Prod2" alt="Product 2" class="w-16 h-16 object-cover rounded">
+                                <div class="flex-1 min-w-0">
+                                    <p class="font-medium text-gray-900 truncate">Wireless Charging Mouse Pad</p>
+                                    <p class="text-sm text-gray-500">$29.99</p>
+                                </div>
+                                <div class="flex space-x-3 items-center">
+                                    <button class="text-primary-500 text-sm font-medium hover:underline whitespace-nowrap border border-primary-500/0 hover:border-primary-500/20 px-3 py-1 rounded-full transition">Add to Cart</button>
+                                    <button aria-label="Remove item" class="text-gray-500 hover:text-red-500 transition p-1 rounded-full hover:bg-red-50">
+                                        <!-- Icon placeholder for X (Close/Delete) -->
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                            <path d="M18 6 6 18"></path>
+                                            <path d="m6 6 12 12"></path>
+                                        </svg>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 4. Addresses Section (Shipping/Billing) -->
+                    <div id="addresses" class="content-section bg-white p-6 rounded-xl shadow-lg ">
+                        <h2 class="text-2xl font-semibold text-gray-900 mb-6 flex items-center">
+                            <!-- Icon placeholder for MapPin -->
+                            <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 mr-3 text-primary-500 fill-primary-500/20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"></path>
+                                <circle cx="12" cy="10" r="3"></circle>
+                            </svg>
+                            My Saved Addresses
+                        </h2>
+                        
+                        <div class="space-y-4">
+                            <!-- Default Address -->
+                            <div class="p-4 border-2 border-primary-500 rounded-lg relative">
+                                <span class="absolute top-[-10px] left-3 bg-primary-500 text-white text-xs font-bold px-2 py-0.5 rounded-full">DEFAULT</span>
+                                <p class="font-bold text-gray-900 mt-2">Home Address (Shipping & Billing)</p>
+                                <p class="text-gray-700">123 Market St, Apt 4B</p>
+                                <p class="text-gray-700">San Francisco, CA 94103</p>
+                                <p class="text-gray-700">United States</p>
+                                <div class="mt-3 flex space-x-4">
+                                    <button class="text-sm text-primary-500 font-medium hover:underline transition">Edit</button>
+                                    <button class="text-sm text-gray-500 hover:text-red-500 transition">Delete</button>
+                                </div>
+                            </div>
+                            
+                            <button class="w-full border-2 border-dashed border-gray-300 text-gray-500 py-3 rounded-lg hover:bg-gray-100 transition flex items-center justify-center space-x-2">
+                                <!-- Icon placeholder for Plus -->
+                                <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <path d="M12 5v14"></path>
+                                    <path d="M5 12h14"></path>
+                                </svg>
+                                <span>Add New Address</span>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- 5. Account Settings Section (Personal Details) -->
+
+                    <div id="settings" class="content-section bg-white p-6 rounded-xl shadow-lg ">
+                        <h2 class="text-2xl font-semibold text-gray-900 mb-6 flex items-center">
+                            <!-- Icon placeholder for Settings -->
+                            <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 mr-3 text-primary-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M12.22 2h-.44a2 2 0 0 0-2 2v.22a2 2 0 0 1-1.4 1.4L4.85 7.42a2 2 0 0 0-1 1.73v.85a2 2 0 0 0 1.2 1.83l.23.11a2 2 0 0 1 1.09 1.76v.38a2 2 0 0 1-1.09 1.76l-.23.11a2 2 0 0 0-1.2 1.83v.85a2 2 0 0 0 1 1.73l1.93 1.2a2 2 0 0 0 1.4 1.4h.44a2 2 0 0 0 2-2v-.22a2 2 0 0 1 1.4-1.4l1.93-1.2a2 2 0 0 0 1-1.73v-.85a2 2 0 0 0-1.2-1.83l-.23-.11a2 2 0 0 1-1.09-1.76v-.38a2 2 0 0 1 1.09-1.76l.23-.11a2 2 0 0 0 1.2-1.83V9.15a2 2 0 0 0-1-1.73l-1.93-1.2a2 2 0 0 1-1.4-1.4V4a2 2 0 0 0-2-2z"></path>
+                                <circle cx="12" cy="12" r="3"></circle>
+                            </svg>
+                            Account Settings & Personal Details
+                        </h2>
+                        
+                        <form class="space-y-6">
+                            <div>
+                                <label for="name" class="block text-sm font-medium text-gray-700">Full Name</label>
+                                <input type="text" id="name" value="Jane Doe" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-primary-500 focus:ring-2 focus:ring-primary-500/50 p-3 border transition">
+                            </div>
+                            <div>
+                                <label for="email" class="block text-sm font-medium text-gray-700">Email Address</label>
+                                <!-- Disabled field is slightly grayed out and indicates it cannot be edited -->
+                                <input type="email" id="email" value="jane.doe@example.com" disabled class="mt-1 block w-full rounded-md border-gray-300 bg-gray-100 text-gray-500 shadow-sm p-3 border cursor-not-allowed">
+                            </div>
+                            <div>
+                                <label for="phone" class="block text-sm font-medium text-gray-700">Phone Number</label>
+                                <input type="tel" id="phone" value="(555) 123-4567" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-primary-500 focus:ring-2 focus:ring-primary-500/50 p-3 border transition">
+                            </div>
+                            <div class="pt-6 border-t mt-6 flex flex-wrap gap-4">
+                                <button type="submit" class="bg-primary-500 text-white px-6 py-3 rounded-full font-semibold text-sm hover:bg-primary-600 transition shadow-lg">
+                                    Save Details
+                                </button>
+                                <button type="button" class="text-gray-600 border border-transparent hover:border-gray-300 px-4 py-3 rounded-full text-sm font-medium transition">
+                                    Change Password
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+
+                </div>
+
+            </div>
+        </div>
+    </section>
+{% endblock content %}
+
+{% block script %}
+<script src="https://unpkg.com/lucide@latest"></script>
+  <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // Initialize Lucide icons
+            lucide.createIcons();
+
+            const navLinks = document.querySelectorAll('.nav-link');
+            const contentSections = document.querySelectorAll('.content-section');
+
+            const setActiveLink = (targetId) => {
+                // Remove active classes from all links
+                navLinks.forEach(link => {
+                    link.classList.remove('bg-primary-500', 'text-white', 'shadow-md', 'hover:bg-primary-600');
+                    link.classList.add('text-gray-700', 'hover:bg-gray-100');
+                });
+
+                // Add active classes to the target link
+                const activeLink = document.querySelector(`.nav-link[data-section="${targetId}"]`);
+                if (activeLink) {
+                    activeLink.classList.add('bg-primary-500', 'text-white', 'shadow-md', 'hover:bg-primary-600');
+                    activeLink.classList.remove('text-gray-700', 'hover:bg-gray-100');
+                }
+            };
+            
+            const showContent = (targetId) => {
+                // Hide all sections
+                contentSections.forEach(section => {
+                    section.classList.remove('active');
+                });
+
+                // Show the target section
+                const targetSection = document.getElementById(targetId);
+                if (targetSection) {
+                    targetSection.classList.add('active');
+                }
+            };
+
+            // Set up event listeners for navigation clicks
+            navLinks.forEach(link => {
+                link.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    const targetId = link.getAttribute('data-section');
+                    setActiveLink(targetId);
+                    showContent(targetId);
+                });
+            });
+
+            // Initial setup: activate the default 'profile' link and show its content
+            setActiveLink('profile');
+            showContent('profile');
+        });
+    </script>
+
+{% endblock script %}
