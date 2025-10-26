@@ -80,7 +80,7 @@
                                     My Wishlist
                                 </a>
                                 <a href="#" data-section="addresses" class="nav-link flex items-center p-3 rounded-lg text-gray-700 font-medium transition duration-150 hover:bg-gray-100" data-icon="MapPin">
-                                    <span data-lucide="MapPin" class="w-5 h-5 mr-3"></span>
+                                    <span data-lucide="map-pin" class="w-5 h-5 mr-3"></span>
                                     Saved Addresses
                                 </a>
                                 <a href="#" data-section="settings" class="nav-link flex items-center p-3 rounded-lg text-gray-700 font-medium transition duration-150 hover:bg-gray-100" data-icon="Settings">
@@ -269,14 +269,12 @@
                     <div id="settings" class="content-section bg-white p-6 rounded-xl shadow-lg ">
                         <h2 class="text-2xl font-semibold text-gray-900 mb-6 flex items-center">
                             <!-- Icon placeholder for Settings -->
-                            <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 mr-3 text-primary-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                <path d="M12.22 2h-.44a2 2 0 0 0-2 2v.22a2 2 0 0 1-1.4 1.4L4.85 7.42a2 2 0 0 0-1 1.73v.85a2 2 0 0 0 1.2 1.83l.23.11a2 2 0 0 1 1.09 1.76v.38a2 2 0 0 1-1.09 1.76l-.23.11a2 2 0 0 0-1.2 1.83v.85a2 2 0 0 0 1 1.73l1.93 1.2a2 2 0 0 0 1.4 1.4h.44a2 2 0 0 0 2-2v-.22a2 2 0 0 1 1.4-1.4l1.93-1.2a2 2 0 0 0 1-1.73v-.85a2 2 0 0 0-1.2-1.83l-.23-.11a2 2 0 0 1-1.09-1.76v-.38a2 2 0 0 1 1.09-1.76l.23-.11a2 2 0 0 0 1.2-1.83V9.15a2 2 0 0 0-1-1.73l-1.93-1.2a2 2 0 0 1-1.4-1.4V4a2 2 0 0 0-2-2z"></path>
-                                <circle cx="12" cy="12" r="3"></circle>
-                            </svg>
+                            <span data-lucide="Settings" class="w-5 h-5 mr-3 text-primary-500 "></span>
                             Account Settings & Personal Details
                         </h2>
                         
-                        <form class="space-y-6">
+                        <form class="space-y-6" id="personal-detail-update">
+                            <!-- Personal Details Fields -->
                             <div>
                                 <label for="name" class="block text-sm font-medium text-gray-700">Full Name</label>
                                 <input type="text" id="name" value="Jane Doe" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-primary-500 focus:ring-2 focus:ring-primary-500/50 p-3 border transition">
@@ -290,15 +288,47 @@
                                 <label for="phone" class="block text-sm font-medium text-gray-700">Phone Number</label>
                                 <input type="tel" id="phone" value="(555) 123-4567" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-primary-500 focus:ring-2 focus:ring-primary-500/50 p-3 border transition">
                             </div>
+                            
+                            <!-- Action Buttons for Details -->
                             <div class="pt-6 border-t mt-6 flex flex-wrap gap-4">
                                 <button type="submit" class="bg-primary-500 text-white px-6 py-3 rounded-full font-semibold text-sm hover:bg-primary-600 transition shadow-lg">
                                     Save Details
                                 </button>
-                                <button type="button" class="text-gray-600 border border-transparent hover:border-gray-300 px-4 py-3 rounded-full text-sm font-medium transition">
+                                
+                                <!-- Button to toggle password change form -->
+                                <button type="button" id="togglePasswordBtn" class="text-gray-600 border border-transparent hover:border-gray-300 px-4 py-3 rounded-full text-sm font-medium transition">
                                     Change Password
                                 </button>
                             </div>
+
+                            <!-- Password Change Section (Initially Hidden - uses 'hidden' Tailwind class) -->
+                            <div id="passwordFields" class="space-y-6 pt-6 border-t mt-6 hidden">
+                                <h3 class="text-xl font-semibold text-gray-800 mb-4">Change Your Password</h3>
+
+                                <div>
+                                    <label for="current-password" class="block text-sm font-medium text-gray-700">Current Password</label>
+                                    <input type="password" id="current-password" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-red-500 focus:ring-2 focus:ring-red-500/50 p-3 border transition" required>
+                                </div>
+                                <div>
+                                    <label for="new-password" class="block text-sm font-medium text-gray-700">New Password</label>
+                                    <input type="password" id="new-password" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-red-500 focus:ring-2 focus:ring-red-500/50 p-3 border transition" required>
+                                </div>
+                                <div>
+                                    <label for="confirm-password" class="block text-sm font-medium text-gray-700">Confirm New Password</label>
+                                    <input type="password" id="confirm-password" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-red-500 focus:ring-2 focus:ring-red-500/50 p-3 border transition" required>
+                                </div>
+
+                                <div class="flex flex-wrap gap-4">
+                                     <button type="submit" id="savePasswordBtn" class="bg-primary-500 text-white px-6 py-3 rounded-full font-semibold text-sm hover:bg-primary-600 transition shadow-lg">
+                                    Update Password
+                                </button>
+                                    <button type="button" id="cancelPasswordBtn" class="text-gray-600 border border-transparent hover:border-gray-300 px-4 py-3 rounded-full text-sm font-medium transition">
+                                        Cancel
+                                    </button>
+                                </div>
+                            </div>
                         </form>
+                        
                     </div>
 
                 </div>
@@ -359,6 +389,67 @@
             // Initial setup: activate the default 'profile' link and show its content
             setActiveLink('profile');
             showContent('profile');
+        });
+    </script>
+
+    <!-- Script to handle the toggle functionality and dummy actions -->
+    <script>
+        document.getElementById('togglePasswordBtn').addEventListener('click', function() {
+            const passwordFields = document.getElementById('passwordFields');
+            const button = this;
+
+            // Toggle visibility
+            passwordFields.classList.toggle('hidden');
+
+            // Update button text and style for better user feedback
+            if (passwordFields.classList.contains('hidden')) {
+                button.textContent = 'Change Password';
+                button.classList.remove('bg-gray-100', 'border-gray-300', 'text-gray-900');
+                button.classList.add('text-gray-600', 'border-transparent', 'hover:border-gray-300');
+            } else {
+                button.textContent = 'Hide Password Fields';
+                button.classList.add('bg-gray-100', 'border-gray-300', 'text-gray-900');
+                button.classList.remove('text-gray-600', 'border-transparent', 'hover:border-gray-300');
+            }
+        });
+
+        document.getElementById('cancelPasswordBtn').addEventListener('click', function() {
+            const passwordFields = document.getElementById('passwordFields');
+            const toggleButton = document.getElementById('togglePasswordBtn');
+
+            // Hide the password fields section
+            passwordFields.classList.add('hidden');
+
+            // Reset the toggle button text and style
+            toggleButton.textContent = 'Change Password';
+            toggleButton.classList.remove('bg-gray-100', 'border-gray-300', 'text-gray-900');
+            toggleButton.classList.add('text-gray-600', 'border-transparent', 'hover:border-gray-300');
+
+            // Clear password fields for security/cleanup
+            document.getElementById('current-password').value = '';
+            document.getElementById('new-password').value = '';
+            document.getElementById('confirm-password').value = '';
+        });
+        
+        // Dummy event listeners for form submission logic
+        document.getElementById('savePasswordBtn').addEventListener('click', function() {
+            // Placeholder for actual password update logic (e.g., calling a Firebase auth function)
+            const newPass = document.getElementById('new-password').value;
+            const confirmPass = document.getElementById('confirm-password').value;
+
+            if (newPass !== confirmPass) {
+                // In a real app, you must show an error message in the UI here.
+                console.error('New password and confirmation do not match.');
+            } else {
+                console.log('Attempting to update password with new password:', newPass);
+            }
+        });
+        
+        document.getElementById('personal-detail-update').addEventListener('submit', function(e) {
+            // Prevents the form from submitting and refreshing the page
+            e.preventDefault(); 
+            console.log('Saving personal details...');
+            // Placeholder for actual profile update logic (e.g., calling a Firestore update)
         });
     </script>
 

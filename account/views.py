@@ -112,3 +112,14 @@ def activate_account(request, uidb64, token):
     except (TypeError, ValueError, OverflowError, User.DoesNotExist):
         messages.error(request, "Invalid activation link.")
         return redirect('login')
+    
+
+def dashboard(request):
+    if request.user.is_authenticated:
+        if request.user.is_seller:
+            return redirect('seller_dashboard')
+        elif request.user.is_customer:
+            return redirect('customer_dashboard')
+        return redirect('home')
+    else:
+        return redirect('home')

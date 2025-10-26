@@ -5,7 +5,7 @@
             <!-- Left section: Logo -->
             <a href="{% url 'home' %}" class="flex items-center">
               <div>
-                  <img src="{% static '/assets/images/template-white-logo.png' %}" alt="Logo" class="h-14 w-auto mr-4">
+                  <img src="{% static '/assets/images/selling-point-logo.png' %}" alt="Logo" class="h-14 w-auto mr-4">
               </div>
             </a>
 
@@ -82,6 +82,8 @@
             <!-- Right section: Buttons (for desktop) -->
             <div class="hidden lg:flex items-center space-x-4 relative">
                 {% if user.is_authenticated %}
+                 <a href="{% url 'dashboard' %}"
+                class="bg-primary border border-primary hover:bg-transparent text-white hover:text-primary font-semibold px-4 py-2 rounded-full inline-block">Dashboard</a>
                 <form method="POST" action="{% url 'logout' %}">
                     {% csrf_token %}
                     <button type="submit"
