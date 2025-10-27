@@ -82,8 +82,13 @@
             <!-- Right section: Buttons (for desktop) -->
             <div class="hidden lg:flex items-center space-x-4 relative">
                 {% if user.is_authenticated %}
-                 <a href="{% url 'dashboard' %}"
-                class="bg-primary border border-primary hover:bg-transparent text-white hover:text-primary font-semibold px-4 py-2 rounded-full inline-block">Dashboard</a>
+                    {% if user.is_seller %}
+                        <a href="{% url 'seller_dashboard' %}"
+                        class="bg-primary border border-primary hover:bg-transparent text-white hover:text-primary font-semibold px-4 py-2 rounded-full inline-block">Dashboard</a>
+                    {% elif user.is_customer %}
+                        <a href="{% url 'customer_dashboard' %}"
+                        class="bg-primary border border-primary hover:bg-transparent text-white hover:text-primary font-semibold px-4 py-2 rounded-full inline-block">Dashboard</a>
+                    {% endif %}
                 <form method="POST" action="{% url 'logout' %}">
                     {% csrf_token %}
                     <button type="submit"
