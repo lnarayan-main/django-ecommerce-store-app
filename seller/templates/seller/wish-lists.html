@@ -1,0 +1,76 @@
+{% extends "seller/dashboard.html" %}
+
+{% load static %} 
+
+{% block title %}
+    My Wishlist
+{% endblock title %}
+
+{% block style %}
+    {{ block.super }}
+    
+{% endblock style %}
+
+
+{% block seller_content %}
+
+<div class="w-full md:w-3/4 p-4">
+    <div id="wishlist" class="content-section bg-white p-6 rounded-xl shadow-lg ">
+        <h2 class="text-2xl font-semibold text-gray-900 mb-6 flex items-center">
+            <!-- Icon placeholder for Heart -->
+            <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 mr-3 text-primary-500 fill-primary-500" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"></path>
+            </svg>
+            My Wishlist (12 items)
+        </h2>
+        
+        <!-- Mock Wishlist Items -->
+        <div class="space-y-4">
+            <!-- Item 1 -->
+            <div class="flex items-center space-x-4 p-3 border border-gray-200 rounded-lg hover:bg-gray-50 transition">
+                <img src="https://placehold.co/60x60/3498db/ffffff?text=Prod1" alt="Product 1" class="w-16 h-16 object-cover rounded">
+                <div class="flex-1 min-w-0">
+                    <p class="font-medium text-gray-900 truncate">Premium Mechanical Keyboard</p>
+                    <p class="text-sm text-gray-500">$99.99 <span class="text-red-500 ml-2 font-semibold">50% off!</span></p>
+                </div>
+                <div class="flex space-x-3 items-center">
+                    <button class="text-primary-500 text-sm font-medium hover:underline whitespace-nowrap border border-primary-500/0 hover:border-primary-500/20 px-3 py-1 rounded-full transition">Add to Cart</button>
+                    <button aria-label="Remove item" class="text-gray-500 hover:text-red-500 transition p-1 rounded-full hover:bg-red-50">
+                        <!-- Icon placeholder for X (Close/Delete) -->
+                        <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M18 6 6 18"></path>
+                            <path d="m6 6 12 12"></path>
+                        </svg>
+                    </button>
+                </div>
+            </div>
+            <!-- Item 2 -->
+            <div class="flex items-center space-x-4 p-3 border border-gray-200 rounded-lg hover:bg-gray-50 transition">
+                <img src="https://placehold.co/60x60/2ecc71/ffffff?text=Prod2" alt="Product 2" class="w-16 h-16 object-cover rounded">
+                <div class="flex-1 min-w-0">
+                    <p class="font-medium text-gray-900 truncate">Wireless Charging Mouse Pad</p>
+                    <p class="text-sm text-gray-500">$29.99</p>
+                </div>
+                <div class="flex space-x-3 items-center">
+                    <button class="text-primary-500 text-sm font-medium hover:underline whitespace-nowrap border border-primary-500/0 hover:border-primary-500/20 px-3 py-1 rounded-full transition">Add to Cart</button>
+                    <button aria-label="Remove item" class="text-gray-500 hover:text-red-500 transition p-1 rounded-full hover:bg-red-50">
+                        <!-- Icon placeholder for X (Close/Delete) -->
+                        <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M18 6 6 18"></path>
+                            <path d="m6 6 12 12"></path>
+                        </svg>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock seller_content %}
+
+{% block script %}
+    {{ block.super }}
+    <script>
+        console.log("Wishlist page script loaded.");
+    </script>
+{% endblock script %}

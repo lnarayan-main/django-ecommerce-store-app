@@ -119,6 +119,12 @@ USE_TZ = True
 
 STATIC_URL = 'static/'
 
+STATICFILES_DIRS = [
+    BASE_DIR / "static",
+]
+
+STATIC_ROOT = BASE_DIR / "staticfiles"
+
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
 
@@ -145,5 +151,9 @@ EMAIL_USE_TLS = True
 # When user click on logout button below will be used to redirect user to login page
 
 LOGOUT_REDIRECT_URL = 'login'
+
+LOGIN_URL = 'login'
+
+PASSWORD_RESET_TIMEOUT = 3600 # 1 hour (3600 seconds)
 
 
