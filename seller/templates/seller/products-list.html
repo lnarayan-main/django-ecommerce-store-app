@@ -104,17 +104,17 @@
 
             <div class="flex space-x-2">
                 {% if products.has_previous %}
-                    <a href="?q={{ query }}&page={{ products.previous_page_number }}" class="px-3 py-1 border rounded hover:bg-gray-100">&laquo; Prev</a>
+                    <a href="?q={{ query }}&page={{ products.previous_page_number }}" class="w-10 h-10 flex items-center justify-center rounded-full">Prev</a>
                 {% endif %}
                 {% for num in products.paginator.page_range %}
                     {% if num == products.number %}
-                        <span class="bg-primary text-white w-8 h-8 flex items-center justify-center rounded-full">{{ num }}</span>
+                        <span class="bg-primary text-white w-10 h-10 flex items-center justify-center rounded-full">{{ num }}</span>
                     {% elif num > products.number|add:'-2' and num < products.number|add:'2' %}
-                        <a href="?q={{ query }}&page={{ num }}" class="px-3 py-1 border rounded hover:bg-gray-100">{{ num }}</a>
+                        <a href="?q={{ query }}&page={{ num }}" class="w-10 h-10 flex items-center justify-center rounded-full hover:bg-primary hover:text-white">{{ num }}</a>
                     {% endif %}
                 {% endfor %}
                 {% if products.has_next %}
-                    <a href="?q={{ query }}&page={{ products.next_page_number }}" class="px-3 py-1 border rounded hover:bg-gray-100">Next &raquo;</a>
+                    <a href="?q={{ query }}&page={{ products.next_page_number }}" class="w-10 h-10 flex items-center justify-center rounded-full">Next</a>
                 {% endif %}
             </div>
         </div>

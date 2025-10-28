@@ -1,6 +1,8 @@
 from django.db import models
 from django.contrib.auth.models import BaseUserManager, AbstractBaseUser
 
+def user_profile_upload_path(instance, filename):
+    return f"profile_pics/user_{instance.id}/{filename}"
 
 class UserManager(BaseUserManager):
     def create_user(self, email, password=None):
@@ -32,6 +34,12 @@ class User(AbstractBaseUser):
     email = models.EmailField(max_length=255, unique=True)
     name = models.CharField(max_length=255)
     city = models.CharField(max_length=255)
+    profile_pic = models.ImageField(
+        upload_to=user_profile_upload_path,
+        default="profile_pics/default_avatar.png",
+        blank=True,
+        null=True
+    )
     is_active = models.BooleanField(default=False)
     is_staff = models.BooleanField(default=False)
     is_superuser = models.BooleanField(default=False)

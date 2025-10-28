@@ -1,5 +1,5 @@
 from django.shortcuts import render, redirect
-from account.forms import RegistrationForm, PasswordResetForm
+from account.forms import RegistrationForm, PasswordResetForm, ProfilePicForm
 from django.contrib import messages
 from django.conf import settings
 from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
@@ -11,11 +11,17 @@ from account.models import User
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.forms import PasswordChangeForm, SetPasswordForm
 from django.contrib.auth.decorators import login_required
+from django.http import JsonResponse
+from seller.models import Product
 
 
 
 def home(request):
-    return render(request, 'account/home.html')
+    products = Product.objects.all()
+    context = {
+        'products': products,
+    }
+    return render(request, 'account/home.html', context)
 
 
 def login_view(request):
@@ -195,3 +201,22 @@ def password_change_view(request):
         return render(request, 'customer/dashboard.html', {'form': form})
     elif request.user.is_seller:
         return render(request, 'seller/dashboard.html', {'form': form})
+    
+
+@login_required
+def update_profile_pic(request):
+    if request.method == "POST":
+        form = ProfilePicForm(request.POST, request.FILES, instance=request.user)
+        if form.is_valid():
+            form.save()
+            return JsonResponse({
+                "success": True,
+                "message": "Profile picture updated successfully!",
+                "profile_pic_url": request.user.profile_pic.url,
+            })
+        else:
+            return JsonResponse({
+                "success": False,
+                "errors": form.errors,
+            }, status=400)
+    return JsonResponse({"success": False, "message": "Invalid request."}, status=405)

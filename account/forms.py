@@ -42,3 +42,20 @@ class PasswordResetForm(forms.Form):
             raise forms.ValidationError(('No account is associated with this email address.'))
         
         return email
+    
+
+class ProfilePicForm(forms.ModelForm):
+    class Meta:
+        model = User
+        fields = ['profile_pic']
+
+    def clean_profile_pic(self):
+        image = self.cleaned_data.get('profile_pic')
+        if image:
+            valid_types = ['image/jpeg', 'image/png', 'image/jpg']
+            max_size = 2 * 1024 * 1024  # 2MB
+            if image.size > max_size:
+                raise forms.ValidationError("Image size must be under 2MB.")
+            if image.content_type not in valid_types:
+                raise forms.ValidationError("Only JPG and PNG formats are allowed.")
+        return image

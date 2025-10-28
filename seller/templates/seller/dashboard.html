@@ -80,9 +80,53 @@
 
 {% block script %}
 <script src="https://unpkg.com/lucide@latest"></script>
-  <script>
+<script>
         document.addEventListener('DOMContentLoaded', () => {
             lucide.createIcons();
+
+
+            // Profile pic update
+            const input = document.getElementById("profilePicInput");
+            const btn = document.getElementById("changePicBtn");
+            const preview = document.getElementById("profilePicPreview");
+            const MAX_SIZE = 2 * 1024 * 1024;
+            const ALLOWED = ["image/jpeg", "image/png", "image/jpg"];
+
+            btn.addEventListener("click", () => input.click());
+
+            input.addEventListener("change", () => {
+                const file = input.files[0];
+                if (!file) return;
+
+                if (!ALLOWED.includes(file.type)) {
+                alert("Only JPG and PNG allowed.");
+                return;
+                }
+                if (file.size > MAX_SIZE) {
+                alert("Max image size is 2MB.");
+                return;
+                }
+
+                // Show preview before upload
+                const reader = new FileReader();
+                reader.onload = e => preview.src = e.target.result;
+                reader.readAsDataURL(file);
+
+                const formData = new FormData();
+                formData.append("profile_pic", file);
+
+                fetch("{% url 'update_profile_pic' %}", {
+                method: "POST",
+                headers: { "X-CSRFToken": "{{ csrf_token }}" },
+                body: formData
+                })
+                .then(res => res.json())
+                .then(data => {
+                if (data.success) alert(data.message);
+                else alert("Error! " + (data.errors?.profile_pic?.[0] || "Upload failed"));
+                })
+                .catch(err => alert("Error! Something went wrong: " + err));
+            });
         });
 
         function togglePassword(fieldId, btn) {
@@ -95,6 +139,6 @@
             lucide.createIcons();
         }
 
-    </script>
+</script>
 
 {% endblock script %}

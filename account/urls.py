@@ -1,5 +1,5 @@
 from django.urls import path, include
-from account.views import home, login_view, register_view, password_reset, password_reset_confirm, activate_account, dashboard, password_change_view
+from account.views import home, login_view, register_view, password_reset, password_reset_confirm, activate_account, dashboard, password_change_view, update_profile_pic
 from django.contrib.auth.views import LogoutView
 
 urlpatterns = [
@@ -12,4 +12,5 @@ urlpatterns = [
     path('password-reset-confirm/<uidb64>/<token>/', password_reset_confirm, name='password_reset_confirm'),
     path('dashboard/', dashboard, name='dashboard'),
     path('password-change', password_change_view, name='password_change'),
+    path('update-profile-pic/', update_profile_pic, name='update_profile_pic'),
 ]

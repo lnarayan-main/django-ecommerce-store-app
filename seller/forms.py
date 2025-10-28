@@ -4,6 +4,31 @@ from .models import Product, ProductImage
 class MultiFileInput(forms.ClearableFileInput):
     allow_multiple_selected = True
 
+class MultipleFileField(forms.FileField):
+    def __init__(self, *args, **kwargs):
+        kwargs.setdefault("widget", MultiFileInput(
+             attrs={
+                "class": (
+                    "block w-full text-sm text-gray-900 border border-gray-300 "
+                    "rounded-lg cursor-pointer bg-gray-50 focus:outline-none"
+                ),
+                "multiple": True,
+                "accept": "image/*",
+                "onchange":"previewImages(event)",
+            }
+        ))
+        super().__init__(*args, **kwargs)
+
+    def clean(self, data, initial=None):
+        single_file_clean = super().clean
+        if isinstance(data, (list, tuple)):
+            result = [single_file_clean(d, initial) for d in data]
+        else:
+            result = [single_file_clean(data, initial)]
+        return result
+
+
+
 class ProductForm(forms.ModelForm):
     class Meta:
         model = Product
@@ -67,13 +92,8 @@ class ProductForm(forms.ModelForm):
 #         fields = ['image']
 
 
-class ProductImageForm(forms.ModelForm):
+class ProductImageForm(forms.Form):
+    image = MultipleFileField(required=True)
     class Meta:
         model = ProductImage
         fields = ['image']
-        widgets = {
-            'image': MultiFileInput(attrs={
-                'multiple': True,
-                'class': 'block w-full text-sm text-gray-900 border border-gray-300 rounded-lg cursor-pointer focus:outline-none'
-            })
-        }
