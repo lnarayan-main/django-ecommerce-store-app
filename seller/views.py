@@ -57,7 +57,7 @@ def password_change_view(request):
 @login_and_role_required('seller')
 def products_list(request):
     query = request.GET.get('q', '')
-    products = Product.objects.all().order_by('-created_at')
+    products = Product.objects.filter(seller=request.user).all().order_by('-created_at')
 
     if query:
         products = products.filter(
