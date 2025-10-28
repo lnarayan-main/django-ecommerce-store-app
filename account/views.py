@@ -12,16 +12,6 @@ from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.forms import PasswordChangeForm, SetPasswordForm
 from django.contrib.auth.decorators import login_required
 from django.http import JsonResponse
-from seller.models import Product
-
-
-
-def home(request):
-    products = Product.objects.all()
-    context = {
-        'products': products,
-    }
-    return render(request, 'account/home.html', context)
 
 
 def login_view(request):

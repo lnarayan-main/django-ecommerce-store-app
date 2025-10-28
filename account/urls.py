@@ -1,9 +1,8 @@
 from django.urls import path, include
-from account.views import home, login_view, register_view, password_reset, password_reset_confirm, activate_account, dashboard, password_change_view, update_profile_pic
+from account.views import login_view, register_view, password_reset, password_reset_confirm, activate_account, dashboard, password_change_view, update_profile_pic
 from django.contrib.auth.views import LogoutView
 
 urlpatterns = [
-    path('', home, name='home'),
     path('register/', register_view, name='register'),
     path('login/', login_view, name='login'),
     path('logout/', LogoutView.as_view(), name='logout'),

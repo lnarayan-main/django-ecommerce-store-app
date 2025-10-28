@@ -24,38 +24,24 @@ Home Page
         <div class="main-slider swiper-container">
             <div class="swiper-wrapper">
                 <!-- Slide 1 -->
-                <div class="swiper-slide">
-                    <img src="{% static '/assets/images/main-slider/5.jpg' %}" alt="Product 1">
-                    <div class="swiper-slide-content">
-                      <h2 class="text-3xl md:text-7xl font-bold text-white mb-2 md:mb-4">Women</h2>
-                      <p class="mb-4 text-white md:text-2xl">Experience the best in sportswear with <br>our latest collection.</p>
-                        <a href="/"
-                            class="bg-primary hover:bg-transparent text-white hover:text-white border border-transparent hover:border-white font-semibold px-4 py-2 rounded-full inline-block">Shop
-                            now</a>
-                    </div>
-                </div>
-                <!-- Slide 2 -->
-                <div class="swiper-slide">
-                    <img src="{% static '/assets/images/main-slider/2.png' %}" alt="Product 2">
-                    <div class="swiper-slide-content">
-                      <h2 class="text-3xl md:text-7xl font-bold text-white mb-2 md:mb-4">Men</h2>
-                      <p class="mb-4 text-white md:text-2xl">Discover the latest trends in Men`s <br>sportswear and casual fashion.</p>
-                        <a href="/"
-                            class="bg-white hover:bg-transparent text-black hover:text-white font-semibold px-4 py-2 rounded-full inline-block border border-transparent hover:border-white">Shop
-                            now</a>
-                    </div>
-                </div>
-                <!-- Slide 3 -->
-                <div class="swiper-slide">
-                    <img src="{% static '/assets/images/main-slider/4.jpg' %}" alt="Product 3">
-                    <div class="swiper-slide-content">
-                      <h2 class="text-3xl md:text-7xl font-bold text-white mb-2 md:mb-4">Accessories</h2>
-                      <p class="mb-4 text-white md:text-2xl">Elevate your style with our latest <br>sportswear collection.</p>
-                        <a href="/"
-                            class="bg-primary hover:bg-transparent text-white hover:text-white border border-transparent hover:border-white font-semibold px-4 py-2 rounded-full inline-block">Shop
-                            now</a>
-                    </div>
-                </div>
+                {% if categories %}
+                  {% for category in categories %}
+                  <div class="swiper-slide">
+                      {% if category.category_pic %}
+                      <img src="{{ category.category_pic.url }}" alt="Product 1">
+                      {% else %}
+                      <img src="{% static '/assets/images/main-slider/5.jpg' %}" alt="Product 1">
+                      {% endif %}
+                      <div class="swiper-slide-content">
+                        <h2 class="text-3xl md:text-7xl font-bold text-white mb-2 md:mb-4">{{ category.name }}</h2>
+                        <p class="mb-4 text-white md:text-2xl">{{ category.description|split_description:10|safe }}</p>
+                          <a href="/"
+                              class="bg-primary hover:bg-transparent text-white hover:text-white border border-transparent hover:border-white font-semibold px-4 py-2 rounded-full inline-block">Shop
+                              now</a>
+                      </div>
+                  </div>
+                 {% endfor %}
+                {% endif %}
             </div>
         </div>
         <!-- Slider Pagination -->
@@ -68,47 +54,28 @@ Home Page
         <div class="container mx-auto py-10">
             <div class="flex flex-wrap -mx-4">
                 <!-- Category 1 -->
-                <div class="w-full sm:w-1/3 px-4 mb-8">
-                    <div class="category-banner relative overflow-hidden rounded-lg shadow-lg group">
-                        <img src="{% static '/assets/images/cat-image1.jpg' %}" alt="Category 1" class="w-full h-auto">
-                        <div class="absolute inset-0 bg-gray-light bg-opacity-50"></div>
-                        <div
-                            class="absolute inset-0 flex flex-col items-center justify-center text-center text-white p-4">
-                            <h2 class="text-2xl md:text-3xl font-bold mb-4">Men</h2>
-                            <a href="/"
-                                class="bg-primary hover:bg-transparent border border-transparent hover:border-white text-white hover:text-white font-semibold px-4 py-2 rounded-full inline-block">Shop
-                                now</a>
+                {% if categories %}
+                  {% for category in categories %}
+                    <div class="w-full sm:w-1/3 px-4 mb-8">
+                        <div class="category-banner relative overflow-hidden rounded-lg shadow-lg group">
+                          {% if category.category_pic %}
+                          <img src="{{ category.category_pic.url }}" alt="Category 1" class="w-full h-auto">
+                          {% else %}
+                          <img src="{% static '/assets/images/cat-image1.jpg' %}" alt="Category 1" class="w-full h-auto">
+                          {% endif %}
+                          <div class="absolute inset-0 bg-gray-light bg-opacity-50"></div>
+                          <div
+                          class="absolute inset-0 flex flex-col items-center justify-center text-center text-white p-4">
+                          <h2 class="text-2xl md:text-3xl font-bold mb-4">{{ category.name }}</h2>
+                          <a href="/"
+                          class="bg-primary hover:bg-transparent border border-transparent hover:border-white text-white hover:text-white font-semibold px-4 py-2 rounded-full inline-block">Shop
+                          now</a>
                         </div>
+                      </div>
                     </div>
-                </div>
-                <!-- Category 2 -->
-                <div class="w-full sm:w-1/3 px-4 mb-8">
-                    <div class="category-banner relative overflow-hidden rounded-lg shadow-lg group">
-                        <img src="{% static '/assets/images/cat-image4.jpg' %}" alt="Category 2" class="w-full h-auto">
-                        <div class="absolute inset-0 bg-gray-light bg-opacity-50"></div>
-                        <div
-                            class="category-text absolute inset-0 flex flex-col items-center justify-center text-center text-white p-4 transition duration-300">
-                            <h2 class="text-2xl md:text-3xl font-bold mb-4">Women</h2>
-                            <a href="/"
-                                class="bg-primary hover:bg-transparent border border-transparent hover:border-white text-white hover:text-white font-semibold px-4 py-2 rounded-full inline-block">Shop
-                                now</a>
-                        </div>
-                    </div>
-                </div>
-                <!-- Category 3 -->
-                <div class="w-full sm:w-1/3 px-4 mb-8">
-                    <div class="category-banner relative overflow-hidden rounded-lg shadow-lg group">
-                        <img src="{% static '/assets/images/cat-image5.jpg' %}" alt="Category 3" class="w-full h-auto">
-                        <div class="absolute inset-0 bg-gray-light bg-opacity-50"></div>
-                        <div
-                            class="category-text absolute inset-0 flex flex-col items-center justify-center text-center text-white p-4 transition duration-300">
-                            <h2 class="text-2xl md:text-3xl font-bold mb-4">Accessories</h2>
-                            <a href="/"
-                                class="bg-primary hover:bg-transparent border border-transparent hover:border-white text-white hover:text-white font-semibold px-4 py-2 rounded-full inline-block">Shop
-                                now</a>
-                        </div>
-                    </div>
-                </div>
+                  {% endfor %}
+                {% endif %}
+             
             </div>
         </div>
     </section>
@@ -125,24 +92,24 @@ Home Page
                   <div class="w-full sm:w-1/2 lg:w-1/4 px-4 mb-8">
                     <div class="bg-white rounded-lg shadow-lg flex flex-col h-full overflow-hidden">
                       <!-- image box -->
-                      <div class="ratio-4-3 rounded-t-lg">
+                        <a href="{% url 'product_detail' product.id %}" class="block ratio-4-3 rounded-t-lg overflow-hidden" title="{{ product.name }}">
                         {% if product.images.first %}
                           <img src="{{ product.images.first.image.url }}" alt="{{ product.name }}">
                         {% else %}
                           <img src="{% static 'images/no-image.png' %}" alt="No image">
                         {% endif %}
-                      </div>
+                        </a>
 
                       <!-- content -->
                       <div class="p-4 flex flex-col flex-grow">
-                        <h3 class="text-base font-semibold text-gray-900 line-clamp-2">{{ product.name }}</h3>
+                        <a href="{% url 'product_detail' product.id %}" class="text-base font-semibold text-gray-900 line-clamp-2">{{ product.name }}</a>
                         <p class="text-sm text-gray-500">{{ product.category.name }}</p>
 
                         <div class="mt-auto">
-                          <div class="flex items-center justify-between mb-3">
+                          <div class="flex items-center mb-3">
                             <span class="text-lg font-bold text-primary">${{ product.price|subtract:product.discount_price }}</span>
                             {% if product.discount_price %}
-                              <span class="text-sm line-through text-gray-400">${{ product.price }}</span>
+                              <span class="text-sm line-through ml-2">${{ product.price }}</span>
                             {% endif %}
                           </div>
                           <button class="w-full bg-primary text-white py-2 rounded-full hover:bg-primary/90 transition">Add to Cart</button>
@@ -163,57 +130,30 @@ Home Page
         <div class="container mx-auto px-4">
             <h2 class="text-2xl font-bold mb-8">Latest products</h2>
             <div class="flex flex-wrap -mx-4">
-                <!-- Product 1 -->
-                <div class="w-full sm:w-1/2 lg:w-1/4 px-4 mb-8">
-                  <div class="bg-white p-3 rounded-lg shadow-lg">
-                    <img src="{% static '/assets/images/products/5.jpg' %}" alt="Product 1" class="w-full object-cover mb-4 rounded-lg">
-                    <a href="#" class="text-lg font-semibold mb-2">Blue women's suit</a>
-                    <p class=" my-2">Women</p>
-                    <div class="flex items-center mb-4">
-                      <span class="text-lg font-bold text-primary">$19.99</span>
-                      <span class="text-sm line-through ml-2">$24.99</span>
+                
+                {% if latest_products %}
+                  {% for product in latest_products %}
+                  <div class="w-full sm:w-1/2 lg:w-1/4 px-4 mb-8">
+                    <div class="bg-white p-3 rounded-lg shadow-lg">
+                      <a href="{% url 'product_detail' product.id %}" class="block ratio-4-3 rounded-t-lg overflow-hidden" title="{{ product.name }}">
+                        {% if product.images.first %}
+                          <img src="{{ product.images.first.image.url }}" alt="{{ product.name }}">
+                        {% else %}
+                          <img src="{% static 'images/no-image.png' %}" alt="No image">
+                        {% endif %}
+                      </a>
+                      <a href="{% url 'product_detail' product.id %}" class="text-lg font-semibold mb-2 line-clamp-2">{{ product.name }}</a>
+                      <p class=" my-2">{{ product.category.name }}</p>
+                      <div class="flex items-center mb-4">
+                        <span class="text-lg font-bold text-primary">${{ product.price }}</span>
+                        <span class="text-sm line-through ml-2">${{ product.price|subtract:product.discount_price }}</span>
+                      </div>
+                      <button class="bg-primary border border-transparent hover:bg-transparent hover:border-primary text-white hover:text-primary font-semibold py-2 px-4 rounded-full w-full">Add to Cart</button>
                     </div>
-                    <button class="bg-primary border border-transparent hover:bg-transparent hover:border-primary text-white hover:text-primary font-semibold py-2 px-4 rounded-full w-full">Add to Cart</button>
                   </div>
-                </div>
-                <!-- Product 2 -->
-                <div class="w-full sm:w-1/2 lg:w-1/4 px-4 mb-8">
-                  <div class="bg-white p-3 rounded-lg shadow-lg">
-                    <img src="{% static '/assets/images/products/6.jpg' %}" alt="Product 2" class="w-full object-cover mb-4 rounded-lg">
-                    <a href="#" class="text-lg font-semibold mb-2">White shirt with long sleeves</a>
-                    <p class=" my-2">Women</p>
-                    <div class="flex items-center mb-4">
-                      <span class="text-lg font-bold text-gray-900">$29.99</span>
-                    </div>
-                    <button class="bg-primary border border-transparent hover:bg-transparent hover:border-primary text-white hover:text-primary font-semibold py-2 px-4 rounded-full w-full">Add to Cart</button>
-                  </div>
-                </div>
-                <!-- Product 3 -->
-                <div class="w-full sm:w-1/2 lg:w-1/4 px-4 mb-8">
-                  <div class="bg-white p-3 rounded-lg shadow-lg">
-                    <img src="{% static '/assets/images/products/7.jpg' %}" alt="Product 3" class="w-full object-cover mb-4 rounded-lg">
-                    <a href="#" class="text-lg font-semibold mb-2">Yellow men's suit</a>
-                    <p class="my-2">Men</p>
-                    <div class="flex items-center mb-4">
-                      <span class="text-lg font-bold text-gray-900">$15.99</span>
-                      <span class="text-sm line-through  ml-2">$19.99</span>
-                    </div>
-                    <button class="bg-primary border border-transparent hover:bg-transparent hover:border-primary text-white hover:text-primary font-semibold py-2 px-4 rounded-full w-full">Add to Cart</button>
-                  </div>
-                </div>
-                <!-- Product 4 -->
-                <div class="w-full sm:w-1/2 lg:w-1/4 px-4 mb-8">
-                  <div class="bg-white p-3 rounded-lg shadow-lg">
-                    <img src="{% static '/assets/images/products/8.jpg' %}" alt="Product 4" class="w-full object-cover mb-4 rounded-lg">
-                    <a href="#" class="text-lg font-semibold mb-2">Red dress</a>
-                    <p class="my-2">Women</p>
-                    <div class="flex items-center mb-4">
-                        <span class="text-lg font-bold text-primary">$39.99</span>
-                        <span class="text-sm line-through ml-2">$49.99</span>
-                    </div>
-                    <button class="bg-primary border border-transparent hover:bg-transparent hover:border-primary text-white hover:text-primary font-semibold py-2 px-4 rounded-full w-full">Add to Cart</button>
-                  </div>
-                </div>
+                  {% endfor %}
+                {% endif %}
+               
               </div>
         </div>
     </section>
