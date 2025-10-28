@@ -2,6 +2,7 @@ from django.shortcuts import render, get_object_or_404
 from seller.models import Product
 from core.models import Category
 from django.core.paginator import Paginator
+from core.utils import get_sibling_categories
 
 
 
@@ -30,7 +31,22 @@ def product_detail(request, product_id):
 
 
 def products_by_category(request, category_id):
-    products = Product.objects.filter(category_id=category_id).order_by('-created_at')
+    sort_by = request.GET.get('sort_by', 'latest')
+
+    sort_mapping = {
+        'latest': '-created_at',
+        # 'popular': '-views',
+        'popular': 'name',
+        'a_z': 'name', 
+    }
+
+    products = Product.objects.filter(category_id=category_id)
+
+    products = products.order_by(sort_mapping[sort_by])
+
+    categories = Category.objects.filter(parent=None).order_by('pk').prefetch_related('subcategories')
+   
+    sibling_categories = get_sibling_categories(category_id)
 
     paginator = Paginator(products, 6)
     page_number = request.GET.get('page')
@@ -38,7 +54,8 @@ def products_by_category(request, category_id):
 
     contenxt = {
         'products': page_obj,
+        'categories': categories,
+        'sibling_categories': sibling_categories,
     }
-
 
     return render(request, 'core/product-filters.html', contenxt)
