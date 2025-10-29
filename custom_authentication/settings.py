@@ -166,6 +166,9 @@ PASSWORD_RESET_TIMEOUT = 3600 # 1 hour (3600 seconds)
 
 APP_NAME = 'Selling Point' 
 
+SHIPPING_CHARGE = 5 # $5
+TAX_PERCENT = 2 # 2%
+
 MESSAGE_TAGS = {
     messages.DEBUG: 'debug',
     messages.INFO: 'info',

@@ -14,7 +14,11 @@ def global_context(request):
     automatically for every request.
     """
     app_name = getattr(settings, 'APP_NAME', 'Django App')
+    shipping_charge = getattr(settings, 'SHIPPING_CHARGE', 5)
+    tax_percent = getattr(settings, 'TAX_PERCENT', 5)
     
     return {
         'APP_NAME': app_name,
+        'SHIPPING_CHARGE': shipping_charge,
+        'TAX_PERCENT': tax_percent,
     }

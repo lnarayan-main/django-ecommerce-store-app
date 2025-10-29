@@ -24,31 +24,39 @@
                                     </tr>
                                 </thead>
                                 <tbody id="cart-items">
-                                    {% for item in items %}
-                                    <tr class="pb-4 border-b border-gray-line">
-                                        <td class="px-1 py-4">
-                                            <div class="flex items-center flex-col sm:flex-row text-center sm:text-left">
-                                                {% if item.product.images.first %}
-                                                    <a href="{% url 'product_detail' item.product.id %}">
-                                                        <img class="h-16 w-16 md:h-24 md:w-24 sm:mr-8 mb-4 sm:mb-0" src="{{ item.product.images.first.image.url }}" alt="Product image">
-                                                    </a>
-                                                    {% else %}
-                                                    <img class="h-16 w-16 md:h-24 md:w-24 sm:mr-8 mb-4 sm:mb-0" src="{% static 'images/no-image.png' %}" alt="No image">
-                                                {% endif %}
-                                                <a href="{% url 'product_detail' item.product.id %}" class="text-sm md:text-base md:font-semibold">{{ item.product.name }}</a>
-                                            </div>
+                                    {% if items %}
+                                        {% for item in items %}
+                                        <tr class="pb-4 border-b border-gray-line">
+                                            <td class="px-1 py-4">
+                                                <div class="flex items-center flex-col sm:flex-row text-center sm:text-left">
+                                                    {% if item.product.images.first %}
+                                                        <a href="{% url 'product_detail' item.product.id %}">
+                                                            <img class="h-16 w-16 md:h-24 md:w-24 sm:mr-8 mb-4 sm:mb-0" src="{{ item.product.images.first.image.url }}" alt="Product image">
+                                                        </a>
+                                                        {% else %}
+                                                        <img class="h-16 w-16 md:h-24 md:w-24 sm:mr-8 mb-4 sm:mb-0" src="{% static 'images/no-image.png' %}" alt="No image">
+                                                    {% endif %}
+                                                    <a href="{% url 'product_detail' item.product.id %}" class="text-sm md:text-base md:font-semibold">{{ item.product.name }}</a>
+                                                </div>
+                                            </td>
+                                            <td class="px-1 py-4 text-center">${{ item.product.discount_price }}</td>
+                                            <td class="px-1 py-4 text-center">
+                                                <div class="flex items-center justify-center">
+                                                    <button class="cart-decrement border border-primary bg-primary text-white hover:bg-transparent hover:text-primary rounded-full w-10 h-10 flex items-center justify-center">-</button>
+                                                    <p class="quantity text-center w-8">{{ item.quantity }}</p>
+                                                    <button class="cart-increment border border-primary bg-primary text-white hover:bg-transparent hover:text-primary rounded-full w-10 h-10 flex items-center justify-center">+</button>
+                                                </div>
+                                            </td>
+                                            <td class="px-1 py-4 text-right">${{ item.product.discount_price | mul:item.quantity }}</td>
+                                        </tr>
+                                        {% endfor %}
+                                    {% else %}
+                                    <tr>
+                                        <td colspan="4" class="py-12 text-center text-lg text-gray-500 font-medium">
+                                            No items added to cart
                                         </td>
-                                        <td class="px-1 py-4 text-center">${{ item.product.price }}</td>
-                                        <td class="px-1 py-4 text-center">
-                                            <div class="flex items-center justify-center">
-                                                <button class="cart-decrement border border-primary bg-primary text-white hover:bg-transparent hover:text-primary rounded-full w-10 h-10 flex items-center justify-center">-</button>
-                                                <p class="quantity text-center w-8">{{ item.quantity }}</p>
-                                                <button class="cart-increment border border-primary bg-primary text-white hover:bg-transparent hover:text-primary rounded-full w-10 h-10 flex items-center justify-center">+</button>
-                                            </div>
-                                        </td>
-                                        <td class="px-1 py-4 text-right">${{ item.product.price | mul:item.quantity }}</td>
                                     </tr>
-                                    {% endfor %}
+                                    {% endif %}
                                 </tbody>
                             </table>
                             <div class="px-1 flex flex-col lg:flex-row justify-between items-center mt-10">
@@ -69,19 +77,19 @@
                         <h2 class="text-lg font-semibold mb-4">Summary</h2>
                         <div class="flex justify-between mb-4">
                             <p>Subtotal</p>
-                            <p>$19.99</p>
+                            <p>${{ sub_total|default:0 }}</p>
                         </div>
                         <div class="flex justify-between mb-4">
                             <p>Taxes</p>
-                            <p>$1.99</p>
+                            <p>${{ taxes|default:"0" }}</p>
                         </div>
                         <div class="flex justify-between mb-4 pb-4 border-b border-gray-line">
                             <p>Shipping</p>
-                            <p>$0.00</p>
+                            <p>${{ shipping_charge|default:0 }}</p>
                         </div>
                         <div class="flex justify-between mb-2">
                             <p class="font-semibold">Total</p>
-                            <p class="font-semibold">$21.98</p>
+                            <p class="font-semibold">${{ total|default:0 }}</p>
                         </div>
                         <a href="/checkout" class="bg-primary text-white border hover:border-primary hover:bg-transparent hover:text-primary py-2 px-4 rounded-full mt-4 w-full text-center block">Proceed to checkout</a>
                     </div>

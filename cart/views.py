@@ -3,6 +3,7 @@ from django.http import JsonResponse
 from django.contrib.auth.decorators import login_required
 from seller.models import Product
 from .models import Cart, CartItem
+from core.context_processors import global_context
 
 @login_required
 def add_to_cart(request, product_id):
@@ -33,5 +34,22 @@ def remove_from_cart(request, product_id):
 def view_cart(request):
     cart, _ = Cart.objects.get_or_create(user=request.user)
     items = cart.items.select_related('product')
-    total = cart.total_price()
-    return render(request, 'cart/cart-items.html', {'cart': cart, 'items': items, 'total': total})
+    sub_total = cart.total_price()
+    taxes = 0
+    shipping_charge = 0
+    if sub_total:
+        taxes_percentage = global_context(request)['TAX_PERCENT']
+        shipping_charge = global_context(request)['SHIPPING_CHARGE']
+        taxes = sub_total * taxes_percentage / 100 
+    total = sub_total + taxes + shipping_charge
+
+    context = {
+        'cart': cart, 
+        'items': items, 
+        'sub_total': sub_total, 
+        'taxes': taxes, 
+        'shipping_charge': shipping_charge, 
+        'total': total
+    }
+
+    return render(request, 'cart/cart-items.html', context)

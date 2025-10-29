@@ -107,7 +107,7 @@ Home Page
 
                         <div class="mt-auto">
                           <div class="flex items-center mb-3">
-                            <span class="text-lg font-bold text-primary">${{ product.price|subtract:product.discount_price }}</span>
+                            <span class="text-lg font-bold text-primary">${{ product.discount_price|default:product.price }}</span>
                             {% if product.discount_price %}
                               <span class="text-sm line-through ml-2">${{ product.price }}</span>
                             {% endif %}
@@ -145,8 +145,10 @@ Home Page
                       <a href="{% url 'product_detail' product.id %}" class="text-lg font-semibold mb-2 line-clamp-2">{{ product.name }}</a>
                       <p class=" my-2">{{ product.category.name }}</p>
                       <div class="flex items-center mb-4">
-                        <span class="text-lg font-bold text-primary">${{ product.price }}</span>
-                        <span class="text-sm line-through ml-2">${{ product.price|subtract:product.discount_price }}</span>
+                        <span class="text-lg font-bold text-primary">${{ product.discount_price|default:product.price }}</span>
+                        {% if product.discount_price %}
+                        <span class="text-sm line-through ml-2">${{ product.price }}</span>
+                        {% endif %}
                       </div>
                       <button data-url="{% url 'add_to_cart' product.id %}" class="addToCartButton bg-primary border border-transparent hover:bg-transparent hover:border-primary text-white hover:text-primary font-semibold py-2 px-4 rounded-full w-full">Add to Cart</button>
                     </div>
