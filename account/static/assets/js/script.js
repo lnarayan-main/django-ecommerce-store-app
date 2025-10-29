@@ -225,7 +225,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
 
 
-function confirmAction(options = {}) {
+function confirmAction_old(options = {}) {
     const {
         title = 'Are you sure?',
         text = 'This action cannot be undone!',
@@ -256,4 +256,45 @@ function confirmAction(options = {}) {
             }
         }
     });
+}
+
+
+function confirmAction({
+  title = 'Are you sure?',
+  text = 'This action cannot be undone!',
+  confirmText = 'Yes, proceed!',
+  cancelText = 'Cancel',
+  confirmUrl = null,
+  onConfirm = null,
+}) {
+  Swal.fire({
+    title: title,
+    text: text,
+    icon: 'warning',
+    showCancelButton: true,
+    confirmButtonText: confirmText,
+    cancelButtonText: cancelText,
+    
+    // 1. IMPORTANT: Disable SweetAlert's default button styling
+    buttonsStyling: false, 
+
+    confirmButtonColor: '#2563eb', 
+    cancelButtonColor: '#6b7280', 
+
+    customClass: {
+      popup: 'rounded-2xl shadow-xl',
+      confirmButton:
+        'bg-primary-500 hover:bg-primary-600 text-white font-medium rounded-lg px-4 py-2 transition duration-150 ease-in-out shadow-md ml-3 rounded-full', 
+      cancelButton:
+        'bg-gray-200 hover:bg-gray-300 text-gray-800 font-medium rounded-lg px-4 py-2 transition duration-150 ease-in-out',
+    },
+  }).then((result) => {
+    if (result.isConfirmed) {
+      if (confirmUrl) {
+        window.location.href = confirmUrl;
+      } else if (onConfirm && typeof onConfirm === 'function') {
+        onConfirm();
+      }
+    }
+  });
 }

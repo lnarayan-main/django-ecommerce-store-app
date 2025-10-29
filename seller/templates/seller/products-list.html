@@ -128,22 +128,35 @@
 {% endblock seller_content %}
 
 {% block script %}
-
+{{ block.super }}
 <script>
-    document.addEventListener('DOMContentLoaded', function(){
-        const productDeleteBtn = document.querySelector(".delete-product-btn");
-        const url = productDeleteBtn.getAttribute('href');
-        productDeleteBtn.addEventListener('click', function(e){
-            e.preventDefault();
-            confirmAction({
-                title: 'Delete Product?',
-                text: 'This will permanently remove the product.',
-                icon: 'warning',
-                confirmText: 'Yes, delete it!',
-                redirectUrl: url,
-            });
+     document.addEventListener('DOMContentLoaded', function(){
+            const productDeleteBtns = document.querySelectorAll(".delete-product-btn");
+
+            productDeleteBtns.forEach(productDeleteBtn =>{
+                if (productDeleteBtn) {
+                    const url = productDeleteBtn.getAttribute('href');
+    
+                    productDeleteBtn.addEventListener('click', function(e){
+                        e.preventDefault(); 
+                        
+                        console.log('Delete button click intercepted!');
+                        if(url){
+                            confirmAction({
+                                title: 'Delete Product?',
+                                text: 'This will permanently remove the product. Are you absolutely certain?',
+                                confirmText: 'Yes, DELETE IT',
+                                redirectUrl: url,
+                            });
+                        }else{
+                            console.log('Url not found on delete button.');
+                        }
+                    });
+                }else{
+                    console.log("Delete button not found.");
+                }
+            })
         });
-    });
 </script>
 
 {% endblock script %}
