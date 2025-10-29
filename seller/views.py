@@ -1,4 +1,4 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib import messages
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.forms import PasswordChangeForm
@@ -8,6 +8,7 @@ from django.db.models import Q
 from django.core.paginator import Paginator
 from seller.forms import ProductForm, ProductImageForm
 from django.db import transaction
+import os
 
 @login_and_role_required("seller")
 def dashboard(request):
@@ -128,4 +129,13 @@ def product_edit(request, product_id):
 
 @login_and_role_required('seller')
 def product_delete(request, product_id):
-    return render(request, 'seller/create-product.html')
+    product = get_object_or_404(Product, id=product_id)
+    
+    for img in product.images.all():
+        if img.image and os.path.isfile(img.image.path):
+            os.remove(img.image.path)
+        img.delete()
+
+    product.delete()
+    messages.success(request, 'Product deleted successfully.')
+    return redirect('products_list')

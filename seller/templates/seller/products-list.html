@@ -139,14 +139,12 @@
     
                     productDeleteBtn.addEventListener('click', function(e){
                         e.preventDefault(); 
-                        
-                        console.log('Delete button click intercepted!');
                         if(url){
                             confirmAction({
                                 title: 'Delete Product?',
                                 text: 'This will permanently remove the product. Are you absolutely certain?',
                                 confirmText: 'Yes, DELETE IT',
-                                redirectUrl: url,
+                                confirmUrl: url,
                             });
                         }else{
                             console.log('Url not found on delete button.');
