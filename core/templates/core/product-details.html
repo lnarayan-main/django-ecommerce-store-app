@@ -2,7 +2,7 @@
 {% load static %}
 {% load core_filters %}
 
-{% block title %} MyStore | Product Details {% endblock %}
+{% block title %} Product Details {% endblock %}
 
 {% block style %}
   <style>
@@ -94,37 +94,6 @@
             <div class="py-6">
                 <div class="flex flex-col lg:flex-row gap-6">
                     <!-- Image Section -->
-                    {% comment %} <div class="w-full lg:w-1/2">
-                        <div class="grid gap-4">
-                            <div id="main-image-container">
-                                {% if product.images.first %}
-                                    <img id="main-image"
-                                        class="h-auto w-full max-w-full rounded-lg object-cover object-center md:h-[480px] transition-transform duration-300"
-                                        src="{{ product.images.first.image.url }}"
-                                        alt="{{ product.name }}">
-                                {% else %}
-                                    <img id="main-image"
-                                        class="h-auto w-full max-w-full rounded-lg object-cover object-center md:h-[480px]"
-                                        src="{% static 'images/no-image.png' %}"
-                                        alt="No image available">
-                                {% endif %}
-                            </div>
-                            {% if product.images.all %}
-                            <div class="grid grid-cols-5 gap-4">
-                                {% for img in product.images.all %}
-                                    <div>
-                                        <img onclick="changeImage(this)"
-                                            data-full="{{ img.image.url }}"
-                                            src="{{ img.image.url }}"
-                                            class="object-cover object-center h-24 w-full rounded-lg cursor-pointer hover:opacity-80 transition"
-                                            alt="{{ product.name }} - {{ forloop.counter }}">
-                                    </div>
-                                {% endfor %}
-                            </div>
-                            {% endif %}
-                        </div>
-                    </div> {% endcomment %}
-
                     <div class="w-full lg:w-1/2">
                         <div class="grid gap-4">
                             <!-- Big Image -->
@@ -183,12 +152,12 @@
                                 <button id="decrease"
                                     class="bg-primary hover:bg-transparent border border-transparent hover:border-primary text-white hover:text-primary font-semibold w-10 h-10 rounded-full flex items-center justify-center focus:outline-none"
                                     disabled>-</button>
-                                <input id="quantity" type="number" value="1"
+                                <input id="quantity" name="quality" type="number" value="1"
                                     class="w-16 py-2 text-center focus:outline-none" readonly>
                                 <button id="increase"
                                     class="bg-primary hover:bg-transparent border border-transparent hover:border-primary text-white hover:text-primary font-semibold  w-10 h-10 rounded-full focus:outline-none">+</button>
                             </div>
-                            <button
+                            <button id="add-to-cart-btn" data-id="{{ product.id }}"
                                 class="bg-primary border border-transparent hover:bg-transparent hover:border-primary text-white hover:text-primary font-semibold py-2 px-4 rounded-full">Add
                                 to Cart</button>
                         </div>
@@ -515,13 +484,13 @@
                             <img src="{% static 'images/no-image.png' %}" alt="No image">
                             {% endif %}
                         </a>
-                        <a href="{% url 'product_detail' product.id }" class="text-lg font-semibold mb-2">{{ product.name }}</a>
+                        <a href="{% url 'product_detail' product.id %}" class="text-lg font-semibold mb-2">{{ product.name }}</a>
                         <p class=" my-2">{{ product.category.name }}</p>
                         <div class="flex items-center mb-4">
                         <span class="text-lg font-bold text-primary">${{ product.price }}</span>
                         <span class="text-sm line-through ml-2">${{ product.price|subtract:product.discount_price }}</span>
                         </div>
-                        <button class="bg-primary border border-transparent hover:bg-transparent hover:border-primary text-white hover:text-primary font-semibold py-2 px-4 rounded-full w-full">Add to Cart</button>
+                        <button data-url="{% url 'add_to_cart' product.id %}" class="addToCartButton bg-primary border border-transparent hover:bg-transparent hover:border-primary text-white hover:text-primary font-semibold py-2 px-4 rounded-full w-full">Add to Cart</button>
                     </div>
                     </div>
                     {% endfor %}
@@ -541,5 +510,28 @@
     document.querySelectorAll('.thumb-image').forEach(t => t.classList.remove('thumb-active'));
     el.parentElement.classList.add('thumb-active');
   }
+
+  document.addEventListener('DOMContentLoaded', ()=>{
+    const addToCartBtn = document.getElementById("add-to-cart-btn");
+    addToCartBtn.addEventListener('click', ()=>{
+        const quantity = document.getElementById("quantity").value;
+        const productId = addToCartBtn.dataset.id;
+
+        const formData = new FormData();
+        formData.append('quantity', quantity);
+
+        fetch("{% url 'add_to_cart' 0 %}".replace('0', productId), {
+            method: "POST",
+            headers: { "X-CSRFToken": "{{ csrf_token }}" },
+            body: formData
+        })
+        .then(res => res.json())
+        .then(data => {
+            if (data.success) alert(data.message);
+            else alert("Error! add to cart failed.");
+        })
+        .catch(err => alert("Error! Something went wrong: " + err));
+    })
+  })
 </script>
 {% endblock script %}

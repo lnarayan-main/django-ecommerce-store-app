@@ -1,0 +1,69 @@
+{% extends "customer/dashboard.html" %}
+
+{% load static %} 
+
+{% block title %}
+    Order History
+{% endblock title %}
+
+{% block style %}
+    {{ block.super }}
+    
+{% endblock style %}
+
+
+{% block customer_content %}
+
+<!--Order History-->
+<div class="w-full md:w-3/4 p-4">
+    <div id="orders" class="content-section bg-white p-6 rounded-xl shadow-lg ">
+        <h2 class="text-2xl font-semibold text-gray-900 mb-6 flex items-center">
+            <!-- Icon placeholder for Package -->
+            <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 mr-3 text-primary-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="m7.5 4.27 9 5.15"></path>
+                <path d="M21 8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16Z"></path>
+                <path d="m3.3 7 8.7 5 8.7-5"></path>
+                <path d="M12 22V12"></path>
+            </svg>
+            My Order History
+        </h2>
+        
+        <!-- Mock Order List -->
+        <div class="space-y-4">
+            <!-- Order 1 -->
+            <div class="p-4 border border-gray-200 rounded-lg flex flex-col md:flex-row justify-between items-start md:items-center hover:bg-gray-50 transition">
+                <div>
+                    <p class="font-bold text-gray-900">Order #10056</p>
+                    <p class="text-sm text-gray-500">Placed on: <span class="font-medium">Oct 20, 2025</span></p>
+                    <p class="text-sm text-gray-700 mt-1">Total: <span class="font-semibold text-lg">$149.99</span> (3 items)</p>
+                </div>
+                <div class="flex flex-col items-start md:items-end space-y-2 mt-3 md:mt-0">
+                    <span class="px-3 py-1 text-xs font-semibold bg-green-100 text-green-700 rounded-full whitespace-nowrap">Delivered</span>
+                    <button class="text-primary-500 text-sm font-medium hover:underline whitespace-nowrap">View Details</button>
+                </div>
+            </div>
+            <!-- Order 2 -->
+            <div class="p-4 border border-gray-200 rounded-lg flex flex-col md:flex-row justify-between items-start md:items-center hover:bg-gray-50 transition">
+                <div>
+                    <p class="font-bold text-gray-900">Order #10057</p>
+                    <p class="text-sm text-gray-500">Placed on: <span class="font-medium">Oct 25, 2025</span></p>
+                    <p class="text-sm text-gray-700 mt-1">Total: <span class="font-semibold text-lg">$49.00</span> (1 item)</p>
+                </div>
+                <div class="flex flex-col items-start md:items-end space-y-2 mt-3 md:mt-0">
+                    <span class="px-3 py-1 text-xs font-semibold bg-yellow-100 text-yellow-700 rounded-full whitespace-nowrap">Processing</span>
+                    <button class="text-primary-500 text-sm font-medium hover:underline whitespace-nowrap">Track Order</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+{% endblock customer_content %}
+
+{% block script %}
+    {{ block.super }}
+    <script>
+        console.log("Wishlist page script loaded.");
+    </script>
+{% endblock script %}

@@ -82,7 +82,7 @@
                 class="bg-primary border border-primary hover:bg-transparent text-white hover:text-primary font-semibold px-4 py-2 rounded-full inline-block">Login</a>
                 {% endif %}
               <div class="relative group cart-wrapper">
-                  <a href="/cart.html" >
+                  <a href="{% url 'view_cart' %}" >
                       <img src="{% static '/assets/images/cart-shopping.svg' %}" alt="Cart" class="h-6 w-6 group-hover:scale-120">
                   </a>
                   <!-- Cart dropdown -->
@@ -111,7 +111,7 @@
                             <p class="font-semibold">$125.00</p>
                         </div>
                       </div>
-                      <a href="/cart.html" class="block text-center mt-4 border border-primary bg-primary hover:bg-transparent text-white hover:text-primary py-2 rounded-full font-semibold">Go to Cart</a>
+                      <a href="{% url 'view_cart' %}" class="block text-center mt-4 border border-primary bg-primary hover:bg-transparent text-white hover:text-primary py-2 rounded-full font-semibold">Go to Cart</a>
                   </div>
               </div>
               <a id="search-icon" href="javascript:void(0);" class="text-white hover:text-secondary group">

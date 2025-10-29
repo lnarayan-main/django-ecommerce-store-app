@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{% block title %} {% endblock title %}</title>
+    <title>{{ APP_NAME }} | {% block title %} {% endblock title %}</title>
     <link rel="stylesheet" href="{% static 'account/css/main.css' %}">
 
     <link rel="icon" type="icon" href="{% static 'assets/images/favicon.png' %}" />
@@ -14,6 +14,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@200..800&display=swap" rel="stylesheet">
 
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css">
     <link rel="stylesheet" href="{% static 'assets/css/styles.css' %}">
     <link rel="stylesheet" href="{% static 'assets/css/vendor/swiper-bundle.css' %}">
     <link rel="stylesheet" href="{% static 'assets/css/custom.css' %}">
@@ -22,24 +23,48 @@
 
 </head>
 <body>
+    <!-- Csrf token --> 
+    <div style="display: none;">{% csrf_token %}</div>
+    <!-- Csrf token end --> 
+
     {% include 'account/components/header.html' %}
     <main class="relative">
-        <div class="relative items-center">
-            {% if messages %}
-                {% for message in messages %}
-                    <span class="{{ message.tags }} p-2">{{ message }}</span>
-                {% endfor %}
-            {% endif %}
-        </div>
-
         {% block content %} {% endblock content %}
     </main>
 
     {% include 'account/components/footer.html' %}
 
+    <script>
+        function getCsrfToken(){
+            const csrfInput = document.querySelector('input[name="csrfmiddlewaretoken"]');
+            return csrfInput ? csrfInput.value : '';
+        }
+        const CSRF_TOKEN = getCsrfToken();
+    </script>
+
+    <!-- Toastr JS -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
+
     <script src="{% static 'assets/js/vendor/swiper-bundle.js' %}"></script>
     <script src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
     <script src="{% static 'assets/js/script.js' %}"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+
+    <script>
+        {% if messages %}
+            {% for message in messages %}
+                toastr.options = {
+                    "closeButton": true,
+                    "progressBar": true,
+                    "positionClass": "toast-top-right",
+                    "timeOut": "3000"
+                };
+                toastr["{{ message.tags }}"]("{{ message }}");
+            {% endfor %}
+        {% endif %}
+    </script>
 
     {% block script %}{% endblock script %}
 

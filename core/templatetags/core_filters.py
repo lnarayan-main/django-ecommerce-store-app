@@ -20,6 +20,21 @@ def subtract(price, discount):
         # Return original price if any issue occurs
         return price or 0
     
+def currency(value):
+    """Adds a currency symbol and formats the number to two decimal places and adds comma separators."""
+    try:
+        return f"${value:,.2f}" 
+    except (ValueError, TypeError):
+        return value
+
+
+@register.filter
+def mul(value, arg):
+    try:
+        return value * arg
+    except:
+        return ''
+
 
 @register.filter
 def split_description(value, word_count=5):

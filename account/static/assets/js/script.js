@@ -203,3 +203,57 @@ document.addEventListener('DOMContentLoaded', function () {
       });
   });
 });
+
+
+document.addEventListener('DOMContentLoaded', function() {
+    document.querySelectorAll(".addToCartButton").forEach(button => {
+        button.addEventListener('click', function() {
+            let url = button.dataset.url;
+            fetch(url, {
+                method: 'POST',
+                headers: {'X-CSRFToken': CSRF_TOKEN },
+            })
+            .then(res => res.json())
+            .then(data => {
+                if (data.success) alert(data.message);
+                else alert("Error! add to cart failed.");
+            })
+            .catch(err => alert("Error! Something went wrong: " + err));
+        });
+    });
+});
+
+
+
+function confirmAction(options = {}) {
+    const {
+        title = 'Are you sure?',
+        text = 'This action cannot be undone!',
+        icon = 'warning',
+        confirmText = 'Yes, proceed!',
+        cancelText = 'Cancel',
+        confirmColor = '#3085d6',
+        cancelColor = '#d33',
+        redirectUrl = null,
+        onConfirm = null, // Optional callback
+    } = options;
+
+    Swal.fire({
+        title,
+        text,
+        icon,
+        showCancelButton: true,
+        confirmButtonColor: confirmColor,
+        cancelButtonColor: cancelColor,
+        confirmButtonText: confirmText,
+        cancelButtonText: cancelText,
+    }).then((result) => {
+        if (result.isConfirmed) {
+            if (redirectUrl) {
+                window.location.href = redirectUrl;
+            } else if (typeof onConfirm === 'function') {
+                onConfirm(); // Run callback if provided
+            }
+        }
+    });
+}
