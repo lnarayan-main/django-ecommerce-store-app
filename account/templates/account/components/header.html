@@ -82,35 +82,12 @@
                 class="bg-primary border border-primary hover:bg-transparent text-white hover:text-primary font-semibold px-4 py-2 rounded-full inline-block">Login</a>
                 {% endif %}
               <div class="relative group cart-wrapper">
-                  <a href="{% url 'view_cart' %}" >
+                  <a href="{% url 'view_cart' %}" class="flex">
                       <img src="{% static '/assets/images/cart-shopping.svg' %}" alt="Cart" class="h-6 w-6 group-hover:scale-120">
+                      {% if cart_item_count > 0 %}
+                        <span class="bg-red-600 h-4 w-4 border border-amber-700 text-white content-center justify-center text-center rounded-full"><sup>{{ cart_item_count }}</sup></span>
+                      {% endif %}
                   </a>
-                  <!-- Cart dropdown -->
-                  <div class="absolute right-0 mt-1 w-80 bg-white shadow-lg p-4 rounded hidden group-hover:block">
-                      <div class="space-y-4">
-                          <div class="flex items-center justify-between pb-4 border-b border-gray-line">
-                              <div class="flex items-center">
-                                  <img src="{% static '/assets/images/single-product/1.jpg' %}" alt="Product" class="h-12 w-12 object-cover rounded mr-2">
-                                  <div>
-                                      <p class="font-semibold">Summer black dress</p>
-                                      <p class="text-sm">Quantity: 1</p>
-                                  </div>
-                              </div>
-                              <p class="font-semibold">$25.00</p>
-                          </div>
-                          <div class="flex items-center justify-between">
-                            <div class="flex items-center">
-                                <img src="{% static '/assets/images/single-product/2.jpg' %}" alt="Product" class="h-12 w-12 object-cover rounded mr-2">
-                                <div>
-                                    <p class="font-semibold">Black suit</p>
-                                    <p class="text-sm">Quantity: 1</p>
-                                </div>
-                            </div>
-                            <p class="font-semibold">$125.00</p>
-                        </div>
-                      </div>
-                      <a href="{% url 'view_cart' %}" class="block text-center mt-4 border border-primary bg-primary hover:bg-transparent text-white hover:text-primary py-2 rounded-full font-semibold">Go to Cart</a>
-                  </div>
               </div>
               <a id="search-icon" href="javascript:void(0);" class="text-white hover:text-secondary group">
                   <img src="{% static '/assets/images/search-icon.svg' %}" alt="Search"

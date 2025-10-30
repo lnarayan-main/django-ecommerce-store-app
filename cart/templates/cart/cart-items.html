@@ -66,7 +66,7 @@
                                                     <button data-price="{{ item.product.discount_price }}" data-quantity="{{ item.quantity }}" class="cart-increment-btn border border-primary bg-primary text-white hover:bg-transparent hover:text-primary rounded-full w-10 h-10 flex items-center justify-center">+</button>
                                                 </div>
                                             </td>
-                                            <td class="total-price-td px-1 py-4 text-center">${{ item.product.discount_price | mul:item.quantity }}</td>
+                                            <td data-product-id="{{ item.product.id }}" class="total-price-td px-1 py-4 text-center">${{ item.product.discount_price | mul:item.quantity }}</td>
                                             <td class="px-1 py-2 text-center">
                                                 <button data-url="{% url 'remove_from_cart' item.product.id %}" class="remove-from-cart-btn bg-gray-800 text-black text-xl hover:bg-transparent hover:text-gray-500 rounded-full w-10 h-10"><i class="fas fa-times-circle" title="Remove from cart"></i></button>
                                             </td>
@@ -87,8 +87,8 @@
                                     <button class="bg-primary text-white border border-primary hover:bg-transparent hover:text-primary rounded-r-full py-2 px-4">Apply Coupon</button>
                                 </div>
                                 <div class="mt-4 lg:mt-0 flex space-x-2">
-                                    <button class="bg-primary text-white border border-primary hover:bg-transparent hover:text-primary rounded-full py-2 px-4">Empty Cart</button>
-                                    <button class="bg-primary text-white border border-primary hover:bg-transparent hover:text-primary rounded-full py-2 px-4">Update Cart</button>
+                                    <button id="empty-cart-btn" class="bg-primary text-white border border-primary hover:bg-transparent hover:text-primary rounded-full py-2 px-4">Empty Cart</button>
+                                    <button id="update-cart-btn" class="bg-primary text-white border border-primary hover:bg-transparent hover:text-primary rounded-full py-2 px-4">Update Cart</button>
                                 </div>
                             </div>
                         </div>
@@ -165,6 +165,39 @@ document.addEventListener('DOMContentLoaded', function () {
           calculateTotal(button);
           updateCartTotals();
       });
+  });
+
+  // update cart
+  document.getElementById("update-cart-btn").addEventListener('click', function(){
+        const cartData = [];
+        document.querySelectorAll(".total-price-td").forEach(totalPriceElement => {
+            cartData.push({
+                'product_id': totalPriceElement.dataset.productId,
+                'quantity': parseInt(totalPriceElement.closest('tr').querySelector('.quantity').textContent),
+            });
+        });
+
+        const fd = new FormData();
+        fd.append('cart_data', JSON.stringify(cartData))
+        
+        fetch("{% url 'update_cart' %}", {
+            method: 'POST',
+            headers: {
+                'X-CSRFToken': CSRF_TOKEN,
+            },
+            body: fd,
+        })
+        .then(res => res.json())
+        .then(data => {
+            if (data.success){
+                showToast('success', data.message);
+            }else{
+                showToast('error', 'Failed to update cart.');
+            }
+        })
+        .catch(err => {
+            showToast('error', "Error! Something went wrong: " + err)
+        });
   });
 });
 

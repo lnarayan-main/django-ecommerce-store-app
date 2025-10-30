@@ -1,29 +1,29 @@
 /* cart */
-document.addEventListener('DOMContentLoaded', function () {
-  const cartIcon = document.querySelector('.cart-wrapper');
-  const cartDropdown = cartIcon.querySelector('.group-hover\\:block');
+// document.addEventListener('DOMContentLoaded', function () {
+//   const cartIcon = document.querySelector('.cart-wrapper');
+//   const cartDropdown = cartIcon.querySelector('.group-hover\\:block');
 
-  cartIcon.addEventListener('mouseenter', function () {
-      clearTimeout(cartIcon.__timer);
-      cartDropdown.classList.remove('hidden');
-  });
+//   cartIcon.addEventListener('mouseenter', function () {
+//       clearTimeout(cartIcon.__timer);
+//       cartDropdown.classList.remove('hidden');
+//   });
 
-  cartIcon.addEventListener('mouseleave', function () {
-      cartIcon.__timer = setTimeout(() => {
-          cartDropdown.classList.add('hidden');
-      }, 1300);
-  });
+//   cartIcon.addEventListener('mouseleave', function () {
+//       cartIcon.__timer = setTimeout(() => {
+//           cartDropdown.classList.add('hidden');
+//       }, 1300);
+//   });
 
-  cartDropdown.addEventListener('mouseenter', function () {
-      clearTimeout(cartIcon.__timer);
-  });
+//   cartDropdown.addEventListener('mouseenter', function () {
+//       clearTimeout(cartIcon.__timer);
+//   });
 
-  cartDropdown.addEventListener('mouseleave', function () {
-      cartIcon.__timer = setTimeout(() => {
-          cartDropdown.classList.add('hidden');
-      }, 1300);
-  });
-});
+//   cartDropdown.addEventListener('mouseleave', function () {
+//       cartIcon.__timer = setTimeout(() => {
+//           cartDropdown.classList.add('hidden');
+//       }, 1300);
+//   });
+// });
 
 /* mobile menu */
 document.addEventListener("DOMContentLoaded", function () {
@@ -98,6 +98,8 @@ document.addEventListener('DOMContentLoaded', function () {
     const decreaseButton = document.getElementById('decrease');
     const increaseButton = document.getElementById('increase');
     const quantityInput = document.getElementById('quantity');
+    const productPriceElement = document.getElementById('product-price');
+    const addToCartButton = document.getElementById('add-to-cart-btn');
   
     if (decreaseButton && increaseButton && quantityInput) {
         decreaseButton.addEventListener('click', function () {
@@ -107,6 +109,9 @@ document.addEventListener('DOMContentLoaded', function () {
                 quantityInput.value = quantity;
             }
             updateButtons();
+            let productPrice = decreaseButton.dataset.price;
+            productPriceElement.textContent = '$'+(quantity * productPrice).toFixed(2);
+            addToCartButton.dataset.quantity = quantity;
         });
   
         increaseButton.addEventListener('click', function () {
@@ -114,6 +119,9 @@ document.addEventListener('DOMContentLoaded', function () {
             quantity += 1;
             quantityInput.value = quantity;
             updateButtons();
+            let productPrice = increaseButton.dataset.price;
+            productPriceElement.textContent = '$'+(quantity * productPrice).toFixed(2);
+            addToCartButton.dataset.quantity = quantity;
         });
   
         function updateButtons() {
@@ -297,4 +305,17 @@ function confirmAction({
       }
     }
   });
+}
+
+
+function showToast(type, message) {
+    toastr.options = {
+        "closeButton": true,
+        "progressBar": true,
+        "positionClass": "toast-top-right",
+        "timeOut": "3000"
+    };
+
+    // type can be: success, info, warning, error
+    toastr[type](message);
 }

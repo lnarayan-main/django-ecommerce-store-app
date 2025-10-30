@@ -147,17 +147,17 @@
                                     {% endif %}
                                 </p>
                             </div>
-                            <div class="text-2xl font-semibold mb-8">${{ product.discount_price }}</div>
+                            <div class="text-2xl font-semibold mb-8" id="product-price">${{ product.discount_price }}</div>
                             <div class="flex items-center mb-8">
-                                <button id="decrease"
+                                <button id="decrease" data-price="{{ product.discount_price }}"
                                     class="bg-primary hover:bg-transparent border border-transparent hover:border-primary text-white hover:text-primary font-semibold w-10 h-10 rounded-full flex items-center justify-center focus:outline-none"
                                     disabled>-</button>
                                 <input id="quantity" name="quality" type="number" value="1"
                                     class="w-16 py-2 text-center focus:outline-none" readonly>
-                                <button id="increase"
+                                <button id="increase" data-price="{{ product.discount_price }}"
                                     class="bg-primary hover:bg-transparent border border-transparent hover:border-primary text-white hover:text-primary font-semibold  w-10 h-10 rounded-full focus:outline-none">+</button>
                             </div>
-                            <button id="add-to-cart-btn" data-id="{{ product.id }}"
+                            <button id="add-to-cart-btn" data-id="{{ product.id }}" data-quantity="1"
                                 class="bg-primary border border-transparent hover:bg-transparent hover:border-primary text-white hover:text-primary font-semibold py-2 px-4 rounded-full">Add
                                 to Cart</button>
                         </div>
@@ -516,7 +516,7 @@
   document.addEventListener('DOMContentLoaded', ()=>{
     const addToCartBtn = document.getElementById("add-to-cart-btn");
     addToCartBtn.addEventListener('click', ()=>{
-        const quantity = document.getElementById("quantity").value;
+        const quantity = addToCartBtn.dataset.quantity;
         const productId = addToCartBtn.dataset.id;
 
         const formData = new FormData();

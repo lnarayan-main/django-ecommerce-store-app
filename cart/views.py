@@ -5,6 +5,7 @@ from seller.models import Product
 from .models import Cart, CartItem
 from core.context_processors import global_context
 from django.contrib import messages
+import json
 
 @login_required
 def add_to_cart(request, product_id):
@@ -58,3 +59,24 @@ def view_cart(request):
     }
 
     return render(request, 'cart/cart-items.html', context)
+
+
+@login_required
+def update_cart(request):
+    if request.method == 'POST':
+        form_data = request.POST.get('cart_data')
+        cart_data = json.loads(form_data)
+
+        cart, _ = Cart.objects.get_or_create(user=request.user)
+
+        for item in cart_data:
+            product = get_object_or_404(Product, id=item.get('product_id'))
+            quantity = int(item.get('quantity'))
+
+            item, _ = CartItem.objects.get_or_create(cart=cart, product=product)
+
+            item.quantity = quantity
+            item.save()
+        return JsonResponse({'success': True, 'message': 'Cart updated successfully'})
+    else:
+        return JsonResponse({'success': False, 'error': 'Invalid request method'}, status=405)
