@@ -184,25 +184,25 @@ document.addEventListener('DOMContentLoaded', function () {
 });
 
 /* cart page */
-document.addEventListener('DOMContentLoaded', function () {
-  document.querySelectorAll('.cart-increment').forEach(button => {
-      button.addEventListener('click', function () {
-          let quantityElement = this.previousElementSibling;
-          let quantity = parseInt(quantityElement.textContent, 10);
-          quantityElement.textContent = quantity + 1;
-      });
-  });
+// document.addEventListener('DOMContentLoaded', function () {
+//   document.querySelectorAll('.cart-increment').forEach(button => {
+//       button.addEventListener('click', function () {
+//           let quantityElement = this.previousElementSibling;
+//           let quantity = parseInt(quantityElement.textContent, 10);
+//           quantityElement.textContent = quantity + 1;
+//       });
+//   });
 
-  document.querySelectorAll('.cart-decrement').forEach(button => {
-      button.addEventListener('click', function () {
-          let quantityElement = this.nextElementSibling;
-          let quantity = parseInt(quantityElement.textContent, 10);
-          if (quantity > 1) {
-              quantityElement.textContent = quantity - 1;
-          }
-      });
-  });
-});
+//   document.querySelectorAll('.cart-decrement').forEach(button => {
+//       button.addEventListener('click', function () {
+//           let quantityElement = this.nextElementSibling;
+//           let quantity = parseInt(quantityElement.textContent, 10);
+//           if (quantity > 1) {
+//               quantityElement.textContent = quantity - 1;
+//           }
+//       });
+//   });
+// });
 
 
 document.addEventListener('DOMContentLoaded', function() {

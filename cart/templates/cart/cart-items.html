@@ -61,12 +61,12 @@
                                             <td class="px-1 py-4 text-center">${{ item.product.discount_price }}</td>
                                             <td class="px-1 py-4 text-center">
                                                 <div class="flex items-center justify-center">
-                                                    <button class="cart-decrement border border-primary bg-primary text-white hover:bg-transparent hover:text-primary rounded-full w-10 h-10 flex items-center justify-center">-</button>
+                                                    <button data-price="{{ item.product.discount_price }}" data-quantity="{{ item.quantity }}" class="cart-decrement-btn border border-primary bg-primary text-white hover:bg-transparent hover:text-primary rounded-full w-10 h-10 flex items-center justify-center">-</button>
                                                     <p class="quantity text-center w-8">{{ item.quantity }}</p>
-                                                    <button class="cart-increment border border-primary bg-primary text-white hover:bg-transparent hover:text-primary rounded-full w-10 h-10 flex items-center justify-center">+</button>
+                                                    <button data-price="{{ item.product.discount_price }}" data-quantity="{{ item.quantity }}" class="cart-increment-btn border border-primary bg-primary text-white hover:bg-transparent hover:text-primary rounded-full w-10 h-10 flex items-center justify-center">+</button>
                                                 </div>
                                             </td>
-                                            <td class="px-1 py-4 text-center">${{ item.product.discount_price | mul:item.quantity }}</td>
+                                            <td class="total-price-td px-1 py-4 text-center">${{ item.product.discount_price | mul:item.quantity }}</td>
                                             <td class="px-1 py-2 text-center">
                                                 <button data-url="{% url 'remove_from_cart' item.product.id %}" class="remove-from-cart-btn bg-gray-800 text-black text-xl hover:bg-transparent hover:text-gray-500 rounded-full w-10 h-10"><i class="fas fa-times-circle" title="Remove from cart"></i></button>
                                             </td>
@@ -99,19 +99,19 @@
                         <h2 class="text-lg font-semibold mb-4">Summary</h2>
                         <div class="flex justify-between mb-4">
                             <p>Subtotal</p>
-                            <p>${{ sub_total|default:0 }}</p>
+                            <p id="sub-total">${{ sub_total|default:0 }}</p>
                         </div>
                         <div class="flex justify-between mb-4">
                             <p>Taxes</p>
-                            <p>${{ taxes|default:"0" }}</p>
+                            <p id="taxes" data-tax-percent="{{ tax_percent }}">${{ taxes|default:"0" }}</p>
                         </div>
                         <div class="flex justify-between mb-4 pb-4 border-b border-gray-line">
                             <p>Shipping</p>
-                            <p>${{ shipping_charge|default:0 }}</p>
+                            <p id="shipping-charge" data-shipping="{{ shipping_charge }}">${{ shipping_charge|default:0 }}</p>
                         </div>
                         <div class="flex justify-between mb-2">
                             <p class="font-semibold">Total</p>
-                            <p class="font-semibold">${{ total|default:0 }}</p>
+                            <p id="grand-total" class="font-semibold">${{ total|default:0 }}</p>
                         </div>
                         <a href="/checkout" class="bg-primary text-white border hover:border-primary hover:bg-transparent hover:text-primary py-2 px-4 rounded-full mt-4 w-full text-center block">Proceed to checkout</a>
                     </div>
@@ -142,5 +142,74 @@
             });
         });
     });
+</script>
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+  document.querySelectorAll('.cart-increment-btn').forEach(button => {
+      button.addEventListener('click', function () {
+          let quantityElement = this.previousElementSibling;
+          let quantity = parseInt(quantityElement.textContent, 10);
+          quantityElement.textContent = quantity + 1;
+            calculateTotal(button);
+            updateCartTotals();
+      });
+  });
+
+  document.querySelectorAll('.cart-decrement-btn').forEach(button => {
+      button.addEventListener('click', function () {
+          let quantityElement = this.nextElementSibling;
+          let quantity = parseInt(quantityElement.textContent, 10);
+          if (quantity > 1) {
+              quantityElement.textContent = quantity - 1;
+          }
+          calculateTotal(button);
+          updateCartTotals();
+      });
+  });
+});
+
+function calculateTotal(button){
+    const itemPrice = button.dataset.price;
+    const quantityElement = button.closest('div').querySelector('.quantity');
+    const quantity = parseInt(quantityElement.textContent, 10);
+    const totalPrice = (quantity * itemPrice).toFixed(2);
+    button.closest('tr').querySelector('.total-price-td').textContent = `$${totalPrice}`;
+}
+
+function calculateGrandSubTotal() {
+    let grandTotal = 0;
+
+    document.querySelectorAll(".total-price-td").forEach(td => {
+        const priceString = td.textContent.replace('$', '').trim(); 
+        const itemTotal = parseFloat(priceString);
+        if (!isNaN(itemTotal)) {
+            grandTotal += itemTotal;
+        }
+    });
+
+    return grandTotal;
+}
+
+function updateCartTotals() {
+    const grandSubTotal = calculateGrandSubTotal();
+
+    const subTotalElement = document.getElementById("sub-total");
+    const taxElement = document.getElementById('taxes');
+    const shippingElement = document.getElementById('shipping-charge');
+
+    let taxPercent = parseFloat(taxElement.dataset.taxPercent);
+    const shippingCharge = parseFloat(shippingElement.dataset.shipping);
+    
+    const grandTotalElement = document.getElementById("grand-total");
+
+    let newTax = (grandSubTotal * taxPercent) / 100;
+    
+    const grandTotal = grandSubTotal + shippingCharge + newTax;
+
+    subTotalElement.textContent = `$${grandSubTotal.toFixed(2)}`;
+    taxElement.textContent = `$${newTax.toFixed(2)}`;
+    grandTotalElement.textContent = `$${grandTotal.toFixed(2)}`;
+}
+
 </script>
 {% endblock script %}

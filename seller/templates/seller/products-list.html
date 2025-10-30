@@ -3,6 +3,24 @@
 
 {% block title %}Product List{% endblock title %}
 
+{% block style %}
+<style>
+     button.swal2-confirm{
+            background: #ff0042;
+            border-radius: 50px;
+        }
+        .swal2-actions {
+            gap: 12px;
+        }
+        .swal2-cancel {
+            background: #ffffff;
+            border: 1px solid black;
+            border-radius: 50px;
+            color: black;
+        }
+</style>
+{% endblock style %}
+
 {% block seller_content %}
 <div class="w-full md:w-3/4 p-4">
     <div class="bg-white p-6 rounded-xl shadow-lg">

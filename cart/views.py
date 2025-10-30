@@ -41,9 +41,9 @@ def view_cart(request):
 
     taxes = 0
     shipping_charge = 0
+    taxes_percentage = global_context(request)['TAX_PERCENT']
+    shipping_charge = global_context(request)['SHIPPING_CHARGE']
     if sub_total:
-        taxes_percentage = global_context(request)['TAX_PERCENT']
-        shipping_charge = global_context(request)['SHIPPING_CHARGE']
         taxes = (sub_total * taxes_percentage) / 100 
     total = sub_total + taxes + shipping_charge
 
@@ -53,7 +53,8 @@ def view_cart(request):
         'sub_total': sub_total, 
         'taxes': taxes, 
         'shipping_charge': shipping_charge, 
-        'total': total
+        'total': total,
+        'tax_percent': taxes_percentage
     }
 
     return render(request, 'cart/cart-items.html', context)
