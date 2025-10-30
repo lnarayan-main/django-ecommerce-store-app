@@ -46,6 +46,8 @@ def products_by_category(request, category_id):
     products = products.order_by(sort_mapping[sort_by])
 
     categories = Category.objects.filter(parent=None).order_by('pk').prefetch_related('subcategories')
+
+    current_category = get_object_or_404(Category, pk=category_id)
    
     sibling_categories = get_sibling_categories(category_id)
 
@@ -57,6 +59,7 @@ def products_by_category(request, category_id):
         'products': page_obj,
         'categories': categories,
         'sibling_categories': sibling_categories,
+        'current_category': current_category,
     }
 
     return render(request, 'core/product-filters.html', contenxt)

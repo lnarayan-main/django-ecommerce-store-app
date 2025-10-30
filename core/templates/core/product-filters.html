@@ -171,7 +171,7 @@
 
                                     <div class="flex items-center mb-4">
                                         <span class="text-lg font-bold text-primary">
-                                            ${{ product.price|subtract:product.discount_price }}
+                                            ${{ product.discount_price|default:product.price }}
                                         </span>
                                         {% if product.discount_price %}
                                             <span class="text-sm line-through ml-2">${{ product.price }}</span>
@@ -236,18 +236,9 @@
     <section id="shop-category-description" class="py-8">
         <div class="container mx-auto">
             <div class="bg-white p-6 rounded-lg shadow-lg">
-                <h2 class="text-2xl font-bold mb-4">Shirts Category</h2>
+                <h2 class="text-2xl font-bold mb-4">{{ current_category.name }}</h2>
                 <p class="mb-4">
-                    Discover our wide range of shirts, perfect for any occasion. Whether you're looking for something
-                    casual
-                    or formal, we have the perfect shirt for you. Our collection includes a variety of styles, colors,
-                    and
-                    sizes to suit everyone's taste.
-                </p>
-                <p>
-                    Browse through our selection and find your new favorite shirt today. All our shirts are made from
-                    high-quality materials and are designed to provide both comfort and style. Shop now and elevate your
-                    wardrobe with our premium shirts.
+                    {{ current_category.description|default:'N/A' }}
                 </p>
             </div>
         </div>
