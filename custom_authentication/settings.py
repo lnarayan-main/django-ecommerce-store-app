@@ -145,13 +145,15 @@ AUTH_USER_MODEL = 'account.User'
 SITE_DOMAIN = 'http://127.0.0.1:8000/'
 
 SITE_NAME = "Mini eCommerce Store"
-FROM_EMAIL = 'aryananya.ln@gmail.com'
+# FROM_EMAIL = 'aryananya.ln@gmail.com'
+FROM_EMAIL = 'noreply@example.com'
 
 
 # SMTP Details
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = "smtp.gmail.com"
-EMAIL_HOST_USER = 'aryananya.ln@gmail.com' 
+# EMAIL_HOST_USER = 'aryananya.ln@gmail.com' 
+EMAIL_HOST_USER = 'noreply@example.com' 
 EMAIL_HOST_PASSWORD = "ffkt ubzl qwwn mgzy" 
 EMAIL_PORT = '587'
 EMAIL_USE_TLS = True

@@ -33,7 +33,7 @@
                 </a>
                 
                 
-                <a href="{% url 'products_list' %}" class="nav-link flex items-center p-3 rounded-lg font-medium transition duration-150 {% is_active_nav 'products_list' 'product_create' %} {% if not 'active' in class %}text-gray-700 hover:bg-gray-100{% endif %}" data-icon="Package">
+                <a href="{% url 'products_list' %}" class="nav-link flex items-center p-3 rounded-lg font-medium transition duration-150 {% is_active_nav 'products_list' 'product_create' 'product_edit' %} {% if not 'active' in class %}text-gray-700 hover:bg-gray-100{% endif %}" data-icon="Package">
                     <span data-lucide="Package" class="w-5 h-5 mr-3"></span>
                     Products List
                 </a>

@@ -29,6 +29,21 @@
 
     {% include 'account/components/header.html' %}
     <main class="relative">
+
+         <!-- Flash Messages -->
+        {% comment %} {% if messages %}
+            <div class="mb-4">
+                {% for message in messages %}
+                    <div class="p-3 rounded-lg text-white 
+                        {% if message.tags == 'success' %} bg-green-600 
+                        {% elif message.tags == 'error' %} bg-red-600 
+                        {% else %} bg-gray-600 {% endif %}">
+                        {{ message }}
+                    </div>
+                {% endfor %}
+            </div>
+        {% endif %} {% endcomment %}
+
         {% block content %} {% endblock content %}
     </main>
 

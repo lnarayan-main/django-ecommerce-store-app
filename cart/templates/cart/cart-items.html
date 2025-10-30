@@ -113,7 +113,7 @@
                             <p class="font-semibold">Total</p>
                             <p id="grand-total" class="font-semibold">${{ total|default:0 }}</p>
                         </div>
-                        <a href="/checkout" class="bg-primary text-white border hover:border-primary hover:bg-transparent hover:text-primary py-2 px-4 rounded-full mt-4 w-full text-center block">Proceed to checkout</a>
+                        <a href="{% url 'checkout' %}" class="bg-primary text-white border hover:border-primary hover:bg-transparent hover:text-primary py-2 px-4 rounded-full mt-4 w-full text-center block">Proceed to checkout</a>
                     </div>
                 </div>
             </div>

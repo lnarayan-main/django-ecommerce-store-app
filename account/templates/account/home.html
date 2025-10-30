@@ -87,9 +87,10 @@ Home Page
             <div class="flex flex-wrap -mx-4">
                 <!-- Product 1 -->
                 {% if products %}
+              <div class="swiper">
+                <div class="swiper-wrapper">
                   {% for product in products %}
-
-                  <div class="w-full sm:w-1/2 lg:w-1/4 px-4 mb-8">
+                  <div class="swiper-slide w-full sm:w-1/2 lg:w-1/4 px-4 mb-8">
                     <div class="bg-white rounded-lg shadow-lg flex flex-col h-full overflow-hidden">
                       <!-- image box -->
                         <a href="{% url 'product_detail' product.id %}" class="block ratio-4-3 rounded-t-lg overflow-hidden" title="{{ product.name }}">
@@ -117,11 +118,14 @@ Home Page
                       </div>
                     </div>
                   </div>
-
                   {% endfor %}
-                {% endif %}
-               
+                  {% endif %}
+                </div>
+                  <div class="swiper-button-prev"></div>
+                  <div class="swiper-button-next"></div>
               </div>
+               
+            </div>
         </div>
     </section>
 
@@ -166,7 +170,7 @@ Home Page
           <div class="text-center mb-12 lg:mb-20">
             <h2 class="text-5xl font-bold mb-4">Discover <span class="text-primary">Our Brands</span></h2>
             <p class="my-7">Explore the top brands we feature in our store</p>
-        </div>
+          </div>
             <div class="swiper brands-swiper-slider">
                 <div class="swiper-wrapper">
                     <!-- Brand Logo 1 -->
@@ -207,6 +211,7 @@ Home Page
                 <div class="swiper-button-prev"></div>
                 <div class="swiper-button-next"></div>
             </div>
+        </div>
     </section>
 
     <!-- Banner section -->

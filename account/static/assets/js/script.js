@@ -49,7 +49,7 @@ if (typeof Swiper !== 'undefined') {
     },
     breakpoints: {
         1024: {
-            slidesPerView: 6,
+            slidesPerView: 5,
         },
     },
   });

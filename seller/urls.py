@@ -1,15 +1,18 @@
 from django.urls import path, include
-from seller.views import dashboard, seller_order_history, seller_wish_lists, seller_addresses, seller_account_settings, password_change_view, products_list, create_product, product_edit, product_delete
+from . import views
 
 urlpatterns = [
-    path('dashboard/', dashboard, name='seller_dashboard'),
-    path('order-history/', seller_order_history, name='seller_order_history'),
-    path('wish-lists/', seller_wish_lists, name='seller_wish_lists'),
-    path('addresses/', seller_addresses, name='seller_addresses'),
-    path('account-settings/', seller_account_settings, name='seller_account_settings'),
-    path('password-change/', password_change_view, name='seller_password_change'),
-    path('create-product/', create_product, name='product_create'),
-    path('edit-product/<int:product_id>/:', product_edit, name='product_edit'),
-    path('delete-product/<int:product_id>/', product_delete, name='product_delete'),
-    path('products-list/', products_list, name='products_list'),
+    path('dashboard/', views.dashboard, name='seller_dashboard'),
+    path('order-history/', views.seller_order_history, name='seller_order_history'),
+    path('wish-lists/', views.seller_wish_lists, name='seller_wish_lists'),
+    path('addresses/', views.seller_addresses, name='seller_addresses'),
+    path('addresses/<int:address_id>/', views.seller_addresses, name='seller_addresse_edit'),
+    path('delete-address/<int:address_id>/', views.delete_address, name='delete_address'),
+    path('account-settings/', views.seller_account_settings, name='seller_account_settings'),
+    path('password-change/', views.password_change_view, name='seller_password_change'),
+    path('create-product/', views.create_product, name='product_create'),
+    path('edit-product/<int:product_id>/', views.product_edit, name='product_edit'),
+    path('products/<int:image_id>/delete-image/', views.delete_product_image, name='delete_product_image'),
+    path('delete-product/<int:product_id>/', views.product_delete, name='product_delete'),
+    path('products-list/', views.products_list, name='products_list'),
 ]

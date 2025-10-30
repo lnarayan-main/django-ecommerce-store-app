@@ -80,3 +80,7 @@ def update_cart(request):
         return JsonResponse({'success': True, 'message': 'Cart updated successfully'})
     else:
         return JsonResponse({'success': False, 'error': 'Invalid request method'}, status=405)
+    
+@login_required
+def checkout(request):
+    return render(request, 'cart/checkout.html')
