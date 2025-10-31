@@ -38,6 +38,7 @@ class ProductForm(forms.ModelForm):
             'category',
             'description',
             'price',
+            'discount_price',
             'stock',
             'sku',
             'is_active',
@@ -61,6 +62,10 @@ class ProductForm(forms.ModelForm):
                 'placeholder': 'Write a short description about the product...'
             }),
             'price': forms.NumberInput(attrs={
+                'class': 'w-full border rounded-md p-2 focus:ring-2 focus:ring-primary focus:outline-none',
+                'min': '0'
+            }),
+            'discount_price': forms.NumberInput(attrs={
                 'class': 'w-full border rounded-md p-2 focus:ring-2 focus:ring-primary focus:outline-none',
                 'min': '0'
             }),

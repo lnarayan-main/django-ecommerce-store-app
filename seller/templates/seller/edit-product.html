@@ -59,6 +59,14 @@
                 </div>
 
                 <div>
+                    <label class="block text-gray-700 font-medium mb-2">Discount Price</label>
+                    {{ form.discount_price }}
+                    {% if form.discount_price.errors %}
+                        <p class="text-sm text-red-600 mt-1">{{ form.discount_price.errors|join:", " }}</p>
+                    {% endif %}
+                </div>
+
+                <div>
                     <label class="block text-gray-700 font-medium mb-2">Stock</label>
                     {{ form.stock }}
                     {% if form.stock.errors %}

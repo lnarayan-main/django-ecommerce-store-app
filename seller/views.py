@@ -91,23 +91,23 @@ def create_product(request):
 
                     images = request.FILES.getlist('image')
                     if not images:
-                        messages.warning(request, "⚠️ No images uploaded for this product.")
+                        messages.warning(request, "No images uploaded for this product.")
                     else:
                         for img in images:
                             ProductImage.objects.create(product=product, image=img)
 
-                    messages.success(request, '✅ Product created successfully!')
+                    messages.success(request, 'Product created successfully!')
                     return redirect('products_list')
 
             else:
                 # Collect all validation errors for debugging
                 form_errors = form.errors.as_json()
                 image_errors = image_form.errors.as_json()
-                messages.error(request, f"❌ Validation failed! {form_errors} {image_errors}")
+                messages.error(request, f"Validation failed! {form_errors} {image_errors}")
 
         except Exception as e:
             # Specific error details for debugging
-            messages.error(request, f"🚨 Unexpected Error: {type(e).__name__} — {e}")
+            messages.error(request, f"Unexpected Error: {type(e).__name__} — {e}")
 
     else:
         form = ProductForm()
@@ -141,13 +141,13 @@ def product_edit(request, product_id):
                         for img in new_images:
                             ProductImage.objects.create(product=product, image=img)
 
-                    messages.success(request, "✅ Product updated successfully!")
+                    messages.success(request, "Product updated successfully!")
                     return redirect('products_list')
             else:
-                messages.error(request, "❌ Validation failed. Please correct the errors and try again.")
+                messages.error(request, "Validation failed. Please correct the errors and try again.")
 
         except Exception as e:
-            messages.error(request, f"🚨 Unexpected Error: {type(e).__name__} — {e}")
+            messages.error(request, f"Unexpected Error: {type(e).__name__} — {e}")
 
     else:
         form = ProductForm(instance=product)
@@ -200,7 +200,7 @@ def seller_addresses(request, address_id=None):
             address = form.save(commit=False)
             address.user = request.user
             address.save()
-            messages.success(request, '✅ Address saved successfully!')
+            messages.success(request, 'Address saved successfully!')
             return redirect('seller_addresses')
     else:
         if address_id is not None:
