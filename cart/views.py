@@ -1,4 +1,6 @@
+import stripe
 from django.shortcuts import get_object_or_404, render, redirect
+from django.urls import reverse
 from django.http import JsonResponse
 from django.contrib.auth.decorators import login_required
 from seller.models import Product
@@ -6,8 +8,12 @@ from .models import Cart, CartItem
 from core.context_processors import global_context
 from django.contrib import messages
 import json
-from core.models import Address
+from core.models import Address, Order, OrderItem, Payment
 from core.forms import AddressForm
+from django.conf import settings
+from django.db import transaction
+
+stripe.api_key = settings.STRIPE_SECRET_KEY
 
 @login_required
 def add_to_cart(request, product_id):
@@ -116,12 +122,15 @@ def checkout(request):
     cart = get_object_or_404(Cart, user=request.user)
     sub_total = cart.total_price()
     shipping_charge = global_context(request)['SHIPPING_CHARGE']
-    total = sub_total + shipping_charge
+    taxes_percentage = global_context(request)['TAX_PERCENT']
+    taxes = sub_total * taxes_percentage/100
+    total = sub_total + shipping_charge + taxes
 
     context = {
         'address_form': form,
         'address_id': address.id,
         'sub_total' : sub_total,
+        'taxes': taxes,
         'shipping_charge': shipping_charge,
         'total': total,
     }
@@ -129,4 +138,152 @@ def checkout(request):
 
 @login_required
 def payment_process(request):
-    pass
+    address_id = request.POST.get('address_id')
+    is_different_address = request.POST.get('is_different_address')
+
+    if is_different_address or not address_id:
+        form = AddressForm(request.POST)
+        if form.is_valid():
+            address = form.save(commit=False)
+            address.user = request.user
+            address.save()
+    else:
+        address = Address.objects.filter(id=address_id, user=request.user).first()
+        form = AddressForm(request.POST, instance=address)
+        if form.is_valid():
+            form.save()
+
+    cart = Cart.objects.filter(user=request.user).first()
+    if not cart or not cart.items.exists():
+        messages.warning(request, "Your cart is empty.")
+        return redirect('view_cart')
+    sub_total = cart.total_price()
+    shipping_charge = global_context(request)['SHIPPING_CHARGE']
+    taxes_percentage = global_context(request)['TAX_PERCENT']
+    taxes = sub_total * taxes_percentage/100
+
+    total_amount = sub_total + shipping_charge + taxes
+    total_in_cents = int(total_amount * 100)
+
+    context = {
+        'stripe_public_key': settings.STRIPE_PUBLIC_KEY,
+        'total_amount': total_amount,
+        'total_in_cents': total_in_cents,
+        'address': address,
+    }
+
+    return render(request, 'cart/payment.html', context)
+
+
+@login_required
+def create_checkout_session(request):
+    if request.method != 'POST':
+        return JsonResponse({'error': 'Invalid request method.'}, status=400)
+    
+    try:
+        print("##################3", request.POST)
+        cart = Cart.objects.filter(user=request.user).first()
+        if not cart or not cart.items.exists():
+            messages.warning(request, "Your cart is empty.")
+            return redirect('view_cart')
+
+        # Get selected address
+        address_id = request.POST.get('address_id')
+        address = None
+        if address_id:
+            address = Address.objects.filter(id=address_id, user=request.user).first()
+
+        sub_total = cart.total_price()
+        shipping_charge = global_context(request)['SHIPPING_CHARGE']
+        taxes_percentage = global_context(request)['TAX_PERCENT']
+        taxes = sub_total * taxes_percentage/100
+
+        total_amount = sub_total + shipping_charge + taxes
+        total_in_cents = int(total_amount * 100)
+
+
+
+        with transaction.atomic():
+            order = Order.objects.create(
+                user=request.user,
+                address=address,
+                total_amount=total_amount,
+            )
+
+            for item in cart.items.all():
+                OrderItem.objects.create(
+                    order=order,
+                    product=item.product,
+                    quantity=item.quantity,
+                    price=item.product.discount_price
+                )
+
+        
+        session = stripe.checkout.Session.create(
+            payment_method_types=['card'],
+            line_items=[{
+                'price_data': {
+                    'currency': 'usd',
+                    'product_data': {'name': f'Order #{order.id}'},
+                    'unit_amount': total_in_cents,
+                },
+                'quantity': 1,
+            }],
+            mode='payment',
+            success_url=request.build_absolute_uri(reverse('payment_success')) + f"?order_id={order.id}",
+            cancel_url=request.build_absolute_uri(reverse('payment_cancel')) + f"?order_id={order.id}",
+        )
+
+        Payment.objects.create(
+            order=order,
+            user=request.user,
+            amount=total_amount,
+            stripe_payment_intent=session.payment_intent,
+        )
+
+        return JsonResponse({'success': True, 'url': session.url, 'message': 'Payment created successfully.'})
+
+    except Address.DoesNotExist:
+        return JsonResponse({'success': False,'message': 'Invalid address selected.'}, status=400)
+
+    except Exception as e:
+        print("Stripe error:", str(e))
+        return JsonResponse({'success': False,'message': str(e)}, status=500)
+    
+
+
+def payment_success(request):
+    order_id = request.GET.get('order_id')
+    order = Order.objects.filter(id=order_id, user=request.user).first()
+
+    if order:
+        payment = Payment.objects.filter(order=order).first()
+        if payment:
+            payment.status = 'completed'
+            payment.save()
+
+        order.payment_status = 'paid'
+        order.save()
+
+        cart = Cart.objects.filter(user=request.user).first()
+        cart.items.all().delete()
+
+        messages.success(request, "Payment successful! Your order has been placed.")
+    else:
+        messages.warning(request, "Order not found or invalid.")
+
+    return render(request, 'cart/payment_success.html', {'order': order})
+
+
+def payment_cancel(request):
+    order_id = request.GET.get('order_id')
+    order = Order.objects.filter(id=order_id, user=request.user).first()
+
+    if order:
+        order.payment_status = 'cancelled'
+        order.save()
+        Payment.objects.filter(order=order).update(status='failed')
+
+    messages.error(request, "Payment cancelled.")
+    return render(request, 'cart/payment_cancel.html', {'order': order})
+

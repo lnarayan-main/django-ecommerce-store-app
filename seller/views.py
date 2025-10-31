@@ -10,7 +10,7 @@ from seller.forms import ProductForm, ProductImageForm
 from django.db import transaction
 import os
 from core.forms import AddressForm
-from core.models import Address
+from core.models import Address, Order
 
 @login_and_role_required("seller")
 def dashboard(request):
@@ -19,7 +19,8 @@ def dashboard(request):
 
 @login_and_role_required("seller")
 def seller_order_history(request):
-    return render(request, 'seller/order-history.html')
+    orders = Order.objects.filter(user=request.user).prefetch_related('items__product', 'payment')
+    return render(request, 'seller/order-history.html', {'orders': orders})
 
 
 @login_and_role_required("seller")

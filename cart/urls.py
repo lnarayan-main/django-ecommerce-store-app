@@ -9,4 +9,7 @@ urlpatterns = [
     path('update-cart/', views.update_cart, name='update_cart'),
     path('checkout/', views.checkout, name='checkout'),
     path('payment-process/', views.payment_process, name='payment_process'),
+    path('create-checkout-session/', views.create_checkout_session, name='create_checkout_session'),
+    path('payment/success/', views.payment_success, name='payment_success'),
+    path('payment/cancel/', views.payment_cancel, name='payment_cancel'),
 ]

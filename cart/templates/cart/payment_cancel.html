@@ -1,0 +1,28 @@
+{% extends 'account/base.html' %}
+{% load static %}
+
+{% block title %}Payment Cancelled{% endblock %}
+
+{% block content %}
+<section class="min-h-[80vh] flex items-center justify-center bg-gray-50">
+  <div class="bg-white shadow-lg rounded-2xl p-10 max-w-lg text-center">
+    <img src="{% static 'images/payment-failed.svg' %}" alt="Cancelled" class="mx-auto w-24 mb-6">
+    <h1 class="text-3xl font-bold text-red-600 mb-3">Payment Cancelled</h1>
+    <p class="text-gray-700 mb-6">
+      Your payment has been cancelled. No charges have been made to your account.
+    </p>
+
+    {% if order %}
+    <div class="bg-gray-100 rounded-lg p-4 mb-6 text-left">
+      <p><strong>Order ID:</strong> #{{ order.id }}</p>
+      <p><strong>Status:</strong> {{ order.payment_status|title }}</p>
+    </div>
+    {% endif %}
+
+    <a href="{% url 'view_cart' %}" 
+       class="inline-block bg-gray-800 text-white font-semibold py-3 px-6 rounded-full hover:bg-transparent hover:text-gray-800 border border-gray-800 transition">
+       Return to Cart
+    </a>
+  </div>
+</section>
+{% endblock %}

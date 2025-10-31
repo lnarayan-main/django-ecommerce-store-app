@@ -13,14 +13,14 @@
                 <!-- Billing and Shipping Details -->
                 <div class="md:w-2/3 bg-white rounded-lg shadow-md p-4">
                     <h2 class="text-xl font-semibold mb-4">Billing Details</h2>
-                    <form method="POST" class="space-y-8" action="{% url 'payment_process' %}">
+                    <form method="POST" class="space-y-8" action="{% url 'payment_process' %}" id="address-form">
                         {% csrf_token %}
                         <input type="hidden" name="address_id" value="{{ address_id }}">
                         {{ address_form }}
                        
                         <div class="mb-4">
                             <label class="mb-4">Ship to a different address?</label>
-                            <input type="checkbox" id="different-address" class="mr-2">
+                            <input type="checkbox" id="different-address" name="is_different_address" class="mr-2">
                             <label for="different-address" class="text-gray-700">Yes</label>
                         </div>
                     </form>
@@ -33,6 +33,10 @@
                         <p>${{ sub_total }}</p>
                     </div>
                     <div class="flex justify-between mb-4">
+                        <p>Tax</p>
+                        <p>${{ taxes }}</p>
+                    </div>
+                    <div class="flex justify-between mb-4">
                         <p>Shipping</p>
                         <p>${{ shipping_charge }}</p>
                     </div>
@@ -40,7 +44,7 @@
                         <p class="font-semibold">Total</p>
                         <p class="font-semibold">${{ total }}</p>
                     </div>
-                    <button class="bg-primary text-white border border-primary hover:bg-transparent hover:text-primary py-2 px-4 rounded-full w-full">Proceed to Payment</button>
+                    <button type="submit" form="address-form" class="bg-primary text-white border border-primary hover:bg-transparent hover:text-primary py-2 px-4 rounded-full w-full">Proceed to Payment</button>
                 </div>
             </div>
         </div>

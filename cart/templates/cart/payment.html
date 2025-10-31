@@ -1,0 +1,89 @@
+{% extends 'account/base.html' %}
+{% load static %}
+
+{% block title %}Payment{% endblock %}
+
+{% block content %}
+<section class="bg-gray-50 py-16">
+    <div class="container mx-auto px-4">
+        <div class="max-w-lg mx-auto bg-white rounded-2xl shadow-lg p-8 text-center">
+            <h1 class="text-2xl font-semibold text-gray-900 mb-4">Confirm & Proceed to Payment</h1>
+            <p class="text-gray-600 mb-6">
+                Please confirm your payment for the total amount below.
+            </p>
+
+            <!-- Order Summary -->
+            <div class="bg-gray-100 rounded-lg p-4 mb-6">
+                <div class="flex justify-between text-gray-800 text-lg font-medium">
+                    <span>Total Amount</span>
+                    <span>${{ total_amount }}</span>
+                </div>
+                {% if address %}
+                <div class="text-left mt-4 text-gray-700 text-sm">
+                    <p class="font-semibold text-gray-800 mb-1">Shipping Address:</p>
+                    <p>{{ address.address_line_1 }}, {{ address.address_line_2 }}, {{ address.city }}, {{ address.state }}</p>
+                    <p>{{ address.country }} - {{ address.zip_code }}</p>
+                    <p>Phone: {{ address.phone_number }}</p>
+                </div>
+                {% endif %}
+            </div>
+
+            <!-- Stripe Payment Button -->
+            <form method="POST" id="payment-form" class="mt-4">
+                {% csrf_token %}
+                <input type="hidden" name="address_id" value="{{ address.id }}">
+                <button type="button" id="checkout-button"
+                    class="w-full bg-primary text-white font-semibold py-3 rounded-full hover:bg-transparent hover:text-primary border border-primary transition duration-300">
+                    Pay with Stripe
+                </button>
+            </form>
+
+            <!-- Cancel -->
+            <a href="{% url 'view_cart' %}" class="block text-gray-600 text-sm mt-4 hover:text-gray-800">
+                ← Back to Cart
+            </a>
+        </div>
+    </div>
+</section>
+{% endblock %}
+
+{% block script %}
+
+<script src="https://js.stripe.com/v3/"></script>
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    const stripe = Stripe('{{ stripe_public_key }}');
+    const checkoutButton = document.getElementById('checkout-button');
+
+    checkoutButton.addEventListener('click', function () {
+        fetch("{% url 'create_checkout_session' %}", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "X-CSRFToken": "{{ csrf_token }}"
+            },
+            body: JSON.stringify({
+                address_id: "{{ address.id }}"
+            })
+        })
+        .then(response => {
+            if (response.redirected) {
+                window.location.href = response.url;
+            } else {
+                return response.json();
+            }
+        })
+        .then(data => {
+            if (data && data.url) {
+                window.location.href = data.url;
+            }
+        })
+        .catch(error => {
+            console.error("Stripe Error:", error);
+            toastr.error("Payment initialization failed. Please try again.");
+        });
+    });
+});
+</script>
+
+{% endblock script %}

@@ -1,5 +1,7 @@
 from django.db import models
 from account.models import User
+from seller.models import Product
+from django.utils import timezone
 
 def category_pic_upload_path(instance, filename):
     return f"category_pics/category_{instance.id}/{filename}"
@@ -72,3 +74,49 @@ class Address(models.Model):
             Address.objects.filter(user=self.user, is_default=True).update(is_default=False)
         super().save(*args, **kwargs)
 
+
+class Order(models.Model):
+    PAYMENT_STATUS_CHOICES = [
+        ('pending', 'Pending'),
+        ('paid', 'Paid'),
+        ('cancelled', 'Cancelled'),
+    ]
+
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='orders')
+    address = models.ForeignKey(Address, on_delete=models.SET_NULL, null=True, blank=True)
+    total_amount = models.DecimalField(max_digits=10, decimal_places=2)
+    payment_status = models.CharField(max_length=20, choices=PAYMENT_STATUS_CHOICES, default='pending')
+    created_at = models.DateTimeField(default=timezone.now)
+
+    def __str__(self):
+        return f"Order #{self.id} - {self.user.username}"
+
+
+class Payment(models.Model):
+    PAYMENT_STATUS_CHOICES = [
+        ('pending', 'Pending'),
+        ('completed', 'Completed'),
+        ('failed', 'Failed'),
+        ('cancelled', 'Cancelled'),
+    ]
+
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='payments')
+    order = models.OneToOneField(Order, on_delete=models.CASCADE, related_name='payment') 
+    stripe_payment_intent = models.CharField(max_length=255, blank=True, null=True)
+    amount = models.DecimalField(max_digits=10, decimal_places=2)
+    status = models.CharField(max_length=20, choices=PAYMENT_STATUS_CHOICES, default='pending')
+    created_at = models.DateTimeField(default=timezone.now)
+
+    def __str__(self):
+        return f"Payment #{self.id} | {self.user.username} | {self.status} | ${self.amount}"
+
+
+
+class OrderItem(models.Model):
+    order = models.ForeignKey(Order, on_delete=models.CASCADE, related_name='items')
+    product = models.ForeignKey(Product, on_delete=models.CASCADE)
+    quantity = models.PositiveIntegerField()
+    price = models.DecimalField(max_digits=10, decimal_places=2)
+
+    def get_subtotal(self):
+        return self.price * self.quantity

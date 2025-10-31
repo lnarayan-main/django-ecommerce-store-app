@@ -1,6 +1,6 @@
 from django.shortcuts import render, get_object_or_404
 from seller.models import Product
-from core.models import Category
+from core.models import Category, Order
 from django.core.paginator import Paginator
 from core.utils import get_sibling_categories
 from django.contrib.auth.decorators import login_required
@@ -63,5 +63,6 @@ def products_by_category(request, category_id):
     }
 
     return render(request, 'core/product-filters.html', contenxt)
+
 
 

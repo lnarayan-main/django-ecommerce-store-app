@@ -1,0 +1,29 @@
+{% extends 'account/base.html' %}
+
+{% load static %}
+
+{% block title %}Payment Successful{% endblock %}
+
+{% block content %}
+<section class="min-h-[80vh] flex items-center justify-center bg-gray-50 mt-5 py-4 mb-8">
+  <div class="bg-white shadow-lg rounded-2xl p-10 max-w-lg text-center py-5 my-5">
+    <h1 class="text-3xl font-bold text-green-600 mb-3"><i class="fa-solid fa-circle-check" class="mx-auto w-24 mb-6"></i> Payment Successful!</h1>
+    <p class="text-gray-700 mb-6">
+      Thank you for your purchase. Your payment has been confirmed and your order is being processed.
+    </p>
+
+    {% if order %}
+    <div class="bg-gray-100 rounded-lg p-4 mb-6 text-left">
+      <p><strong>Order ID:</strong> #{{ order.id }}</p>
+      <p><strong>Total:</strong> ${{ order.total_amount }}</p>
+      <p><strong>Status:</strong> {{ order.payment_status|title }}</p>
+    </div>
+    {% endif %}
+
+    <a href="{% url 'seller_order_history' %}" 
+       class="inline-block bg-primary text-white font-semibold py-3 px-6 rounded-full hover:bg-transparent hover:text-primary border border-primary transition mb-5">
+       View My Orders
+    </a>
+  </div>
+</section>
+{% endblock %}

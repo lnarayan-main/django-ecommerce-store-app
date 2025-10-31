@@ -1,0 +1,89 @@
+{% extends 'account/base.html' %}
+{% load static %}
+
+{% block title %}My Orders{% endblock %}
+
+{% block content %}
+<section class="bg-gray-50 py-16 min-h-screen">
+  <div class="container mx-auto px-4">
+    <h1 class="text-3xl font-semibold text-gray-800 mb-8 text-center">
+      My Orders
+    </h1>
+
+    {% if orders %}
+      <div class="space-y-6">
+        {% for order in orders %}
+          <div class="bg-white rounded-2xl shadow-md p-6 transition hover:shadow-lg">
+            <!-- Header -->
+            <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-4">
+              <div>
+                <h2 class="text-xl font-semibold text-gray-800">
+                  Order #{{ order.id }}
+                </h2>
+                <p class="text-gray-500 text-sm">
+                  Placed on {{ order.created_at|date:"M d, Y - h:i A" }}
+                </p>
+              </div>
+              <div class="mt-3 md:mt-0">
+                <span class="inline-block px-3 py-1 text-sm font-medium rounded-full 
+                  {% if order.payment_status == 'paid' %}
+                    bg-green-100 text-green-700
+                  {% elif order.payment_status == 'pending' %}
+                    bg-yellow-100 text-yellow-700
+                  {% else %}
+                    bg-red-100 text-red-700
+                  {% endif %}
+                ">
+                  {{ order.payment_status|capfirst }}
+                </span>
+              </div>
+            </div>
+
+            <!-- Items -->
+            <div class="divide-y divide-gray-200 mb-4">
+              {% for item in order.items.all %}
+                <div class="flex justify-between py-3">
+                  <div class="flex items-center gap-4">
+                    {% if item.product.image %}
+                      <img src="{{ item.product.image.url }}" alt="{{ item.product.name }}"
+                           class="w-16 h-16 rounded-lg object-cover border" />
+                    {% endif %}
+                    <div>
+                      <p class="font-medium text-gray-800">{{ item.product.name }}</p>
+                      <p class="text-gray-500 text-sm">Qty: {{ item.quantity }}</p>
+                    </div>
+                  </div>
+                  <p class="font-semibold text-gray-800">${{ item.price }}</p>
+                </div>
+              {% endfor %}
+            </div>
+
+            <!-- Order Footer -->
+            <div class="flex justify-between items-center border-t pt-4">
+              <p class="text-gray-600">
+                <span class="font-medium">Total:</span> ${{ order.total_amount }}
+              </p>
+              {% if order.payment %}
+                <p class="text-sm text-gray-500">
+                  Payment: <span class="font-medium">{{ order.payment.status|capfirst }}</span>
+                </p>
+              {% endif %}
+            </div>
+          </div>
+        {% endfor %}
+      </div>
+    {% else %}
+      <div class="text-center py-20 bg-white rounded-2xl shadow-md">
+        <img src="{% static 'images/empty-orders.svg' %}" alt="No orders"
+             class="mx-auto w-40 mb-6 opacity-80" />
+        <h2 class="text-gray-700 text-xl font-medium mb-2">No orders yet</h2>
+        <p class="text-gray-500 mb-6">Looks like you haven’t placed any orders yet.</p>
+        <a href="{% url 'products_list' %}"
+           class="inline-block bg-primary text-white px-6 py-3 rounded-full font-medium hover:bg-transparent hover:text-primary border border-primary transition duration-300">
+           Start Shopping
+        </a>
+      </div>
+    {% endif %}
+  </div>
+</section>
+{% endblock %}
