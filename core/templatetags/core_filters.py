@@ -51,3 +51,14 @@ def split_description(value, word_count=5):
     first_line = ' '.join(words[:word_count])
     second_line = ' '.join(words[word_count:])
     return f"{first_line}<br>{second_line}"
+
+
+@register.filter
+def break_after_words(value, count):
+    """Inserts a <br> after the specified number of words."""
+    words = str(value).split()
+    if len(words) > count:
+        first_line = " ".join(words[:count])
+        second_line = " ".join(words[count:])
+        return f"{first_line}<br>{second_line}"
+    return value

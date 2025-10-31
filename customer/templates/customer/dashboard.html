@@ -99,11 +99,11 @@
                 if (!file) return;
 
                 if (!ALLOWED.includes(file.type)) {
-                alert("Only JPG and PNG allowed.");
+                showToast('warning', "Only JPG and PNG allowed.");
                 return;
                 }
                 if (file.size > MAX_SIZE) {
-                alert("Max image size is 2MB.");
+                showToast('warning', "Max image size is 2MB.");
                 return;
                 }
 
@@ -122,10 +122,10 @@
                 })
                 .then(res => res.json())
                 .then(data => {
-                if (data.success) alert(data.message);
-                else alert("Error! " + (data.errors?.profile_pic?.[0] || "Upload failed"));
+                if (data.success) showToast('success', data.message);
+                else showToast('error', "Error! " + (data.errors?.profile_pic?.[0] || "Upload failed"));
                 })
-                .catch(err => alert("Error! Something went wrong: " + err));
+                .catch(err => showToast('error', "Error! Something went wrong: " + err));
             });
         });
 

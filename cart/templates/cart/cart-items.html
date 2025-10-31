@@ -55,7 +55,7 @@
                                                         {% else %}
                                                         <img class="h-16 w-16 md:h-24 md:w-24 sm:mr-8 mb-4 sm:mb-0" src="{% static 'images/no-image.png' %}" alt="No image">
                                                     {% endif %}
-                                                    <a href="{% url 'product_detail' item.product.id %}" class="text-sm md:text-base md:font-semibold">{{ item.product.name }}</a>
+                                                    <a href="{% url 'product_detail' item.product.id %}" class="text-sm md:text-base md:font-semibold line-clamp-2 px-1">{{ item.product.name | break_after_words:8 | safe }}</a>
                                                 </div>
                                             </td>
                                             <td class="px-1 py-4 text-center">${{ item.product.discount_price }}</td>
@@ -87,7 +87,7 @@
                                     <button class="bg-primary text-white border border-primary hover:bg-transparent hover:text-primary rounded-r-full py-2 px-4">Apply Coupon</button>
                                 </div>
                                 <div class="mt-4 lg:mt-0 flex space-x-2">
-                                    <button id="empty-cart-btn" class="bg-primary text-white border border-primary hover:bg-transparent hover:text-primary rounded-full py-2 px-4">Empty Cart</button>
+                                    <button id="empty-cart-btn" data-url="{% url 'empty_cart' %}" class="bg-primary text-white border border-primary hover:bg-transparent hover:text-primary rounded-full py-2 px-4">Empty Cart</button>
                                     <button id="update-cart-btn" class="bg-primary text-white border border-primary hover:bg-transparent hover:text-primary rounded-full py-2 px-4">Update Cart</button>
                                 </div>
                             </div>
@@ -125,6 +125,24 @@
 {% block script %}
 <script>
     document.addEventListener("DOMContentLoaded", function() {
+
+        // Empty Cart
+        document.getElementById('empty-cart-btn').addEventListener('click', (event)=>{
+            const button = event.currentTarget;
+            const url = button.dataset.url;
+            if(url){
+                confirmAction({
+                    title: 'Empty Cart?',
+                    text: 'This will remove all the items form cart. Are you absolutely certain?',
+                    confirmText: 'Yes, Empty It',
+                    confirmUrl: url,
+                });
+            }else{
+                console.log('Url not found on remove button.');
+            }
+        })
+
+        // Remove item form cart
         const removeFromCartBtns = document.querySelectorAll('.remove-from-cart-btn');
         removeFromCartBtns.forEach(removeFromCartBtn => {
             removeFromCartBtn.addEventListener('click', function(){

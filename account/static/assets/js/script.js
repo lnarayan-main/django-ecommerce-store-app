@@ -223,10 +223,10 @@ document.addEventListener('DOMContentLoaded', function() {
             })
             .then(res => res.json())
             .then(data => {
-                if (data.success) alert(data.message);
-                else alert("Error! add to cart failed.");
+                if (data.success) showToast('success', data.message);
+                else showToast('error', "Error! add to cart failed.");
             })
-            .catch(err => alert("Error! Something went wrong: " + err));
+            .catch(err => showToast('error', "Error! Something went wrong: " + err));
         });
     });
 });

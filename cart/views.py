@@ -6,6 +6,8 @@ from .models import Cart, CartItem
 from core.context_processors import global_context
 from django.contrib import messages
 import json
+from core.models import Address
+from core.forms import AddressForm
 
 @login_required
 def add_to_cart(request, product_id):
@@ -33,6 +35,30 @@ def remove_from_cart(request, product_id):
     return redirect('view_cart')
     # return JsonResponse({'success': True, 'message': 'Item removed from cart.'})
 
+@login_required
+def empty_cart(request):
+    try:
+        cart = Cart.objects.filter(user=request.user).first()
+
+        if not cart:
+            messages.warning(request, "Your cart is already empty.")
+            return redirect('view_cart')
+        
+        if not cart.items.exists():
+            messages.warning(request, "Your cart is already empty.")
+            return redirect('view_cart')
+
+        cart.items.all().delete()
+
+        # no need to delete cart because may need to recreate it later again 
+        # cart.delete()
+
+        messages.success(request, "All items removed from your cart successfully!")
+    except Exception as e:
+        messages.error(request, f"Something went wrong while clearing the cart: {str(e)}")
+
+    return redirect('view_cart')
+
 
 @login_required
 def view_cart(request):
@@ -42,9 +68,10 @@ def view_cart(request):
 
     taxes = 0
     shipping_charge = 0
-    taxes_percentage = global_context(request)['TAX_PERCENT']
-    shipping_charge = global_context(request)['SHIPPING_CHARGE']
+    taxes_percentage = 0
     if sub_total:
+        taxes_percentage = global_context(request)['TAX_PERCENT']
+        shipping_charge = global_context(request)['SHIPPING_CHARGE']
         taxes = (sub_total * taxes_percentage) / 100 
     total = sub_total + taxes + shipping_charge
 
@@ -83,4 +110,23 @@ def update_cart(request):
     
 @login_required
 def checkout(request):
-    return render(request, 'cart/checkout.html')
+    address = Address.objects.filter(user=request.user, is_default=True).first()
+    form = AddressForm(instance=address)
+
+    cart = get_object_or_404(Cart, user=request.user)
+    sub_total = cart.total_price()
+    shipping_charge = global_context(request)['SHIPPING_CHARGE']
+    total = sub_total + shipping_charge
+
+    context = {
+        'address_form': form,
+        'address_id': address.id,
+        'sub_total' : sub_total,
+        'shipping_charge': shipping_charge,
+        'total': total,
+    }
+    return render(request, 'cart/checkout.html', context)
+
+@login_required
+def payment_process(request):
+    pass

@@ -129,12 +129,12 @@
                     <!-- Product Details Section -->
                     <div class="w-full lg:w-1/2 flex flex-col justify-between">
                         <div class="pb-8 border-b border-gray-line">
-                            <h1 class="text-3xl font-bold mb-4">{{ product.name }}</h1>
-                            <div class="flex items-center mb-8">
+                            <h1 class="text-3xl font-bold mb-4 line-clamp-2">{{ product.name }}</h1>
+                            {% comment %} <div class="flex items-center mb-8">
                                 <span>★★★★★</span>
                                 <span class="ml-2">(0 Reviews)</span>
                                 <a href="#" class="ml-4 text-primary font-semibold">Write a review</a>
-                            </div>
+                            </div> {% endcomment %}
                             <div class="mb-4 pb-4 border-b border-gray-line">
                                 <p class="mb-2">Brand:<strong><a href="#" class="hover:text-primary">{{ product.brand|default:"Generic" }}</a></strong>
                                 </p>
@@ -484,7 +484,7 @@
                             <img src="{% static 'images/no-image.png' %}" alt="No image">
                             {% endif %}
                         </a>
-                        <a href="{% url 'product_detail' product.id %}" class="text-lg font-semibold mb-2">{{ product.name }}</a>
+                        <a href="{% url 'product_detail' product.id %}" class="text-lg font-semibold mb-2 line-clamp-2">{{ product.name }}</a>
                         <p class=" my-2">{{ product.category.name }}</p>
                         <div class="flex items-center mb-4">
                         <span class="text-lg font-bold text-primary">${{ product.discount_price|default:product.price }}</span>
@@ -529,10 +529,10 @@
         })
         .then(res => res.json())
         .then(data => {
-            if (data.success) alert(data.message);
-            else alert("Error! add to cart failed.");
+            if (data.success) showToast('success', data.message);
+            else showToast('error', "Error! add to cart failed.");
         })
-        .catch(err => alert("Error! Something went wrong: " + err));
+        .catch(err => showToast('error', "Error! Something went wrong: " + err));
     })
   })
 </script>

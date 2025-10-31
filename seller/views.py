@@ -30,7 +30,28 @@ def seller_wish_lists(request):
 
 @login_and_role_required("seller")
 def seller_account_settings(request):
-    return render(request, 'seller/account-settings.html')
+    if request.method == 'POST':
+        name = request.POST.get('name')
+        email = request.POST.get('email')
+        
+        user = request.user
+        
+        if name:
+            user.name = name
+        if email:
+            user.email = email
+            
+        user.save()
+        
+        messages.success(request, 'Details updated successfully.') 
+        
+        return redirect('seller_account_settings')
+        
+    else:
+        context = {
+            'user': request.user
+        }
+        return render(request, 'seller/account-settings.html', context)
 
 
 @login_and_role_required("seller")
