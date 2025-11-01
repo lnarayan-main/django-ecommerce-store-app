@@ -252,8 +252,10 @@ def delete_address(request, address_id):
 
 @login_and_role_required('seller')
 def order_details(request, order_id):
-    order = get_object_or_404(Order, id=order_id, user=request.user)
-    context = {
-        'order': order
-    }
+    order = get_object_or_404(
+        Order.objects.select_related('address', 'payment').prefetch_related('items__product'),
+        id=order_id,
+        user=request.user
+    )
+    context = {'order': order}
     return render(request, 'seller/order-details.html', context)
