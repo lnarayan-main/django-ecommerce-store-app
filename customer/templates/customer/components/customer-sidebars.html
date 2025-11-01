@@ -26,25 +26,25 @@
             <nav class="space-y-1">
                 <!-- Navigation Item -->
                 <a href="{% url 'customer_dashboard' %}" 
-                class="nav-link flex items-center p-3 rounded-lg font-medium transition duration-150 {% is_active_nav 'seller_dashboard' %} {% if not 'active' in class %}text-gray-700 hover:bg-gray-100{% endif %}" 
+                class="nav-link flex items-center p-3 rounded-lg font-medium transition duration-150 {% is_active_nav 'customer_dashboard' %} {% if not 'active' in class %}text-gray-700 hover:bg-gray-100{% endif %}" 
                 data-icon="User">
                     <span data-lucide="User" class="w-5 h-5 mr-3"></span>
                     My Profile
                 </a>
                 
-                <a href="{% url 'customer_order_history' %}" class="nav-link flex items-center p-3 rounded-lg font-medium transition duration-150 {% is_active_nav 'seller_order_history' %} {% if not 'active' in class %}text-gray-700 hover:bg-gray-100{% endif %}" data-icon="Package">
+                <a href="{% url 'customer_order_history' %}" class="nav-link flex items-center p-3 rounded-lg font-medium transition duration-150 {% is_active_nav 'customer_order_history' %} {% if not 'active' in class %}text-gray-700 hover:bg-gray-100{% endif %}" data-icon="Package">
                     <span data-lucide="Package" class="w-5 h-5 mr-3"></span>
                     Order History
                 </a>
-                <a href="{% url 'customer_wish_lists' %}" class="nav-link flex items-center p-3 rounded-lg font-medium transition duration-150 {% is_active_nav 'seller_wish_lists' %} {% if not 'active' in class %}text-gray-700 hover:bg-gray-100{% endif %}" data-icon="Heart">
+                <a href="{% url 'customer_wish_lists' %}" class="nav-link flex items-center p-3 rounded-lg font-medium transition duration-150 {% is_active_nav 'customer_wish_lists' %} {% if not 'active' in class %}text-gray-700 hover:bg-gray-100{% endif %}" data-icon="Heart">
                     <span data-lucide="Heart" class="w-5 h-5 mr-3"></span>
                     My Wishlist
                 </a>
-                <a href="{% url 'customer_addresses' %}"  class="nav-link flex items-center p-3 rounded-lg font-medium transition duration-150 {% is_active_nav 'seller_addresses' %} {% if not 'active' in class %}text-gray-700 hover:bg-gray-100{% endif %}" data-icon="MapPin">
+                <a href="{% url 'customer_addresses' %}"  class="nav-link flex items-center p-3 rounded-lg font-medium transition duration-150 {% is_active_nav 'customer_addresses' %} {% if not 'active' in class %}text-gray-700 hover:bg-gray-100{% endif %}" data-icon="MapPin">
                     <span data-lucide="map-pin" class="w-5 h-5 mr-3"></span>
                     Saved Addresses
                 </a>
-                <a href="{% url 'customer_account_settings' %}" class="nav-link flex items-center p-3 rounded-lg font-medium transition duration-150 {% is_active_nav 'seller_account_settings' %} {% if not 'active' in class %}text-gray-700 hover:bg-gray-100{% endif %}" data-icon="Settings">
+                <a href="{% url 'customer_account_settings' %}" class="nav-link flex items-center p-3 rounded-lg font-medium transition duration-150 {% is_active_nav 'customer_account_settings' %} {% if not 'active' in class %}text-gray-700 hover:bg-gray-100{% endif %}" data-icon="Settings">
                     <span data-lucide="Settings" class="w-5 h-5 mr-3"></span>
                     Account Settings
                 </a>

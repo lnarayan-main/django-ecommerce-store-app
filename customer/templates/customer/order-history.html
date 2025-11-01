@@ -28,37 +28,60 @@
             My Order History
         </h2>
         
-        <!-- Mock Order List -->
-        <div class="space-y-4">
-            <!-- Order 1 -->
-            <div class="p-4 border border-gray-200 rounded-lg flex flex-col md:flex-row justify-between items-start md:items-center hover:bg-gray-50 transition">
-                <div>
-                    <p class="font-bold text-gray-900">Order #10056</p>
-                    <p class="text-sm text-gray-500">Placed on: <span class="font-medium">Oct 20, 2025</span></p>
-                    <p class="text-sm text-gray-700 mt-1">Total: <span class="font-semibold text-lg">$149.99</span> (3 items)</p>
-                </div>
-                <div class="flex flex-col items-start md:items-end space-y-2 mt-3 md:mt-0">
-                    <span class="px-3 py-1 text-xs font-semibold bg-green-100 text-green-700 rounded-full whitespace-nowrap">Delivered</span>
-                    <button class="text-primary-500 text-sm font-medium hover:underline whitespace-nowrap">View Details</button>
-                </div>
+           {% if orders %}
+            <div class="space-y-4">
+                {% for order in orders %}
+                    <div class="p-4 border border-gray-200 rounded-lg flex flex-col md:flex-row justify-between items-start md:items-center hover:bg-gray-50 transition">
+                        <div>
+                            <p class="font-bold text-gray-900">Order #{{ order.id }}</p>
+                            <p class="text-sm text-gray-500">Placed on: 
+                                <span class="font-medium">{{ order.created_at|date:"M d, Y - h:i A" }}</span>
+                            </p>
+                            <p class="text-sm text-gray-700 mt-1">
+                                Total: 
+                                <span class="font-semibold text-lg">${{ order.total_amount }}</span> 
+                                ({{ order.items.count }} items)
+                            </p>
+                            {% comment %} {% if order.payment %}
+                                <p class="text-sm text-gray-500 mt-1">
+                                    Payment ID: <span class="font-medium">{{ order.payment.payment_id }}</span>
+                                </p>
+                            {% endif %} {% endcomment %}
+                        </div>
+
+                        <div class="flex flex-col items-start md:items-end space-y-2 mt-3 md:mt-0">
+                            {% if order.status == 'delivered' %}
+                                <span class="px-3 py-1 text-xs font-semibold bg-green-100 text-green-700 rounded-full whitespace-nowrap">
+                                    Delivered
+                                </span>
+                            {% elif order.status == 'processing' %}
+                                <span class="px-3 py-1 text-xs font-semibold bg-yellow-100 text-yellow-700 rounded-full whitespace-nowrap">
+                                    Processing
+                                </span>
+                            {% elif order.status == 'cancelled' %}
+                                <span class="px-3 py-1 text-xs font-semibold bg-red-100 text-red-700 rounded-full whitespace-nowrap">
+                                    Cancelled
+                                </span>
+                            {% else %}
+                                <span class="px-3 py-1 text-xs font-semibold bg-gray-100 text-gray-700 rounded-full whitespace-nowrap">
+                                    Pending
+                                </span>
+                            {% endif %}
+
+                            <a href="{% url 'customer_order_details' order.id %}" 
+                               class="text-primary-500 text-sm font-medium hover:underline whitespace-nowrap">
+                               View Details
+                            </a>
+                        </div>
+                    </div>
+                {% endfor %}
             </div>
-            <!-- Order 2 -->
-            <div class="p-4 border border-gray-200 rounded-lg flex flex-col md:flex-row justify-between items-start md:items-center hover:bg-gray-50 transition">
-                <div>
-                    <p class="font-bold text-gray-900">Order #10057</p>
-                    <p class="text-sm text-gray-500">Placed on: <span class="font-medium">Oct 25, 2025</span></p>
-                    <p class="text-sm text-gray-700 mt-1">Total: <span class="font-semibold text-lg">$49.00</span> (1 item)</p>
-                </div>
-                <div class="flex flex-col items-start md:items-end space-y-2 mt-3 md:mt-0">
-                    <span class="px-3 py-1 text-xs font-semibold bg-yellow-100 text-yellow-700 rounded-full whitespace-nowrap">Processing</span>
-                    <button class="text-primary-500 text-sm font-medium hover:underline whitespace-nowrap">Track Order</button>
-                </div>
-            </div>
-        </div>
+        {% else %}
+            <p class="text-center text-gray-600">No orders found yet.</p>
+        {% endif %}
     </div>
 
 </div>
-
 {% endblock customer_content %}
 
 {% block script %}

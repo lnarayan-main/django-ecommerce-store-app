@@ -28,35 +28,99 @@
         
         <div class="space-y-4">
             <!-- Default Address -->
+            {% if default_address %}
             <div class="p-4 border-2 border-primary-500 rounded-lg relative">
                 <span class="absolute top-[-10px] left-3 bg-primary-500 text-white text-xs font-bold px-2 py-0.5 rounded-full">DEFAULT</span>
-                <p class="font-bold text-gray-900 mt-2">Home Address (Shipping & Billing)</p>
-                <p class="text-gray-700">123 Market St, Apt 4B</p>
-                <p class="text-gray-700">San Francisco, CA 94103</p>
-                <p class="text-gray-700">United States</p>
+                <p class="font-bold text-gray-900 mt-2">{{ default_address.address_type|capfirst }} Address (Shipping & Billing)</p>
+                <p class="text-gray-700">{{ default_address.address_line_1 }}, {{ default_address.address_line_2 }}</p>
+                <p class="text-gray-700">{{ default_address.city }}, {{ default_address.state }} {{ default_address.zip_code }}</p>
+                <p class="text-gray-700">{{ default_address.country }}</p>
+                <p class="text-gray-700">{{ default_address.phone_number }}</p>
                 <div class="mt-3 flex space-x-4">
-                    <button class="text-sm text-primary-500 font-medium hover:underline transition">Edit</button>
-                    <button class="text-sm text-gray-500 hover:text-red-500 transition">Delete</button>
+                    <a href="{% url 'customer_addresse_edit' default_address.id %}" class="text-lg text-gray-500 font-medium hover:underline transition"><i class="fa fa-pencil" title="Edit"></i></a>
+                    <button data-url="{% url 'customer_delete_address' default_address.id %}" class="address-del-btn text-lg text-primary-500 hover:text-red-500 transition"><i class="fa fa-trash" title="Delete"></i></button>
                 </div>
             </div>
+            {% else %}
+             <div class="p-4 border-2 border-primary-500 rounded-lg relative">
+                <p class="font-bold text-gray-900 mt-2">No addresses saved so far.</p>
+            </div>
+            {% endif %}
+
+            {% if addresses %}
+                {% for address in addresses %}
+                    <div class="px-4 border-2 border-primary-500 rounded-lg relative">
+                        <p class="font-bold text-gray-900 mt-2">{{ address.address_type|capfirst }} Address (Shipping & Billing)</p>
+                        <p class="text-gray-700">{{ address.address_line_1 }}, {{ address.address_line_2 }}</p>
+                        <p class="text-gray-700">{{ address.city }}, {{ address.state }} {{ address.zip_code }}</p>
+                        <p class="text-gray-700">{{ address.country }}</p>
+                        <p class="text-gray-700">{{ address.phone_number }}</p>
+                        <div class="mt-3 flex space-x-4">
+                            <a href="{% url 'customer_addresse_edit' address.id %}" class="text-lg text-gray-500 font-medium hover:underline transition"><i class="fa fa-pencil" title="Edit"></i></a>
+                            <button data-url="{% url 'customer_delete_address' address.id %}" class="address-del-btn text-lg text-primary-500 hover:text-red-500 transition"><i class="fa fa-trash" title="Delete"></i></button>
+                        </div>
+                    </div>
+                {% endfor %}
+            {% endif %}
             
-            <button class="w-full border-2 border-dashed border-gray-300 text-gray-500 py-3 rounded-lg hover:bg-gray-100 transition flex items-center justify-center space-x-2">
-                <!-- Icon placeholder for Plus -->
-                <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                    <path d="M12 5v14"></path>
-                    <path d="M5 12h14"></path>
-                </svg>
+            <button id="add-address-btn" class="w-full border-2 border-dashed border-gray-300 text-gray-500 py-3 rounded-lg hover:bg-gray-100 transition flex items-center justify-center space-x-2">
+                <i class="fa fa-minus"></i>
                 <span>Add New Address</span>
             </button>
+            <div id="add-address-element" class="p-4 border-2 border-primary-500 rounded-lg relative">
+                <p class="font-bold text-gray-900">New Address Form</p>
+                {% if address_id %}
+                <form method="POST" class="space-y-8" action="{% url 'customer_addresse_edit' address_id %}">
+                {% else %}
+                <form method="POST" class="space-y-8" action="{% url 'customer_addresses' %}">
+                {% endif %}
+                    {% csrf_token %}
+                    {{ form }}
+                    <div class="flex justify-end gap-4">
+                        <button type="submit" 
+                                class="bg-primary border border-transparent hover:bg-transparent hover:border-primary text-white hover:text-primary font-semibold py-2 px-4 rounded-full">
+                            Save Address
+                        </button>
+                    </div>
+                </form>
+            </div>
         </div>
     </div>
 </div>
+
 
 {% endblock customer_content %}
 
 {% block script %}
     {{ block.super }}
     <script>
-        console.log("Addresses page script loaded.");
+        document.addEventListener('DOMContentLoaded', function(){
+            const newAddressFormToggleButton = document.getElementById('add-address-btn');
+            newAddressFormToggleButton.addEventListener('click', function(){
+                const iconElement = this.querySelector('i.fa');
+                document.getElementById('add-address-element').toggleAttribute('hidden');
+                if(iconElement){
+                    iconElement.classList.toggle('fa-plus');
+                    iconElement.classList.toggle('fa-minus');
+                }
+            });
+
+            // Delete address confirmation
+            document.querySelectorAll('.address-del-btn').forEach(button => {
+                button.addEventListener('click', ()=>{
+                    const url = button.dataset.url;
+                    if(url){
+                        confirmAction({
+                            title: 'Delete Address?',
+                            text: 'This will permanently remove the address. Are you absolutely certain?',
+                            confirmText: 'Yes, DELETE IT',
+                            confirmUrl: url,
+                        });
+                    }else{
+                        console.log('Url not found on delete button.');
+                    }
+                });
+            })
+        });
     </script>
 {% endblock script %}

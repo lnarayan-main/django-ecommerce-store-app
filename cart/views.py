@@ -116,8 +116,13 @@ def update_cart(request):
     
 @login_required
 def checkout(request):
+    address_id = None
     address = Address.objects.filter(user=request.user, is_default=True).first()
-    form = AddressForm(instance=address)
+    if address:
+        address_id = address.id
+        form = AddressForm(instance=address)
+    else:
+        form = AddressForm()
 
     cart = get_object_or_404(Cart, user=request.user)
     sub_total = cart.total_price()
@@ -128,7 +133,7 @@ def checkout(request):
 
     context = {
         'address_form': form,
-        'address_id': address.id,
+        'address_id': address_id,
         'sub_total' : sub_total,
         'taxes': taxes,
         'shipping_charge': shipping_charge,
@@ -138,41 +143,54 @@ def checkout(request):
 
 @login_required
 def payment_process(request):
-    address_id = request.POST.get('address_id')
-    is_different_address = request.POST.get('is_different_address')
+    try:
+        address_id = request.POST.get('address_id')
+        is_different_address = request.POST.get('is_different_address')
+        address = None
 
-    if is_different_address or not address_id:
-        form = AddressForm(request.POST)
-        if form.is_valid():
-            address = form.save(commit=False)
-            address.user = request.user
-            address.save()
-    else:
-        address = Address.objects.filter(id=address_id, user=request.user).first()
-        form = AddressForm(request.POST, instance=address)
-        if form.is_valid():
-            form.save()
+        if address_id == 'None':
+            address_id = None
 
-    cart = Cart.objects.filter(user=request.user).first()
-    if not cart or not cart.items.exists():
-        messages.warning(request, "Your cart is empty.")
-        return redirect('view_cart')
-    sub_total = cart.total_price()
-    shipping_charge = global_context(request)['SHIPPING_CHARGE']
-    taxes_percentage = global_context(request)['TAX_PERCENT']
-    taxes = sub_total * taxes_percentage/100
+        if address_id and not is_different_address:            
+            try:
+                address = Address.objects.filter(id=int(address_id), user=request.user).first()
+            except (ValueError, TypeError):
+                address = None
 
-    total_amount = sub_total + shipping_charge + taxes
-    total_in_cents = int(total_amount * 100)
+            form = AddressForm(request.POST, instance=address)
+            if form.is_valid():
+                form.save()
+        else:
+            form = AddressForm(request.POST)
+            if form.is_valid():
+                address = form.save(commit=False)
+                address.user = request.user
+                address.save()
 
-    context = {
-        'stripe_public_key': settings.STRIPE_PUBLIC_KEY,
-        'total_amount': total_amount,
-        'total_in_cents': total_in_cents,
-        'address': address,
-    }
+        cart = Cart.objects.filter(user=request.user).first()
+        if not cart or not cart.items.exists():
+            messages.warning(request, "Your cart is empty.")
+            return redirect('view_cart')
+        sub_total = cart.total_price()
+        shipping_charge = global_context(request)['SHIPPING_CHARGE']
+        taxes_percentage = global_context(request)['TAX_PERCENT']
+        taxes = sub_total * taxes_percentage/100
 
-    return render(request, 'cart/payment.html', context)
+        total_amount = sub_total + shipping_charge + taxes
+        total_in_cents = int(total_amount * 100)
+
+        context = {
+            'stripe_public_key': settings.STRIPE_PUBLIC_KEY,
+            'total_amount': total_amount,
+            'total_in_cents': total_in_cents,
+            'address': address,
+        }
+
+        return render(request, 'cart/payment.html', context)
+    except Exception as e:
+        print('Error! ' + str(e))
+        messages.error(request, 'Error! ' + str(e))
+        return redirect('checkout')
 
 
 @login_required
@@ -181,7 +199,6 @@ def create_checkout_session(request):
         return JsonResponse({'error': 'Invalid request method.'}, status=400)
     
     try:
-        print("##################3", request.POST)
         cart = Cart.objects.filter(user=request.user).first()
         if not cart or not cart.items.exists():
             messages.warning(request, "Your cart is empty.")
@@ -190,6 +207,9 @@ def create_checkout_session(request):
         # Get selected address
         address_id = request.POST.get('address_id')
         address = None
+        if not address_id:
+            messages.warning(request, 'Address not set properly.')
+            return redirect('checkout')
         if address_id:
             address = Address.objects.filter(id=address_id, user=request.user).first()
 
@@ -208,6 +228,9 @@ def create_checkout_session(request):
                 user=request.user,
                 address=address,
                 total_amount=total_amount,
+                sub_total= sub_total,
+                tax = taxes,
+                shipping_charge = shipping_charge,
             )
 
             for item in cart.items.all():
@@ -238,7 +261,7 @@ def create_checkout_session(request):
             order=order,
             user=request.user,
             amount=total_amount,
-            stripe_payment_intent=session.payment_intent,
+            stripe_session_id=session.id,
         )
 
         return JsonResponse({'success': True, 'url': session.url, 'message': 'Payment created successfully.'})
@@ -258,7 +281,10 @@ def payment_success(request):
 
     if order:
         payment = Payment.objects.filter(order=order).first()
+        session = stripe.checkout.Session.retrieve(payment.stripe_session_id)
+        payment_intent_id = session.payment_intent 
         if payment:
+            payment.stripe_payment_intent = payment_intent_id
             payment.status = 'completed'
             payment.save()
 
@@ -287,3 +313,14 @@ def payment_cancel(request):
     messages.error(request, "Payment cancelled.")
     return render(request, 'cart/payment_cancel.html', {'order': order})
 
+
+@login_required
+def order_history(request):
+    if request.user.is_authenticated:
+        if request.user.is_seller:
+            return redirect('seller_order_history')
+        elif request.user.is_customer:
+            return redirect('customer_order_history')
+        return redirect('home')
+    else:
+        return redirect('home')

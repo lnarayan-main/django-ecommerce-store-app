@@ -248,3 +248,12 @@ def delete_address(request, address_id):
         address.delete()
     messages.success(request, 'Address deleted successfully.')
     return redirect('seller_addresses')
+
+
+@login_and_role_required('seller')
+def order_details(request, order_id):
+    order = get_object_or_404(Order, id=order_id, user=request.user)
+    context = {
+        'order': order
+    }
+    return render(request, 'seller/order-details.html', context)

@@ -56,15 +56,14 @@ document.addEventListener('DOMContentLoaded', function () {
     const checkoutButton = document.getElementById('checkout-button');
 
     checkoutButton.addEventListener('click', function () {
+        const formData = new FormData()
+        formData.append('address_id', "{{ address.id }}");
         fetch("{% url 'create_checkout_session' %}", {
             method: "POST",
             headers: {
-                "Content-Type": "application/json",
                 "X-CSRFToken": "{{ csrf_token }}"
             },
-            body: JSON.stringify({
-                address_id: "{{ address.id }}"
-            })
+            body: formData
         })
         .then(response => {
             if (response.redirected) {

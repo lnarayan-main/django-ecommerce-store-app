@@ -40,13 +40,13 @@
                             <p class="text-sm text-gray-700 mt-1">
                                 Total: 
                                 <span class="font-semibold text-lg">${{ order.total_amount }}</span> 
-                                ({{ order.order_items.count }} items)
+                                ({{ order.items.count }} items)
                             </p>
-                            {% if order.payment %}
+                            {% comment %} {% if order.payment %}
                                 <p class="text-sm text-gray-500 mt-1">
                                     Payment ID: <span class="font-medium">{{ order.payment.payment_id }}</span>
                                 </p>
-                            {% endif %}
+                            {% endif %} {% endcomment %}
                         </div>
 
                         <div class="flex flex-col items-start md:items-end space-y-2 mt-3 md:mt-0">
@@ -68,7 +68,7 @@
                                 </span>
                             {% endif %}
 
-                            <a href="" 
+                            <a href="{% url 'order_details' order.id %}" 
                                class="text-primary-500 text-sm font-medium hover:underline whitespace-nowrap">
                                View Details
                             </a>

@@ -23,21 +23,17 @@
             Account Settings & Personal Details
         </h2>
         
-        <form class="space-y-6" id="personal-detail-update">
+        <form class="space-y-6" id="personal-detail-update" method="POST" action="{% url 'customer_account_settings' %}">
             {% csrf_token %}
             <!-- Personal Details Fields -->
             <div>
                 <label for="name" class="block text-sm font-medium text-gray-700">Full Name</label>
-                <input type="text" id="name" value="Jane Doe" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-primary-500 focus:ring-2 focus:ring-primary-500/50 p-3 border transition">
+                <input type="text" id="name" name="name" value="{{ user.name|default:'' }}" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-primary-500 focus:ring-2 focus:ring-primary-500/50 p-3 border transition">
             </div>
             <div>
                 <label for="email" class="block text-sm font-medium text-gray-700">Email Address</label>
                 <!-- Disabled field is slightly grayed out and indicates it cannot be edited -->
-                <input type="email" id="email" value="jane.doe@example.com" disabled class="mt-1 block w-full rounded-md border-gray-300 bg-gray-100 text-gray-500 shadow-sm p-3 border cursor-not-allowed">
-            </div>
-            <div>
-                <label for="phone" class="block text-sm font-medium text-gray-700">Phone Number</label>
-                <input type="tel" id="phone" value="(555) 123-4567" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-primary-500 focus:ring-2 focus:ring-primary-500/50 p-3 border transition">
+                <input type="email" id="email" name="email" value="{{ user.email|default:'' }}" disabled class="mt-1 block w-full rounded-md border-gray-300 bg-gray-100 text-gray-500 shadow-sm p-3 border cursor-not-allowed">
             </div>
             
             <!-- Action Buttons for Details -->
