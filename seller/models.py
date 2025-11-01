@@ -2,6 +2,12 @@ from django.db import models
 from django.utils.text import slugify
 from account.models import User 
 
+from cloudinary.models import CloudinaryField
+from cloudinary.uploader import destroy
+
+from django.db.models.signals import pre_delete
+from django.dispatch import receiver
+
 class Product(models.Model):
     seller = models.ForeignKey(User, on_delete=models.CASCADE, related_name='products')
     category = models.ForeignKey('core.Category', on_delete=models.SET_NULL, null=True, blank=True, related_name='products')
@@ -34,9 +40,38 @@ class Product(models.Model):
 
 class ProductImage(models.Model):
     product = models.ForeignKey(Product, on_delete=models.CASCADE, related_name='images')
-    image = models.ImageField(upload_to='products/%Y/%m/%d/')
+    # image = models.ImageField(upload_to='products/%Y/%m/%d/')
+    image = CloudinaryField('image')
     is_primary = models.BooleanField(default=False)
     uploaded_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
         return f"Image for {self.product.name}"
+    
+    def save(self, *args, **kwargs):
+        try:
+            old = ProductImage.objects.get(pk=self.pk)
+            if old.image and old.image != self.image:
+                destroy(self._get_public_id(old.image.url))
+        except ProductImage.DoesNotExist:
+            pass  # New image, nothing to delete
+        super().save(*args, **kwargs)
+
+    def _get_public_id(self, url):
+        """
+        Extract Cloudinary public_id from the image URL.
+        Assumes default Cloudinary URL format.
+        """
+        from urllib.parse import urlparse
+        import os
+
+        path = urlparse(url).path  # /your_cloud_name/image/upload/v1234567890/folder/image.jpg
+        public_id = os.path.splitext(path.split('/upload/')[-1])[0]  # remove extension
+        return public_id
+    
+
+
+@receiver(pre_delete, sender=ProductImage)
+def delete_image_from_cloudinary(sender, instance, **kwargs):
+    if instance.image:
+        destroy(instance._get_public_id(instance.image.url))

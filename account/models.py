@@ -1,8 +1,16 @@
 from django.db import models
 from django.contrib.auth.models import BaseUserManager, AbstractBaseUser
+import uuid
+from cloudinary.models import CloudinaryField
+from cloudinary.uploader import destroy
+
+# def user_profile_upload_path(instance, filename):
+#     return f"profile_pics/user_{instance.id}/{filename}"
 
 def user_profile_upload_path(instance, filename):
-    return f"profile_pics/user_{instance.id}/{filename}"
+    ext = filename.split('.')[-1]
+    filename = f"{uuid.uuid4()}.{ext}"
+    return f"profile_pics/{filename}"
 
 class UserManager(BaseUserManager):
     def create_user(self, email, password=None):
@@ -34,12 +42,13 @@ class User(AbstractBaseUser):
     email = models.EmailField(max_length=255, unique=True)
     name = models.CharField(max_length=255)
     city = models.CharField(max_length=255)
-    profile_pic = models.ImageField(
-        upload_to=user_profile_upload_path,
-        default="profile_pics/default_avatar.png",
-        blank=True,
-        null=True
-    )
+    # profile_pic = models.ImageField(
+    #     upload_to=user_profile_upload_path,
+    #     default="profile_pics/default_avatar.png",
+    #     blank=True,
+    #     null=True
+    # )
+    profile_pic = CloudinaryField('image', blank=True, null=True)
     is_active = models.BooleanField(default=False)
     is_staff = models.BooleanField(default=False)
     is_superuser = models.BooleanField(default=False)
@@ -62,3 +71,12 @@ class User(AbstractBaseUser):
     def has_module_perms(self, app_label):
         "Does the user have permission to view the app `app_lable`?"
         return self.is_superuser
+
+    def save(self, *args, **kwargs):
+        try:
+            old = User.objects.get(pk=self.pk)
+            if old.profile_pic and old.profile_pic != self.profile_pic:
+                destroy(old.profile_pic.public_id)
+        except User.DoesNotExist:
+            pass  # First save, no old image
+        super().save(*args, **kwargs)

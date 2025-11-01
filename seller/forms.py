@@ -83,22 +83,16 @@ class ProductForm(forms.ModelForm):
         }
 
 
-# class ProductImageForm(forms.ModelForm):
-#     image = forms.ImageField(
-#         widget=forms.ClearableFileInput(attrs={
-#         # widget=MultiFileInput(attrs={
-#             # 'multiple': True,
-#             'class': 'block w-full text-sm text-gray-900 border border-gray-300 rounded-lg cursor-pointer focus:outline-none'
-#         })
-#     )
-
-#     class Meta:
-#         model = ProductImage
-#         fields = ['image']
 
 
 class ProductImageForm(forms.Form):
-    image = MultipleFileField(required=True)
+    image = MultipleFileField()
+
+    def __init__(self, *args, **kwargs):
+        require_images = kwargs.pop('require_images', False)
+        super().__init__(*args, **kwargs)
+        self.fields['image'].required = require_images
+
     class Meta:
         model = ProductImage
         fields = ['image']

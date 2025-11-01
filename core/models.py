@@ -3,6 +3,9 @@ from account.models import User
 from seller.models import Product
 from django.utils import timezone
 
+from cloudinary.models import CloudinaryField
+from cloudinary.uploader import destroy
+
 def category_pic_upload_path(instance, filename):
     return f"category_pics/category_{instance.id}/{filename}"
 
@@ -18,12 +21,14 @@ class Category(models.Model):
     slug = models.SlugField(unique=True)
     description = models.TextField(blank=True, null=True)
     is_active = models.BooleanField(default=True)
-    category_pic = models.ImageField(
-        upload_to=category_pic_upload_path,
-        default="category_pics/default_category.png",
-        blank=True,
-        null=True
-    )
+    # category_pic = models.ImageField(
+    #     upload_to=category_pic_upload_path,
+    #     default="category_pics/default_category.png",
+    #     blank=True,
+    #     null=True
+    # )
+
+    category_pic = CloudinaryField('image', blank=True, null=True)
 
     class Meta:
         verbose_name_plural = "Categories"
@@ -37,6 +42,15 @@ class Category(models.Model):
             full_path.append(parent.name)
             parent = parent.parent
         return ' > '.join(full_path[::-1])
+    
+    def save(self, *args, **kwargs):
+        try:
+            old = Category.objects.get(pk=self.pk)
+            if old.category_pic and old.category_pic != self.category_pic:
+                destroy(old.category_pic.public_id)
+        except Category.DoesNotExist:
+            pass  # First save, no old image
+        super().save(*args, **kwargs)
 
 
 class Address(models.Model):

@@ -1,12 +1,81 @@
 
-venv
+# Virtual environments
+venv/
+env/
+ENV/
+.venv/
+.pipenv/
+pip-wheel-metadata/
+
 db.sqlite3
 z_tailwind
 media
 static
 
+# Python bytecode
 __pycache__/
 *.py[cod]
 *.pyc
+*$py.class
 
+# Environment files
 .env
+*.env
+.env.*
+
+
+
+# Django migrations (keep actual migration files, ignore compiled junk)
+**/migrations/__pycache__/
+
+# VS Code and IDE settings
+.vscode/
+.idea/
+*.sublime-project
+*.sublime-workspace
+
+# OS-specific files
+.DS_Store
+Thumbs.db
+
+# SQLite database (optional)
+*.sqlite3
+
+# Logs and local data
+*.log
+*.pot
+*.mo
+*.pid
+*.seed
+*.bak
+*.swp
+*.tmp
+
+# Media and static files (optional if generated dynamically)
+media/
+staticfiles/
+static_root/
+static_cdn/
+
+# Coverage and test output
+htmlcov/
+.coverage
+.tox/
+.nox/
+.pytest_cache/
+coverage.xml
+nosetests.xml
+test-results/
+
+# MyPy and Pyre type checker
+.mypy_cache/
+.pyre/
+
+# Build artifacts
+build/
+dist/
+*.egg-info/
+.eggs/
+
+# Node modules (if using npm/yarn for frontend)
+node_modules/

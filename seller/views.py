@@ -12,6 +12,10 @@ import os
 from core.forms import AddressForm
 from core.models import Address, Order
 
+from cloudinary.uploader import destroy
+from urllib.parse import urlparse
+
+
 @login_and_role_required("seller")
 def dashboard(request):
     return render(request, 'seller/dashboard.html')
@@ -102,11 +106,11 @@ def products_list(request):
 def create_product(request):
     if request.method == 'POST':
         form = ProductForm(request.POST)
-        image_form = ProductImageForm(request.POST, request.FILES)
+        image_form = ProductImageForm(request.POST, request.FILES, require_images=True)
 
         try:
             if form.is_valid() and image_form.is_valid():
-                with transaction.atomic():  # Ensures atomic DB operation
+                with transaction.atomic(): 
                     product = form.save(commit=False)
                     product.seller = request.user
                     product.save()
@@ -125,6 +129,7 @@ def create_product(request):
                 # Collect all validation errors for debugging
                 form_errors = form.errors.as_json()
                 image_errors = image_form.errors.as_json()
+                messages.error(request, "Please fill all required fields and upload at least one image.")
                 messages.error(request, f"Validation failed! {form_errors} {image_errors}")
 
         except Exception as e:
@@ -133,7 +138,7 @@ def create_product(request):
 
     else:
         form = ProductForm()
-        image_form = ProductImageForm()
+        image_form = ProductImageForm(require_images=True)
 
     context = {
         'form': form,
@@ -150,7 +155,7 @@ def product_edit(request, product_id):
 
     if request.method == 'POST':
         form = ProductForm(request.POST, instance=product)
-        image_form = ProductImageForm(request.POST, request.FILES)
+        image_form = ProductImageForm(request.POST, request.FILES, require_images=False)
 
         try:
             if form.is_valid() and image_form.is_valid():
@@ -184,11 +189,24 @@ def product_edit(request, product_id):
     return render(request, 'seller/edit-product.html', context)
 
 
+# @login_and_role_required('seller')
+# def delete_product_image(request, image_id):
+#     image = get_object_or_404(ProductImage, id=image_id, product__seller=request.user)
+#     image.image.delete(save=False)  # deletes actual file
+#     image.delete()
+#     messages.success(request, "🗑️ Image deleted successfully!")
+#     return redirect('product_edit', product_id=image.product.id)
+
+
+# cloudinary image deleteing
 @login_and_role_required('seller')
 def delete_product_image(request, image_id):
     image = get_object_or_404(ProductImage, id=image_id, product__seller=request.user)
-    image.image.delete(save=False)  # deletes actual file
-    image.delete()
+
+    if image.image:
+        destroy(image.image.public_id) 
+
+    image.delete() 
     messages.success(request, "🗑️ Image deleted successfully!")
     return redirect('product_edit', product_id=image.product.id)
 

@@ -42,7 +42,10 @@ INSTALLED_APPS = [
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
+    'cloudinary',
+    'cloudinary_storage',
     'django.contrib.staticfiles',
+    # My apps
     'account',
     'customer',
     'seller',
@@ -69,6 +72,7 @@ TEMPLATES = [
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
+                'django.template.context_processors.debug',
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
@@ -150,18 +154,17 @@ AUTH_USER_MODEL = 'account.User'
 SITE_DOMAIN = 'http://127.0.0.1:8000/'
 
 SITE_NAME = "Mini eCommerce Store"
-# FROM_EMAIL = 'aryananya.ln@gmail.com'
-FROM_EMAIL = 'noreply@example.com'
+
+FROM_EMAIL = os.getenv('FROM_EMAIL')
 
 
 # SMTP Details
-EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-EMAIL_HOST = "smtp.gmail.com"
-# EMAIL_HOST_USER = 'aryananya.ln@gmail.com' 
-EMAIL_HOST_USER = 'noreply@example.com' 
-EMAIL_HOST_PASSWORD = "ffkt ubzl qwwn mgzy" 
-EMAIL_PORT = '587'
-EMAIL_USE_TLS = True
+EMAIL_BACKEND = os.getenv('EMAIL_BACKEND')
+EMAIL_HOST = os.getenv('EMAIL_HOST')
+EMAIL_HOST_USER = os.getenv('EMAIL_HOST_USER')
+EMAIL_HOST_PASSWORD = os.getenv('EMAIL_HOST_PASSWORD')
+EMAIL_PORT = os.getenv('EMAIL_PORT')
+EMAIL_USE_TLS = os.getenv('EMAIL_USE_TLS')
 
 
 # When user click on logout button below will be used to redirect user to login page
@@ -188,3 +191,18 @@ MESSAGE_TAGS = {
 
 STRIPE_SECRET_KEY = os.getenv('STRIPE_SECRET_KEY')
 STRIPE_PUBLIC_KEY = os.getenv('STRIPE_PUBLIC_KEY')
+
+
+# Cloudinary configuration
+CLOUDINARY_STORAGE = {
+    'CLOUD_NAME': os.getenv('CLOUDINARY_CLOUD_NAME'),
+    'API_KEY': os.getenv('CLOUDINARY_API_KEY'),
+    'API_SECRET': os.getenv('CLOUDINARY_API_SECRET'),
+}
+
+
+DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
+
+
+
+
