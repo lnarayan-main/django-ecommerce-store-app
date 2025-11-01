@@ -34,7 +34,7 @@ DEBUG = os.getenv('DJANGO_DEBUG', 'False') == 'True'
 
 FLY_APP_NAME = os.getenv('FLY_APP_NAME', '')
 
-ALLOWED_HOSTS = ['localhost', '127.0.0.1']
+ALLOWED_HOSTS = ['open-bazaar.onrender.com', 'localhost', '127.0.0.1']
 
 if FLY_APP_NAME:
     ALLOWED_HOSTS.append(f'{FLY_APP_NAME}.fly.dev')
