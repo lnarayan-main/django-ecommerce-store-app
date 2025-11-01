@@ -1,7 +1,10 @@
 services:
   - type: web
-    name: sellingpoint
+    name: custom_authentication
     env: python
-    buildCommand: pip install -r requirements.txt
-    startCommand: gunicorn your_project.wsgi:application
-    autoDeploy: true
+    buildCommand: |
+      pip install -r requirements.txt
+      npm run build  # if using Tailwind
+      python manage.py collectstatic --noinput
+      python manage.py migrate --noinput
+    startCommand: gunicorn custom_authentication.wsgi:application
