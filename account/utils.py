@@ -14,7 +14,7 @@ class SendEmailThread(threading.Thread):
         self.email.send()
 
 def send_activation_email(recipient_email, activation_url):
-    subject = "Activate your account on " + settings.SITE_NAME
+    subject = "Activate your account on " + settings.APP_NAME
     from_email = settings.FROM_EMAIL
     to_email = [recipient_email]
 
@@ -31,7 +31,7 @@ def send_activation_email(recipient_email, activation_url):
 
 
 def send_reset_password_email(recipient_email, reset_url):
-    subject = "Reset your password on " + settings.SITE_NAME
+    subject = "Reset your password on " + settings.APP_NAME
     from_email = settings.FROM_EMAIL
     to_email = [recipient_email]
 

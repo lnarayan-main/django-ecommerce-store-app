@@ -13,6 +13,7 @@ https://docs.djangoproject.com/en/5.2/ref/settings/
 from pathlib import Path
 from django.contrib.messages import constants as messages
 import os
+import dj_database_url
 
 from dotenv import load_dotenv
 # Load .env
@@ -26,13 +27,17 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/5.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-@(vg%6)%i9f=q34dcapf!cdg*!=(g34b4e$2j*s$zlolg1je)#'
+SECRET_KEY = os.getenv('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = os.getenv('DJANGO_DEBUG', 'False') == 'True'
 
-ALLOWED_HOSTS = []
+FLY_APP_NAME = os.getenv('FLY_APP_NAME', '')
 
+ALLOWED_HOSTS = ['localhost', '127.0.0.1']
+
+if FLY_APP_NAME:
+    ALLOWED_HOSTS.append(f'{FLY_APP_NAME}.fly.dev')
 
 # Application definition
 
@@ -91,11 +96,33 @@ WSGI_APPLICATION = 'custom_authentication.wsgi.application'
 # https://docs.djangoproject.com/en/5.2/ref/settings/#databases
 
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
-    }
+    # 'default': {
+    #     'ENGINE': 'django.db.backends.sqlite3',
+    #     'NAME': BASE_DIR / 'db.sqlite3',
+    # },
+
+    'default': dj_database_url.config(
+        default=os.getenv('DATABASE_URL', f'sqlite:///{BASE_DIR / "db.sqlite3"}'),
+        conn_max_age=600,
+        conn_health_checks=True,
+    )
 }
+
+
+if not DEBUG:
+    # CRITICAL: These settings enforce HTTPS and secure cookies in production
+    # Fly.io forces HTTPS, but these settings ensure Django recognizes it.
+    SECURE_SSL_REDIRECT = True
+    SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
+    
+    # Force cookies to only be sent over HTTPS
+    SESSION_COOKIE_SECURE = True
+    CSRF_COOKIE_SECURE = True
+
+    # HSTS: Highly Recommended for security
+    SECURE_HSTS_SECONDS = 31536000 # 1 year
+    SECURE_HSTS_INCLUDE_SUBDOMAINS = True
+    SECURE_HSTS_PRELOAD = True
 
 
 # Password validation
@@ -151,9 +178,8 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 # To Use Custom User Model
 AUTH_USER_MODEL = 'account.User'
 
-SITE_DOMAIN = 'http://127.0.0.1:8000/'
+SITE_DOMAIN = os.getenv('SITE_DOMAIN')
 
-SITE_NAME = "Mini eCommerce Store"
 
 FROM_EMAIL = os.getenv('FROM_EMAIL')
 
