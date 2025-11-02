@@ -5,7 +5,7 @@
             <!-- Left section: Logo -->
             <a href="{% url 'home' %}" class="flex items-center">
               <div>
-                  <img src="{% static '/assets/images/selling-point-logo.png' %}" alt="Logo" class="h-14 w-auto mr-4">
+                  <img src="{% static '/assets/images/logo_header.png' %}" alt="Logo" class="h-14 w-auto mr-4">
               </div>
             </a>
 
@@ -28,7 +28,7 @@
                    {% if header_categories %}
                     {% for category in header_categories|slice:":4" %}
                     <li class="relative group" x-data="{ open: false }">
-                        <a href="shop.html" @mouseover="open = true" @mouseleave="open = false" href="#" class="hover:text-secondary font-semibold flex items-center">
+                        <a href="{% url 'products_by_category' category.id %}" @mouseover="open = true" @mouseleave="open = false" href="#" class="hover:text-secondary font-semibold flex items-center">
                             {{ category.name }}
                             <i :class="open ? 'fas fa-chevron-up ml-1 text-xs' : 'fas fa-chevron-down ml-1 text-xs'"></i>
                         </a>
@@ -53,8 +53,6 @@
                     </li>
                     {% endfor %}
                    {% endif %}
-
-                  <li><a href="404.html" class="hover:text-secondary font-semibold">404 page</a></li>
               </ul>
             </nav>
 
@@ -105,52 +103,51 @@
     <!-- Mobile menu -->
     <nav id="mobile-menu-placeholder" class="mobile-menu hidden flex flex-col items-center space-y-8 lg:hidden">
       <ul class="w-full">
-          <li><a href="index.html" class="hover:text-secondary font-bold block py-2">Home</a></li>
+          <li><a href="{% url 'home' %}" class="hover:text-secondary font-bold block py-2">Home</a></li>
 
           <!-- Men Dropdown -->
-          <li class="relative group" x-data="{ open: false }">
-              <a @click="open = !open; $event.preventDefault()" class="hover:text-secondary font-bold block py-2 flex justify-center items-center cursor-pointer">
-                <span>Men</span>
-                <span @click.stop="open = !open">
-                    <i :class="open ? 'fas fa-chevron-up text-xs ml-2' : 'fas fa-chevron-down text-xs ml-2'"></i>
-                </span>
-              </a>
-              <ul class="mobile-dropdown-menu" x-show="open" x-transition class="space-y-2">
-                  <li><a href="shop.html" class="hover:text-secondary font-bold block pt-2 pb-3">Shop Men</a></li>
-                  <li><a href="single-product-page.html" class="hover:text-secondary font-bold block py-2">Men item 1</a></li>
-                  <li><a href="single-product-page.html" class="hover:text-secondary font-bold block py-2">Men item 2</a></li>
-                  <li><a href="single-product-page.html" class="hover:text-secondary font-bold block py-2">Men item 3</a></li>
-              </ul>
-          </li>
-
-          <!-- Women Dropdown -->
-          <li class="relative group" x-data="{ open: false }">
-              <a @click="open = !open; $event.preventDefault()" class="hover:text-secondary font-bold block py-2 flex justify-center items-center cursor-pointer">
-                    <span>Women</span>
+          {% if header_categories %}
+            {% for category in header_categories|slice:":4" %}
+            <li class="relative group" x-data="{ open: false }">
+                <a @click="open = !open; $event.preventDefault()" class="hover:text-secondary font-bold block py-2 flex justify-center items-center cursor-pointer">
+                    <span>{{ category.name }}</span>
                     <span @click.stop="open = !open">
                         <i :class="open ? 'fas fa-chevron-up text-xs ml-2' : 'fas fa-chevron-down text-xs ml-2'"></i>
                     </span>
-              </a>
-              <ul class="mobile-dropdown-menu" x-show="open" x-transition class="pl-4 space-y-2">
-                  <li><a href="shop.html" class="hover:text-secondary font-bold block py-2">Shop Women</a></li>
-                  <li><a href="single-product-page.html" class="hover:text-secondary font-bold block py-2">Women item 1</a></li>
-                  <li><a href="single-product-page.html" class="hover:text-secondary font-bold block py-2">Women item 2</a></li>
-                  <li><a href="single-product-page.html" class="hover:text-secondary font-bold block py-2">Women item 3</a></li>
-              </ul>
-          </li>
-
-          <li><a href="shop.html" class="hover:text-secondary font-bold block py-2">Shop</a></li>
-          <li><a href="single-product-page.html" class="hover:text-secondary font-bold block py-2">Product</a></li>
-          <li><a href="404.html" class="hover:text-secondary font-bold block py-2">404 page</a></li>
-          <li><a href="checkout.html" class="hover:text-secondary font-bold block py-2">Checkout</a></li>
+                </a>
+                <ul class="mobile-dropdown-menu" x-show="open" x-transition class="space-y-2">
+                    {% if category.subcategories.all %}
+                        {% for child in category.subcategories.all %}
+                        <li><a href="{% url 'products_by_category' child.id %}" class="hover:text-secondary font-bold block pt-2 pb-3">{{ child.name }}</a></li>
+                        {% endfor %}
+                    {% endif %}
+                </ul>
+            </li>
+            {% endfor %}
+        {% endif %}
       </ul>
       <div class="flex flex-col mt-6 space-y-2 items-center">
-          <a href="register.html"
-              class="bg-primary hover:bg-transparent text-white hover:text-primary border border-primary font-semibold px-4 py-2 rounded-full inline-block flex items-center justify-center min-w-[110px]">Register</a>
-          <a href="register.html"
+        {% if user.is_authenticated %}
+            {% if user.is_seller %}
+                <a href="{% url 'seller_dashboard' %}"
+                    class="bg-primary hover:bg-transparent text-white hover:text-primary border border-primary font-semibold px-4 py-2 rounded-full inline-block flex items-center justify-center min-w-[110px]">Dashboard</a>
+            {% elif user.is_customer %}
+                <a href="{% url 'customer_dashboard' %}"
+                    class="bg-primary hover:bg-transparent text-white hover:text-primary border border-primary font-semibold px-4 py-2 rounded-full inline-block flex items-center justify-center min-w-[110px]">Dashboard</a>
+            {% endif %}
+            <form method="POST" action="{% url 'logout' %}">
+                    {% csrf_token %}
+                <button
+                    class="bg-primary hover:bg-transparent text-white hover:text-primary border border-primary font-semibold px-4 py-2 rounded-full inline-block flex items-center justify-center min-w-[110px]">Logout</button>
+            </form>
+        {% else %}
+            <a href="{% url 'register' %}"
+                class="bg-primary hover:bg-transparent text-white hover:text-primary border border-primary font-semibold px-4 py-2 rounded-full inline-block flex items-center justify-center min-w-[110px]">Register</a>
+          <a href="{% url 'login' %}"
               class="bg-primary hover:bg-transparent text-white hover:text-primary border border-primary font-semibold px-4 py-2 rounded-full inline-block flex items-center justify-center min-w-[110px]">Login</a>
-          <a href="register.html"
-              class="bg-primary hover:bg-transparent text-white hover:text-primary border border-primary font-semibold px-4 py-2 rounded-full inline-block flex items-center justify-center min-w-[110px]">Cart -&nbsp;<span>5</span>&nbsp;items</a>
+        {% endif %}
+          <a href="{% url 'view_cart' %}"
+              class="bg-primary hover:bg-transparent text-white hover:text-primary border border-primary font-semibold px-4 py-2 rounded-full inline-block flex items-center justify-center min-w-[110px]">Cart -&nbsp;<span>{% if cart_item_count > 0 %} {{ cart_item_count }} {% endif %}</span>&nbsp;items</a>
       </div>
       <!-- Search field -->
       <div 

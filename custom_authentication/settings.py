@@ -76,7 +76,8 @@ ROOT_URLCONF = 'custom_authentication.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        # 'DIRS': [],
+        'DIRS': [BASE_DIR / 'templates'],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -204,7 +205,7 @@ LOGIN_URL = 'login'
 
 PASSWORD_RESET_TIMEOUT = 3600 # 1 hour (3600 seconds)
 
-APP_NAME = 'Selling Point' 
+APP_NAME = os.getenv('APP_NAME', 'Django App') 
 
 SHIPPING_CHARGE = 5 # $5
 TAX_PERCENT = 2 # 2%

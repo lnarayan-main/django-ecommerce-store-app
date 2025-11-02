@@ -1,0 +1,51 @@
+{% extends 'account/base.html' %}
+{% load static %}
+
+{% block title %}Privacy Policy | MyApp{% endblock %}
+
+{% block content %}
+<section class="max-w-4xl mx-auto py-10 px-6 text-gray-800">
+  <h1 class="text-4xl font-bold mb-6">Privacy Policy</h1>
+
+  <p class="mb-4">Last updated: October 2025</p>
+
+  <p class="mb-4">
+    At <strong>MyApp</strong>, we are committed to protecting your privacy. This Privacy Policy
+    explains how we collect, use, and safeguard your personal information when you use our platform.
+  </p>
+
+  <h2 class="text-2xl font-semibold mt-6 mb-3">1. Information We Collect</h2>
+  <ul class="list-disc pl-6 space-y-2">
+    <li>Personal data such as name, email address, and profile image during registration.</li>
+    <li>Usage data, including login activity, browser type, and device information.</li>
+    <li>Uploaded media files such as photos or videos linked to your account.</li>
+  </ul>
+
+  <h2 class="text-2xl font-semibold mt-6 mb-3">2. How We Use Your Information</h2>
+  <p class="mb-4">
+    We use the collected information to provide, maintain, and improve our services, including:
+  </p>
+  <ul class="list-disc pl-6 space-y-2">
+    <li>Authenticating and managing user accounts.</li>
+    <li>Processing uploads and managing media content securely via Cloudinary.</li>
+    <li>Sending notifications or updates related to your account.</li>
+  </ul>
+
+  <h2 class="text-2xl font-semibold mt-6 mb-3">3. Data Security</h2>
+  <p class="mb-4">
+    We store media files securely in Cloudinary and ensure your data is encrypted in transit. Only authorized
+    personnel can access sensitive user data for maintenance or support purposes.
+  </p>
+
+  <h2 class="text-2xl font-semibold mt-6 mb-3">4. Your Rights</h2>
+  <p class="mb-4">
+    You may access, update, or delete your personal data by logging into your account or contacting support.
+  </p>
+
+  <h2 class="text-2xl font-semibold mt-6 mb-3">5. Contact Us</h2>
+  <p>
+    For questions about this Privacy Policy, please contact us at:
+    <a href="mailto:support@myapp.com" class="text-blue-600 hover:underline">support@myapp.com</a>
+  </p>
+</section>
+{% endblock %}

@@ -60,6 +60,12 @@ def login_view(request):
 
 
 def register_view(request):
+    if request.user.is_authenticated:
+        if request.user.is_seller:
+            return redirect('seller_dashboard')
+        elif request.user.is_customer:
+            return redirect('customer_dashboard')
+        return redirect('home')
     if request.method == 'POST':
         form = RegistrationForm(request.POST)
         if form.is_valid():

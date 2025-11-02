@@ -1,0 +1,53 @@
+{% extends 'account/base.html' %}
+{% load static %}
+
+{% block title %}Terms of Service | MyApp{% endblock %}
+
+{% block content %}
+<section class="max-w-4xl mx-auto py-10 px-6 text-gray-800">
+  <h1 class="text-4xl font-bold mb-6">Terms of Service</h1>
+
+  <p class="mb-4">Last updated: October 2025</p>
+
+  <p class="mb-4">
+    These Terms of Service govern your use of the <strong>MyApp</strong> platform.
+    By accessing or using our service, you agree to these terms.
+  </p>
+
+  <h2 class="text-2xl font-semibold mt-6 mb-3">1. Account Responsibilities</h2>
+  <p class="mb-4">
+    You are responsible for maintaining the confidentiality of your login credentials and for all
+    activities under your account. You agree not to share your password or impersonate another user.
+  </p>
+
+  <h2 class="text-2xl font-semibold mt-6 mb-3">2. Content Ownership</h2>
+  <p class="mb-4">
+    Any media you upload (images, videos, etc.) remains your property. By uploading content,
+    you grant us a non-exclusive license to display and process it within our platform.
+  </p>
+
+  <h2 class="text-2xl font-semibold mt-6 mb-3">3. Prohibited Activities</h2>
+  <ul class="list-disc pl-6 space-y-2">
+    <li>Uploading illegal, harmful, or copyrighted material without rights.</li>
+    <li>Attempting to breach system security or exploit vulnerabilities.</li>
+    <li>Using automated bots to interact with the service.</li>
+  </ul>
+
+  <h2 class="text-2xl font-semibold mt-6 mb-3">4. Termination</h2>
+  <p class="mb-4">
+    We reserve the right to suspend or terminate accounts that violate our policies or terms.
+  </p>
+
+  <h2 class="text-2xl font-semibold mt-6 mb-3">5. Limitation of Liability</h2>
+  <p class="mb-4">
+    We are not liable for any data loss or damages resulting from unauthorized access, server outages,
+    or third-party service interruptions.
+  </p>
+
+  <h2 class="text-2xl font-semibold mt-6 mb-3">6. Contact</h2>
+  <p>
+    For any questions regarding these Terms, email us at
+    <a href="mailto:legal@myapp.com" class="text-blue-600 hover:underline">legal@myapp.com</a>.
+  </p>
+</section>
+{% endblock %}

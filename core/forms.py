@@ -1,5 +1,5 @@
 from django import forms
-from core.models import Address
+from core.models import Address, NewsletterSubscriber
 
 class AddressForm(forms.ModelForm):
     class Meta:
@@ -56,4 +56,17 @@ class AddressForm(forms.ModelForm):
             'is_default': forms.CheckboxInput(attrs={
                 'class': 'rounded text-primary focus:ring-primary'
             }),
+        }
+
+
+class NewsletterSubscriptionForm(forms.ModelForm):
+    class Meta:
+        model = NewsletterSubscriber
+        fields = ['email']
+       
+        widgets = {
+            'email': forms.EmailInput(attrs={
+                'placeholder': 'Enter your email address',
+                'class': 'w-full flex-1 rounded-full px-3 py-2 border border-gray-300 text-gray-700 placeholder-gray-500 focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary' # Add a class for styling
+            })
         }
