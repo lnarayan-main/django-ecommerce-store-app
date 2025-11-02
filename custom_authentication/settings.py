@@ -43,7 +43,6 @@ if FLY_APP_NAME:
 # Application definition
 
 INSTALLED_APPS = [
-    'cloudinary_storage',
 
     'django.contrib.admin',
     'django.contrib.auth',
@@ -51,6 +50,8 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'cloudinary_storage',
+    'cloudinary',
     # My apps
     'account',
     'customer',
@@ -58,19 +59,7 @@ INSTALLED_APPS = [
     'core',
     'cart',
 
-    'cloudinary',
 ]
-
-
-STORAGES = {
-    "default": {
-        # Keep your default storage here (often for media, not static)
-        "BACKEND": "django.core.files.storage.FileSystemStorage", 
-    },
-    "staticfiles": {
-        "BACKEND": "whitenoise.storage.CompressedManifestStaticFilesStorage", 
-    },
-}
 
 
 # STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
@@ -91,8 +80,8 @@ CLOUDINARY_STORAGE = {
 }
 
 MIDDLEWARE = [
-    'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.middleware.security.SecurityMiddleware',
+    'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -100,6 +89,19 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
+
+
+
+STORAGES = {
+    "default": {
+        # "BACKEND": "django.core.files.storage.FileSystemStorage", 
+        "BACKEND": "cloudinary_storage.storage.MediaCloudinaryStorage",
+    },
+    "staticfiles": {
+        "BACKEND": "whitenoise.storage.CompressedManifestStaticFilesStorage", 
+    },
+}
+
 
 ROOT_URLCONF = 'custom_authentication.urls'
 
@@ -244,7 +246,7 @@ STRIPE_PUBLIC_KEY = os.getenv('STRIPE_PUBLIC_KEY')
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.2/howto/static-files/
 
-DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
+# DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
 STATIC_URL = '/static/'
 
 STATICFILES_DIRS = [
@@ -254,8 +256,8 @@ STATICFILES_DIRS = [
 # STATICFILES_STORAGE = 'cloudinary_storage.storage.StaticHashedCloudinaryStorage'
 # STATICFILES_STORAGE = 'cloudinary_storage.storage.StaticCloudinaryStorage'
 
-STATIC_ROOT = BASE_DIR / "staticfiles"
-# STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
+# STATIC_ROOT = BASE_DIR / "staticfiles"
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 
 MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'media'
