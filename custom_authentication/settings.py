@@ -61,7 +61,6 @@ INSTALLED_APPS = [
     'cloudinary',
 ]
 
-# STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
 # cloudinary.config(
 #     cloud_name=os.getenv('CLOUDINARY_CLOUD_NAME'),
@@ -79,7 +78,6 @@ CLOUDINARY_STORAGE = {
 }
 
 MIDDLEWARE = [
-    # 'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
