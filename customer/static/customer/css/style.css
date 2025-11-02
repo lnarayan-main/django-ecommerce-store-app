@@ -1,0 +1,56 @@
+/* Custom Tailwind Configuration (to match your brand color) */
+:root {
+  --color-primary: #f00060; /* Used as the brand color (pink/red) */
+}
+.bg-primary-500 {
+  background-color: var(--color-primary);
+}
+.text-primary-500 {
+  color: var(--color-primary);
+}
+.border-primary-500 {
+  border-color: var(--color-primary);
+}
+.hover\:bg-primary-600:hover {
+  background-color: #d10053;
+}
+.focus\:ring-primary-500:focus {
+  --tw-ring-color: var(--color-primary);
+}
+
+/* Ensure smooth transitions for tab switching */
+.content-section {
+  /* display: none; */
+  animation: fadeIn 0.3s ease-in-out;
+}
+
+/* .content-section.active {
+  display: block;
+} */
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(5px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+
+.nav-link.active {
+    /* Background color using the custom primary variable */
+    background-color: var(--color-primary) !important; 
+    /* Text color */
+    color: white !important; 
+    /* Shadow */
+    box-shadow: var(--tw-ring-offset-shadow, 0 0 #0000), var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow); /* Mimics shadow-md */
+    /* Ensure hover state is also consistent with the active class */
+}
+
+/* Define the hover state when the link is active */
+.nav-link.active:hover {
+    background-color: #d10053 !important; /* Matches hover:bg-primary-600 */
+}

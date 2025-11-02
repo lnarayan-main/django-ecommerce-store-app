@@ -10,7 +10,7 @@ pip-wheel-metadata/
 db.sqlite3
 z_tailwind
 media
-static
+# static
 
 # Python bytecode
 __pycache__/
