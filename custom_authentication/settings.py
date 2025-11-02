@@ -62,6 +62,19 @@ INSTALLED_APPS = [
 ]
 
 
+STORAGES = {
+    "default": {
+        # Keep your default storage here (often for media, not static)
+        "BACKEND": "django.core.files.storage.FileSystemStorage", 
+    },
+    "staticfiles": {
+        "BACKEND": "whitenoise.storage.CompressedManifestStaticFilesStorage", 
+    },
+}
+
+
+# STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
+
 # cloudinary.config(
 #     cloud_name=os.getenv('CLOUDINARY_CLOUD_NAME'),
 #     api_key=os.getenv('CLOUDINARY_API_KEY'),
@@ -78,6 +91,7 @@ CLOUDINARY_STORAGE = {
 }
 
 MIDDLEWARE = [
+    'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -231,7 +245,6 @@ STRIPE_PUBLIC_KEY = os.getenv('STRIPE_PUBLIC_KEY')
 # https://docs.djangoproject.com/en/5.2/howto/static-files/
 
 DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
-# STATICFILES_STORAGE = 'cloudinary_storage.storage.StaticCloudinaryStorage'
 STATIC_URL = '/static/'
 
 STATICFILES_DIRS = [
@@ -239,7 +252,7 @@ STATICFILES_DIRS = [
 ]
 
 # STATICFILES_STORAGE = 'cloudinary_storage.storage.StaticHashedCloudinaryStorage'
-STATICFILES_STORAGE = 'cloudinary_storage.storage.StaticCloudinaryStorage'
+# STATICFILES_STORAGE = 'cloudinary_storage.storage.StaticCloudinaryStorage'
 
 STATIC_ROOT = BASE_DIR / "staticfiles"
 # STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
