@@ -19,7 +19,7 @@ error_403_html = """
             }
             .bg-primary-500 { background-color: var(--color-primary); }
             .text-primary-500 { color: var(--color-primary); }
-            .hover\:bg-primary-600:hover { background-color: var(--color-primary-dark); }
+            r".hover\:bg-primary-600:hover" { background-color: var(--color-primary-dark); }
             
             /* Ensure the body fills the viewport height */
             body { min-height: 100vh; }
