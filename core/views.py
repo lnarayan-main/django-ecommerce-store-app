@@ -1,5 +1,5 @@
 from django.shortcuts import render, get_object_or_404, redirect
-from seller.models import Product
+from seller.models import Product, Size, Brand, Color
 from core.models import Category, Order
 from django.core.paginator import Paginator
 from core.utils import get_sibling_categories
@@ -57,6 +57,10 @@ def products_by_category(request, category_id):
    
     sibling_categories = get_sibling_categories(category_id)
 
+    sizes = Size.objects.all()
+    brands = Brand.objects.all()
+    colors = Color.objects.all()
+
     paginator = Paginator(products, 6)
     page_number = request.GET.get('page')
     page_obj = paginator.get_page(page_number)
@@ -64,6 +68,9 @@ def products_by_category(request, category_id):
     contenxt = {
         'products': page_obj,
         'categories': categories,
+        'sizes': sizes,
+        'brands': brands,
+        'colors': colors,
         'sibling_categories': sibling_categories,
         'current_category': current_category,
     }

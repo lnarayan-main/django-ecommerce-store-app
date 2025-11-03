@@ -81,54 +81,42 @@
                     <div class="mb-6 pb-8 border-b border-gray-line">
                         <h3 class="text-lg font-semibold mb-6">Size</h3>
                         <div class="space-y-2">
-                            <label class="flex items-center">
-                                <input type="checkbox" class="form-checkbox custom-checkbox">
-                                <span class="ml-2">S (30)</span>
-                            </label>
-                            <label class="flex items-center">
-                                <input type="checkbox" class="form-checkbox custom-checkbox">
-                                <span class="ml-2">M (44)</span>
-                            </label>
-                            <label class="flex items-center">
-                                <input type="checkbox" class="form-checkbox custom-checkbox">
-                                <span class="ml-2">L (22)</span>
-                            </label>
+                            {% if sizes %}
+                                {% for size in sizes %}
+                                <label class="flex items-center">
+                                    <input type="checkbox" class="form-checkbox custom-checkbox">
+                                    <span class="ml-2">{{ size.name }}</span>
+                                </label>
+                                {% endfor %}
+                            {% endif %}
                         </div>
                     </div>
                     <!-- Color Filter -->
                     <div class="mb-6 pb-8 border-b border-gray-line">
                         <h3 class="text-lg font-semibold mb-6">Color</h3>
                         <div class="space-y-2">
-                            <label class="flex items-center custom-color-checkbox" data-color="#ff0000">
-                                <input type="checkbox" class="form-checkbox custom-checkbox">
-                                <span class="ml-2">Red</span>
-                            </label>
-                            <label class="flex items-center custom-color-checkbox" data-color="#0000ff">
-                                <input type="checkbox" class="form-checkbox custom-checkbox">
-                                <span class="ml-2">Blue</span>
-                            </label>
-                            <label class="flex items-center custom-color-checkbox" data-color="#00ff00">
-                                <input type="checkbox" class="form-checkbox custom-checkbox">
-                                <span class="ml-2">Green</span>
-                            </label>
+                            {% if colors %}
+                                {% for color in colors %}
+                                <label class="flex items-center custom-color-checkbox" data-color="#ff0000">
+                                    <input type="checkbox" class="form-checkbox custom-checkbox">
+                                    <span class="ml-2 p-1 text-white" style="background: {{ color.hex_code }}">{{ color.name }}</span>
+                                </label>
+                                {% endfor %}
+                            {% endif %}
                         </div>
                     </div>
                     <!-- Brand Filter -->
                     <div class="mb-6 pb-8 border-b border-gray-line">
                         <h3 class="text-lg font-semibold mb-6">Brand</h3>
                         <div class="space-y-2">
-                            <label class="flex items-center">
-                                <input type="checkbox" class="form-checkbox custom-checkbox">
-                                <span class="ml-2">Nike</span>
-                            </label>
-                            <label class="flex items-center">
-                                <input type="checkbox" class="form-checkbox custom-checkbox">
-                                <span class="ml-2">Adidas</span>
-                            </label>
-                            <label class="flex items-center">
-                                <input type="checkbox" class="form-checkbox custom-checkbox">
-                                <span class="ml-2">Puma</span>
-                            </label>
+                            {% if brands %}
+                                {% for brand in brands %}
+                                <label class="flex items-center">
+                                    <input type="checkbox" class="form-checkbox custom-checkbox">
+                                    <span class="ml-2">{{ brand.name }}</span>
+                                </label>
+                                {% endfor %}
+                            {% endif %}
                         </div>
                     </div>
                     <!-- Rating Filter -->

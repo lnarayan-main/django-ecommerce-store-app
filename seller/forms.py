@@ -36,12 +36,15 @@ class ProductForm(forms.ModelForm):
             'name',
             'slug',
             'category',
+            'brand',
             'description',
             'price',
             'discount_price',
             'stock',
             'sku',
             'is_active',
+            'available_sizes',     
+            'available_colors', 
         ]
 
         widgets = {
@@ -79,6 +82,20 @@ class ProductForm(forms.ModelForm):
             }),
             'is_active': forms.CheckboxInput(attrs={
                 'class': 'form-checkbox h-5 w-5 text-primary focus:ring-primary'
+            }),
+
+            'brand': forms.Select(attrs={
+                'class': 'w-full border rounded-md p-2 focus:ring-2 focus:ring-primary focus:outline-none',
+            }),
+
+            'available_sizes': forms.SelectMultiple(attrs={
+                'class': 'w-full border rounded-md p-2 focus:ring-2 focus:ring-primary focus:outline-none h-32', 
+                'size': '5', # Shows 5 options at once
+            }),
+            'available_colors': forms.SelectMultiple(attrs={
+                # Adjusted size for better visibility of multiple selections
+                'class': 'w-full border rounded-md p-2 focus:ring-2 focus:ring-primary focus:outline-none h-32',
+                'size': '3', # Shows 3 options at once
             }),
         }
 

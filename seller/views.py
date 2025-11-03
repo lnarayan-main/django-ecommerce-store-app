@@ -212,17 +212,38 @@ def delete_product_image(request, image_id):
 
 
 
+# @login_and_role_required('seller')
+# def product_delete(request, product_id):
+#     product = get_object_or_404(Product, id=product_id)
+    
+#     for img in product.images.all():
+#         if img.image and os.path.isfile(img.image.path):
+#             os.remove(img.image.path)
+#         img.delete()
+
+#     product.delete()
+#     messages.success(request, 'Product deleted successfully.')
+#     return redirect('products_list')
+
 @login_and_role_required('seller')
 def product_delete(request, product_id):
-    product = get_object_or_404(Product, id=product_id)
+    product = get_object_or_404(Product, id=product_id, seller=request.user)
     
+    # Delete all related product images from Cloudinary
     for img in product.images.all():
-        if img.image and os.path.isfile(img.image.path):
-            os.remove(img.image.path)
-        img.delete()
+        try:
+            if img.image:
+                # Delete from Cloudinary by public_id
+                destroy(img.image.public_id)
+        except Exception as e:
+            print(f"⚠️ Cloudinary delete failed for image {img.id}: {e}")
+        finally:
+            # Delete DB record anyway
+            img.delete()
 
+    # Delete the product itself
     product.delete()
-    messages.success(request, 'Product deleted successfully.')
+    messages.success(request, "🗑️ Product and all related images deleted successfully!")
     return redirect('products_list')
 
 @login_and_role_required("seller")

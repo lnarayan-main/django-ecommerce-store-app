@@ -51,13 +51,13 @@
                     {% endif %}
                 </div>
 
-                <div>
+                <!-- <div>
                     <label class="block text-gray-700 font-medium mb-2">Slug</label>
                     {{ form.slug }}
                     {% if form.slug.errors %}
                         <p class="text-sm text-red-600 mt-1">{{ form.slug.errors|join:", " }}</p>
                     {% endif %}
-                </div>
+                </div> -->
 
                 <div>
                     <label class="block text-gray-700 font-medium mb-2">Category</label>
@@ -66,6 +66,31 @@
                         <p class="text-sm text-red-600 mt-1">{{ form.category.errors|join:", " }}</p>
                     {% endif %}
                 </div>
+
+                <div>
+                    <label class="block text-gray-700 font-medium mb-2">Brand</label>
+                    {{ form.brand }}
+                    {% if form.brand.errors %}
+                        <p class="text-sm text-red-600 mt-1">{{ form.brand.errors|join:", " }}</p>
+                    {% endif %}
+                </div>
+
+                <div>
+                    <label class="block text-gray-700 font-medium mb-2">Available Sizes</label>
+                    {{ form.available_sizes }}
+                    {% if form.available_sizes.errors %}
+                        <p class="text-sm text-red-600 mt-1">{{ form.available_sizes.errors|join:", " }}</p>
+                    {% endif %}
+                </div>
+
+                <div>
+                    <label class="block text-gray-700 font-medium mb-2">Available Colors</label>
+                    {{ form.available_colors }}
+                    {% if form.available_colors.errors %}
+                        <p class="text-sm text-red-600 mt-1">{{ form.available_colors.errors|join:", " }}</p>
+                    {% endif %}
+                </div>
+
 
                 <div>
                     <label class="block text-gray-700 font-medium mb-2">Price</label>
@@ -90,13 +115,13 @@
                     {% endif %}
                 </div>
 
-                <div>
+                <!-- <div>
                     <label class="block text-gray-700 font-medium mb-2">SKU</label>
                     {{ form.sku }}
                     {% if form.sku.errors %}
                         <p class="text-sm text-red-600 mt-1">{{ form.sku.errors|join:", " }}</p>
                     {% endif %}
-                </div>
+                </div> -->
             </div>
 
             <!-- Description -->
