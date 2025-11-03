@@ -2,12 +2,23 @@ from django.shortcuts import render, redirect, get_object_or_404
 from core.decorators import login_and_role_required
 from django.contrib.auth.forms import PasswordChangeForm
 from django.contrib import messages
-from core.models import Order, Address
+from core.models import Order, Address, Payment
 from core.forms import AddressForm
+from django.db.models import Sum
 
 @login_and_role_required("customer")
 def dashboard(request):
-    return render(request, 'customer/dashboard.html')
+    orders_count = Order.objects.filter(user=request.user).all().count()
+    
+    total_spent_query = Payment.objects.filter(user=request.user).aggregate(total_sum=Sum('amount'))
+
+    total_spent = total_spent_query['total_sum'] or 0.00
+
+    context = {
+        'orders_count': orders_count,
+        'total_spent': total_spent,
+    }
+    return render(request, 'customer/dashboard.html', context)
 
 
 @login_and_role_required("customer")

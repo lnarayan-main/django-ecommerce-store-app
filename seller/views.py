@@ -4,13 +4,13 @@ from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.forms import PasswordChangeForm
 from core.decorators import login_and_role_required
 from seller.models import Product, ProductImage
-from django.db.models import Q
+from django.db.models import Q, Sum
 from django.core.paginator import Paginator
 from seller.forms import ProductForm, ProductImageForm
 from django.db import transaction
 import os
 from core.forms import AddressForm
-from core.models import Address, Order
+from core.models import Address, Order, Payment
 
 from cloudinary.uploader import destroy
 from urllib.parse import urlparse
@@ -18,7 +18,17 @@ from urllib.parse import urlparse
 
 @login_and_role_required("seller")
 def dashboard(request):
-    return render(request, 'seller/dashboard.html')
+    orders_count = Order.objects.filter(user=request.user).all().count()
+    
+    total_spent_query = Payment.objects.filter(user=request.user).aggregate(total_sum=Sum('amount'))
+
+    total_spent = total_spent_query['total_sum'] or 0.00
+
+    context = {
+        'orders_count': orders_count,
+        'total_spent': total_spent,
+    }
+    return render(request, 'seller/dashboard.html', context)
 
 
 @login_and_role_required("seller")

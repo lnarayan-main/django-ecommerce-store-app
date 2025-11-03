@@ -43,11 +43,11 @@
                         <!-- Key Metrics Cards: Highly responsive grid -->
                         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 text-center">
                             <div class="p-4 bg-gray-50 rounded-lg shadow-sm">
-                                <p class="text-3xl font-bold text-primary-500">4</p>
+                                <p class="text-3xl font-bold text-primary-500">{{ orders_count|default:0 }}</p>
                                 <p class="text-sm text-gray-600">Total Orders</p>
                             </div>
                             <div class="p-4 bg-gray-50 rounded-lg shadow-sm">
-                                <p class="text-3xl font-bold text-primary-500">$549.99</p>
+                                <p class="text-3xl font-bold text-primary-500">$5{{ total_spent|default:0|floatformat:2 }}</p>
                                 <p class="text-sm text-gray-600">Total Spent</p>
                             </div>
                             <div class="p-4 bg-gray-50 rounded-lg shadow-sm">
