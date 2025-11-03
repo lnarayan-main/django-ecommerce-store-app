@@ -43,13 +43,14 @@ if FLY_APP_NAME:
 # Application definition
 
 INSTALLED_APPS = [
-
+     # Default Django apps
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    # Third-party apps
     'cloudinary_storage',
     'cloudinary',
     # My apps
@@ -58,7 +59,6 @@ INSTALLED_APPS = [
     'seller',
     'core',
     'cart',
-
 ]
 
 
