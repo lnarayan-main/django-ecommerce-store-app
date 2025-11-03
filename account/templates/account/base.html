@@ -7,7 +7,9 @@
     <title>{% block title %} {% endblock title %} | {{ APP_NAME }}</title>
     <link rel="stylesheet" href="{% static 'account/css/main.css' %}">
 
-    <link rel="icon" type="icon" href="{% static 'assets/images/favicon.png' %}" />
+    <link rel="icon" type="image/png" sizes="32x32" href="{% static 'account/assets/images/favicon.png' %}" />
+    <link rel="icon" type="image/x-icon" href="{% static 'account/assets/images/favicon.ico' %}" />
+
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -15,9 +17,9 @@
 
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">    
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css">
-    <link rel="stylesheet" href="{% static 'assets/css/styles.css' %}">
-    <link rel="stylesheet" href="{% static 'assets/css/vendor/swiper-bundle.css' %}">
-    <link rel="stylesheet" href="{% static 'assets/css/custom.css' %}">
+    <link rel="stylesheet" href="{% static 'account/assets/css/styles.css' %}">
+    <link rel="stylesheet" href="{% static 'account/assets/css/vendor/swiper-bundle.css' %}">
+    <link rel="stylesheet" href="{% static 'account/assets/css/custom.css' %}">
     
     {% block style %}{% endblock style %}
 
@@ -61,9 +63,9 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
 
-    <script src="{% static 'assets/js/vendor/swiper-bundle.js' %}"></script>
+    <script src="{% static 'account/assets/js/vendor/swiper-bundle.js' %}"></script>
     <script src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
-    <script src="{% static 'assets/js/script.js' %}"></script>
+    <script src="{% static 'account/assets/js/script.js' %}"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
 

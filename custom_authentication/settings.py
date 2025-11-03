@@ -71,7 +71,9 @@ CLOUDINARY_STORAGE = {
     'API_SECRET': os.getenv('CLOUDINARY_API_SECRET'),
     'SECURE': True,
     # 'MEDIA_TAG': 'media',
-    'STATICFILES_MANIFEST_ROOT': os.path.join(BASE_DIR, 'manifest'),
+    # 'STATICFILES_MANIFEST_ROOT': os.path.join(BASE_DIR, 'manifest'),
+    'STATICFILES_MANIFEST_ROOT': 'static/',
+    'RESOURCE_TYPE': 'raw',  # important!
 }
 
 MIDDLEWARE = [
@@ -249,8 +251,9 @@ STATIC_URL = '/static/'
 #     BASE_DIR / "static",
 # ]
 
-STATICFILES_DIRS = []
-
+STATICFILES_DIRS = [
+    os.path.join(BASE_DIR, 'static'),  # optional global static folder
+]
 
 
 # STATIC_ROOT = BASE_DIR / "staticfiles"

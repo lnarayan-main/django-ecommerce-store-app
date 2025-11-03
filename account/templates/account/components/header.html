@@ -5,7 +5,7 @@
             <!-- Left section: Logo -->
             <a href="{% url 'home' %}" class="flex items-center">
               <div>
-                  <img src="{% static '/assets/images/logo_header.png' %}" alt="Logo" class="h-14 w-auto mr-4">
+                  <img src="{% static 'account/assets/images/logo_header.png' %}" alt="Logo" class="h-14 w-auto mr-4">
               </div>
             </a>
 
@@ -80,14 +80,14 @@
                 {% endif %}
               <div class="relative group cart-wrapper">
                   <a href="{% url 'view_cart' %}" class="flex">
-                      <img src="{% static '/assets/images/cart-shopping.svg' %}" alt="Cart" class="h-6 w-6 group-hover:scale-120">
+                      <img src="{% static 'account/assets/images/cart-shopping.svg' %}" alt="Cart" class="h-6 w-6 group-hover:scale-120">
                       {% if cart_item_count > 0 %}
                         <span class="bg-red-600 h-4 w-4 border border-amber-700 text-white content-center justify-center text-center rounded-full"><sup>{{ cart_item_count }}</sup></span>
                       {% endif %}
                   </a>
               </div>
               <a id="search-icon" href="javascript:void(0);" class="text-white hover:text-secondary group">
-                  <img src="{% static '/assets/images/search-icon.svg' %}" alt="Search"
+                  <img src="{% static 'account/assets/images/search-icon.svg' %}" alt="Search"
                       class="h-6 w-6 transition-transform transform group-hover:scale-120">
               </a>
               <!-- Search field -->
