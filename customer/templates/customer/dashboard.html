@@ -17,13 +17,13 @@
 {% block content %}
  <section id="shop">
         <div class="container mx-auto">
-            <!-- Filter Toggle Button for Mobile -->
+            <!-- Menu Toggle Button for Mobile -->
             <div class="block md:hidden text-center mb-4">
-                <button id="products-toggle-filters"
-                    class="bg-primary text-white py-2 px-4 rounded-full focus:outline-none">Show Filters</button>
+                <button id="dashboard-toggle-menu"
+                    class="bg-primary text-white py-2 px-4 rounded-full focus:outline-none">Show Menu</button>
             </div>
             <div class="flex flex-col md:flex-row">
-                <!-- Filters -->
+                <!-- Menu -->
                 {% include 'customer/components/customer-sidebars.html' %}
 
                 <!--content-->
@@ -47,7 +47,7 @@
                                 <p class="text-sm text-gray-600">Total Orders</p>
                             </div>
                             <div class="p-4 bg-gray-50 rounded-lg shadow-sm">
-                                <p class="text-3xl font-bold text-primary-500">$5{{ total_spent|default:0|floatformat:2 }}</p>
+                                <p class="text-3xl font-bold text-primary-500">${{ total_spent|default:0|floatformat:2 }}</p>
                                 <p class="text-sm text-gray-600">Total Spent</p>
                             </div>
                             <div class="p-4 bg-gray-50 rounded-lg shadow-sm">

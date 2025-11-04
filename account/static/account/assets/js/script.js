@@ -49,7 +49,7 @@ if (typeof Swiper !== 'undefined') {
     },
     breakpoints: {
         1024: {
-            slidesPerView: 5,
+            slidesPerView: 4,
         },
     },
   });
@@ -161,7 +161,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
 /* shop page filter show/hide */
 document.addEventListener('DOMContentLoaded', function() {
-    const toggleButton = document.getElementById('products-toggle-filters');
+    const toggleButton = document.getElementById('dashboard-toggle-menu');
     const filters = document.getElementById('filters');
 
     if (toggleButton && filters) {
@@ -191,6 +191,26 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 });
 
+/* Dashboard page filter */
+
+/* shop page filter show/hide */
+document.addEventListener('DOMContentLoaded', function() {
+    const toggleButton = document.getElementById('dashboard-toggle-menu');
+    const filters = document.getElementById('dashboard-menu');
+
+    if (toggleButton && filters) {
+        toggleButton.addEventListener('click', function() {
+            if (filters.classList.contains('hidden')) {
+                filters.classList.remove('hidden');
+                this.textContent = 'Hide Menu';
+            } else {
+                filters.classList.add('hidden');
+                this.textContent = 'Show Menu';
+            }
+        });
+    }
+});
+
 /* cart page */
 // document.addEventListener('DOMContentLoaded', function () {
 //   document.querySelectorAll('.cart-increment').forEach(button => {
@@ -212,21 +232,106 @@ document.addEventListener('DOMContentLoaded', function () {
 //   });
 // });
 
-
+// Add to cart
 document.addEventListener('DOMContentLoaded', function() {
     document.querySelectorAll(".addToCartButton").forEach(button => {
         button.addEventListener('click', function() {
             let url = button.dataset.url;
+            button.disabled = true;
             fetch(url, {
                 method: 'POST',
-                headers: {'X-CSRFToken': CSRF_TOKEN },
+                headers: {
+                    'X-CSRFToken': CSRF_TOKEN,
+                    'X-Requested-With': 'XMLHttpRequest',  
+                    'Accept': 'application/json', 
+                },
             })
-            .then(res => res.json())
+             .then(res => {
+                if (res.status === 401) {
+                    return res.json().then(data => {
+                        throw new Error(data.error || "Authentication is required.");
+                    });
+                }
+                if (!res.ok) {
+                    throw new Error(`Server returned status code ${res.status}`);
+                }
+                return res.json(); 
+            })
             .then(data => {
                 if (data.success) showToast('success', data.message);
                 else showToast('error', "Error! add to cart failed.");
             })
-            .catch(err => showToast('error', "Error! Something went wrong: " + err));
+            .catch(error => {
+                showToast('error', error.message || "An unexpected network error occurred.");
+                console.error('Add to Cart Action Failed:', error.message);
+            })
+            .finally(()=>{
+                button.disabled = false;
+            })
+        });
+    });
+});
+
+
+// Toggle Wishlist
+document.addEventListener('DOMContentLoaded', function() {
+    document.querySelectorAll(".wishlist-toggle-btn").forEach(button => {
+        button.addEventListener('click', function() {
+            let url = button.dataset.url;
+            let productId = button.dataset.productId;
+            let type = button.dataset.type;
+            const iconElement = document.getElementById(`${type}-wishlist-icon-${productId}`);
+
+            button.disabled = true;
+            iconElement.classList.add('opacity-50');
+
+            console.log(iconElement);
+
+            console.log("url: ", url);
+            console.log("productId: ", productId);
+
+            fetch(url, {
+                method: 'POST',
+                headers: {
+                    'X-CSRFToken': CSRF_TOKEN,
+                    'X-Requested-With': 'XMLHttpRequest',
+                    'Accept': 'application/json', 
+                 },
+                
+            })
+            .then(res => {
+                if (res.status === 401) {
+                    return res.json().then(data => {
+                        throw new Error(data.error || "Authentication is required.");
+                    });
+                }
+                if (!res.ok) {
+                    throw new Error(`Server returned status code ${res.status}`);
+                }
+                return res.json();  
+            })
+            .then(data => {
+                if (data.status === 'added'){
+                    iconElement.classList.remove('fa-regular', 'text-gray-600');
+                    iconElement.classList.add('fa-solid', 'text-red-500');
+                    showToast('success', data.message);
+                }else if(data.status === 'removed'){
+                    iconElement.classList.remove('fa-solid', 'text-red-500');
+                    iconElement.classList.add('fa-regular', 'text-gray-600');
+                    showToast('success', data.message);
+                }
+                else if (data.status === 'error'){
+                    showToast('error', data.message);
+                } 
+            })
+             .catch(error => {
+                showToast('error', error.message || "An unexpected network error occurred.");
+                console.error('Wishlist Action Failed:', error.message);
+            })
+            .finally(()=>{
+                button.disabled = false;
+                iconElement.classList.remove('opacity-50');
+            })
         });
     });
 });

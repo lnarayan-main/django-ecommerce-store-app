@@ -13,4 +13,6 @@ urlpatterns = [
     path('payment/success/', views.payment_success, name='payment_success'),
     path('payment/cancel/', views.payment_cancel, name='payment_cancel'),
     path('order-history/', views.order_history, name='order_history'),
+
+    path('toggle-wishlist-item/<int:product_id>/', views.toggle_wishlist, name='toggle_wishlist'),
 ]

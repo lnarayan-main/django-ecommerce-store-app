@@ -4,7 +4,7 @@ from django.urls import reverse
 from django.http import JsonResponse
 from django.contrib.auth.decorators import login_required
 from seller.models import Product
-from .models import Cart, CartItem
+from .models import Cart, CartItem, WishlistItem
 from core.context_processors import global_context
 from django.contrib import messages
 import json
@@ -12,10 +12,11 @@ from core.models import Address, Order, OrderItem, Payment
 from core.forms import AddressForm
 from django.conf import settings
 from django.db import transaction
+from core.decorators import login_and_role_required, custom_login_required
 
 stripe.api_key = settings.STRIPE_SECRET_KEY
 
-@login_required
+@custom_login_required
 def add_to_cart(request, product_id):
     product = get_object_or_404(Product, id=product_id)
     quantity = int(request.POST.get('quantity', 1))
@@ -66,7 +67,7 @@ def empty_cart(request):
     return redirect('view_cart')
 
 
-@login_required
+@custom_login_required
 def view_cart(request):
     cart, _ = Cart.objects.get_or_create(user=request.user)
     items = cart.items.select_related('product')
@@ -324,3 +325,29 @@ def order_history(request):
         return redirect('home')
     else:
         return redirect('home')
+    
+
+
+@custom_login_required
+def toggle_wishlist(request, product_id):
+    try:
+        product = Product.objects.get(id=product_id)
+    except Product.DoesNotExist:
+        return JsonResponse({'status': 'error', 'message': 'Product not found'}, status=404)
+    
+    user = request.user
+
+    wishlist_item = WishlistItem.objects.filter(user=user, product=product)
+
+    if wishlist_item.exists():
+        wishlist_item.delete()
+
+        return JsonResponse({
+            'status': 'removed',
+            'message': 'Removed from Wishlist',
+            'product_id': product_id,
+        }, status=200)
+    else:
+        WishlistItem.objects.create(user=user, product=product)
+
+        return JsonResponse({'status': 'added', 'product_id': product_id, 'message': 'Added to Wishlist'}, status=201)

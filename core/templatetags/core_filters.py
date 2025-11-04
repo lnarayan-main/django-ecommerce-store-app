@@ -1,4 +1,5 @@
 from django import template
+from cart.models import WishlistItem
 
 register = template.Library()
 
@@ -62,3 +63,23 @@ def break_after_words(value, count):
         second_line = " ".join(words[count:])
         return f"{first_line}<br>{second_line}"
     return value
+
+@register.filter
+def is_product_wishlisted(product, user):
+    """
+    Custom filter to check if a product is in the user's wishlist.
+    
+    WARNING: This causes an N+1 query problem if used inside a loop
+    of products, as it hits the database for every single product.
+    
+    Usage in template: {% if product|is_product_wishlisted:request.user %}
+    """
+    # 1. Handle Anonymous/Unauthenticated Users
+    if not user or not user.is_authenticated:
+        return False
+        
+    # 2. Execute the Database Query (Inefficiently inside a loop)
+    return WishlistItem.objects.filter(
+        user=user, 
+        product=product
+    ).exists()

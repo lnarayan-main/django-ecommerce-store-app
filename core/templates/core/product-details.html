@@ -492,8 +492,38 @@
                             <span class="text-sm line-through ml-2">${{ product.price }}</span>
                         {% endif %}
                         </div>
-                        <button data-url="{% url 'add_to_cart' product.id %}" class="addToCartButton bg-primary border border-transparent hover:bg-transparent hover:border-primary text-white hover:text-primary font-semibold py-2 px-4 rounded-full w-full">Add to Cart</button>
-                    </div>
+                          <div class="flex gap-2 p-1">
+                            <button 
+                                data-url="{% url 'add_to_cart' product.id %}" 
+                                class="addToCartButton bg-primary border border-transparent hover:bg-transparent hover:border-primary text-white hover:text-primary font-semibold py-2 px-4 rounded-full w-full">
+                                Add to Cart
+                            </button>
+
+                                <button 
+                                    data-url="{% url 'toggle_wishlist' product.id %}" data-type='latest'
+                                    class="wishlist-toggle-btn 
+                                        border border-transparent 
+                                        hover:bg-gray-100 
+                                        text-gray-600 
+                                        p-0.5 rounded-full 
+                                        flex items-center justify-center 
+                                        transition-colors duration-200 ease-in-out 
+                                        h-10 w-10 
+                                        text-xl"
+                                    data-product-id="{{ product.id }}">
+                                    
+                                    <i id="latest-wishlist-icon-{{ product.id }}" 
+                                    class="
+                                            {% if product|is_product_wishlisted:request.user %}
+                                                fa-solid fa-heart text-red-500
+                                            {% else %}
+                                                fa-regular fa-heart
+                                            {% endif %}
+                                    " title="Wish Item">
+                                    </i> 
+                                </button>
+                            </div>
+                        </div>
                     </div>
                     {% endfor %}
                 {% endif %}
@@ -524,16 +554,36 @@
 
         fetch("{% url 'add_to_cart' 0 %}".replace('0', productId), {
             method: "POST",
-            headers: { "X-CSRFToken": "{{ csrf_token }}" },
+            headers: { 
+                "X-CSRFToken": "{{ csrf_token }}",
+                'X-Requested-With': 'XMLHttpRequest',  
+                'Accept': 'application/json', 
+             },
             body: formData
         })
-        .then(res => res.json())
+        .then(res => {
+            if (res.status === 401) {
+                return res.json().then(data => {
+                    throw new Error(data.error || "Authentication is required.");
+                });
+            }
+            if (!res.ok) {
+                throw new Error(`Server returned status code ${res.status}`);
+            }
+            return res.json(); 
+        })
         .then(data => {
             if (data.success) showToast('success', data.message);
             else showToast('error', "Error! add to cart failed.");
         })
-        .catch(err => showToast('error', "Error! Something went wrong: " + err));
-    })
-  })
+        .catch(error => {
+            showToast('error', error.message || "An unexpected network error occurred.");
+            console.error('Add to Cart Action Failed:', error.message);
+        })
+        .finally(()=>{
+            button.disabled = false;
+        });
+    });
+  });
 </script>
 {% endblock script %}

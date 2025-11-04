@@ -1,6 +1,9 @@
-from django.contrib.auth.decorators import login_required
+from django.contrib.auth.decorators import login_required as django_login_required
+from django.contrib.auth.views import redirect_to_login
 from functools import wraps
 from django.http import HttpResponseForbidden
+from django.conf import settings
+from django.http import JsonResponse, HttpResponseRedirect
 
 error_403_html = """
     <!DOCTYPE html>
@@ -64,7 +67,7 @@ error_403_html = """
 def login_and_role_required(required_role):
     def decorator(view_func):
         @wraps(view_func)
-        @login_required
+        @django_login_required
         def _wrapped_view(request, *args, **kwargs):
             user = request.user
             if required_role == "customer" and not user.is_customer:
@@ -75,3 +78,32 @@ def login_and_role_required(required_role):
             return view_func(request, *args, **kwargs)
         return _wrapped_view
     return decorator
+
+
+
+def custom_login_required(view_func):
+    """
+    Handles authentication for both normal and AJAX/fetch requests.
+    """
+    @wraps(view_func)
+    def _wrapped_view(request, *args, **kwargs):
+        if request.user.is_authenticated:
+            return view_func(request, *args, **kwargs)
+
+        # ✅ Normalize headers for fetch()
+        requested_with = request.headers.get('X-Requested-With', '').lower()
+        accept_header = request.headers.get('Accept', '').lower()
+
+        is_ajax = (
+            requested_with == 'xmlhttprequest'
+            or 'application/json' in accept_header
+        )
+
+        if is_ajax:
+            return JsonResponse({'error': 'Authentication required.'}, status=401)
+
+        # Normal browser request → redirect to login
+        return redirect_to_login(request.get_full_path())
+
+    return _wrapped_view
+
