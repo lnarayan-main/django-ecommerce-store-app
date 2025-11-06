@@ -129,7 +129,7 @@
                     <!-- Product Details Section -->
                     <div class="w-full lg:w-1/2 flex flex-col justify-between">
                         <div class="pb-8 border-b border-gray-line">
-                            <h1 class="text-3xl font-bold mb-4 line-clamp-2">{{ product.name }}</h1>
+                            <h1 class="text-3xl font-bold mb-4 line-clamp-2 truncate">{{ product.name }}</h1>
                             {% comment %} <div class="flex items-center mb-8">
                                 <span>★★★★★</span>
                                 <span class="ml-2">(0 Reviews)</span>
@@ -484,7 +484,7 @@
                             <img src="{% static 'images/no-image.png' %}" alt="No image">
                             {% endif %}
                         </a>
-                        <a href="{% url 'product_detail' product.id %}" class="text-lg font-semibold mb-2 line-clamp-2">{{ product.name }}</a>
+                        <a href="{% url 'product_detail' product.id %}" class="text-lg font-semibold mb-2 line-clamp-2 truncate">{{ product.name }}</a>
                         <p class=" my-2">{{ product.category.name }}</p>
                         <div class="flex items-center mb-4">
                         <span class="text-lg font-bold text-primary">${{ product.discount_price|default:product.price }}</span>
