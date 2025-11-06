@@ -139,7 +139,7 @@ Home Page
 
                       <!-- content -->
                       <div class="p-4 flex flex-col flex-grow">
-                        <a href="{% url 'product_detail' product.id %}" class="text-base font-semibold text-gray-900 line-clamp-2">{{ product.name }}</a>
+                        <a href="{% url 'product_detail' product.id %}" class="text-base font-semibold text-gray-900 line-clamp-2 truncate">{{ product.name }}</a>
                         <p class="text-sm text-gray-500">{{ product.category.name }}</p>
 
                         <div class="mt-auto">
@@ -212,7 +212,7 @@ Home Page
                           <img src="{% static 'images/no-image.png' %}" alt="No image">
                         {% endif %}
                       </a>
-                      <a href="{% url 'product_detail' product.id %}" class="text-lg font-semibold mb-2 line-clamp-2">{{ product.name }}</a>
+                      <a href="{% url 'product_detail' product.id %}" class="text-lg font-semibold mb-2 line-clamp-2 truncate">{{ product.name }}</a>
                       <p class=" my-2">{{ product.category.name }}</p>
                       <div class="flex items-center mb-4">
                         <span class="text-lg font-bold text-primary">${{ product.discount_price|default:product.price }}</span>

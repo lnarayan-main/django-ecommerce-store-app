@@ -183,7 +183,7 @@
                                                 class="w-full object-cover mb-4 rounded-lg h-64 bg-gray-100 object-center">
                                         {% endif %}
                                     </a>
-                                    <a href="{% url 'product_detail' product.id %}" class="text-lg font-semibold mb-2 block">{{ product.name }}</a>
+                                    <a href="{% url 'product_detail' product.id %}" class="text-lg font-semibold mb-2 block truncate">{{ product.name }}</a>
                                     <p class="my-2 text-gray-500">{{ product.category.name }}</p>
 
                                     <div class="flex items-center mb-4">
