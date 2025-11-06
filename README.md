@@ -56,13 +56,16 @@ This project demonstrates a practical, full-stack implementation of modern e-com
 ```bash
 git clone git@github.com:lnarayan-main/django-ecommerce-store-app.git
 cd django-ecommerce-store-app
+```
 
 ---
 
 ## 🌐 Live Demo
-🔗 [Open Bazaar Live](https://open-bazaar.onrender.com/)  
-💻 [GitHub Repository](https://github.com/lnarayan-main/django-ecommerce-store-app)
+[Open Bazaar Live](https://open-bazaar.onrender.com/)
 
-## 👨‍💻 Author
-**Laxmi Narayan** — [LinkedIn](https://www.linkedin.com/in/lnlaxminarayan/)
+## 💻 GitHub Repository
+[GitHub Repository](https://github.com/lnarayan-main/django-ecommerce-store-app)
+
+## ✍️ Author
+**Laxmi Narayan** — [LinkedIn Profile](https://www.linkedin.com/in/lnlaxminarayan/)
 
