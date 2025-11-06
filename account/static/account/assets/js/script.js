@@ -37,7 +37,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
 /* swiper slider */
 if (typeof Swiper !== 'undefined') {
-  var swiper = new Swiper('.swiper', {
+  var swiper = new Swiper('.product-swiper', {
     slidesPerView: 2,
     loop: true,
     autoplay: {
@@ -50,6 +50,23 @@ if (typeof Swiper !== 'undefined') {
     breakpoints: {
         1024: {
             slidesPerView: 4,
+        },
+    },
+  });
+
+  var swiper = new Swiper('.brand-swiper', {
+    slidesPerView: 2,
+    loop: true,
+    autoplay: {
+        delay: 3000,
+    },
+    navigation: {
+      nextEl: '.swiper-button-next',
+      prevEl: '.swiper-button-prev',
+    },
+    breakpoints: {
+        1024: {
+            slidesPerView: 5,
         },
     },
   });

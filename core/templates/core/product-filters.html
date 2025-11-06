@@ -34,15 +34,28 @@
                 </div>
                 <div class="flex mt-5 md:mt-0 space-x-4">
                     <div class="relative">
-                        <form method="GET" id="filter-type-form">
-                            {% if request.GET.page %}
-                                <input type="hidden" name="page" value="{{ request.GET.page }}">
-                            {% endif %}
-                            <select name="sort_by" id="filter-type"
-                                class="block appearance-none w-full bg-white border  hover:border-primary px-4 py-2 pr-8 rounded-full shadow leading-tight focus:outline-none focus:shadow-outline">
-                                <option value="latest" {% if request.GET.sort_by == 'latest' or not request.GET.sort_by %}selected{% endif %}>Sort by Latest</option>
-                                <option value="popular" {% if request.GET.sort_by == 'popular' %}selected{% endif %}>Sort by Popularity</option>
-                                <option value="a_z" {% if request.GET.sort_by == 'a_z' %}selected{% endif %}>Sort by A-Z</option>
+                        <form method="GET" id="filter-input-form" action="">
+                            <!-- Preserve all filter parameters -->
+                            {% for category_id in selected_categories %}
+                                <input type="hidden" name="category" value="{{ category_id }}">
+                            {% endfor %}
+                            {% for size_id in selected_sizes %}
+                                <input type="hidden" name="size" value="{{ size_id }}">
+                            {% endfor %}
+                            {% for brand_id in selected_brands %}
+                                <input type="hidden" name="brand" value="{{ brand_id }}">
+                            {% endfor %}
+                            {% for color_id in selected_colors %}
+                                <input type="hidden" name="color" value="{{ color_id }}">
+                            {% endfor %}
+                            
+                            <select name="sort_by" id="filter-input"
+                                class="filter-input block appearance-none w-full bg-white border  hover:border-primary px-4 py-2 pr-8 rounded-full shadow leading-tight focus:outline-none focus:shadow-outline">
+                                {% with current_sort=request.GET.sort_by|default:'latest' %}
+                                    <option value="latest" {% if current_sort == 'latest' %}selected{% endif %}>Sort by Latest</option>
+                                    <option value="popular" {% if current_sort == 'popular' %}selected{% endif %}>Sort by Popularity</option>
+                                    <option value="a_z" {% if current_sort == 'a_z' %}selected{% endif %}>Sort by A-Z</option>
+                                {% endwith %}
                             </select>
                             <div
                                 class="pointer-events-none absolute inset-y-0 right-0 flex items-center justify-center px-2">
@@ -70,7 +83,11 @@
                             {% if sibling_categories %}
                                 {% for category in sibling_categories %}
                                 <label class="flex items-center">
-                                    <input type="checkbox" class="form-checkbox custom-checkbox">
+                                    <input type="checkbox" 
+                                    name="category"
+                                    value="{{ category.id }}"
+                                    class="filter-checkbox form-checkbox custom-checkbox" 
+                                    {% if category.id|stringformat:"s" in selected_categories %}checked{% endif %}>
                                     <span class="ml-2">{{ category.name }}</span>
                                 </label>
                                 {% endfor %}
@@ -84,7 +101,11 @@
                             {% if sizes %}
                                 {% for size in sizes %}
                                 <label class="flex items-center">
-                                    <input type="checkbox" class="form-checkbox custom-checkbox">
+                                    <input type="checkbox" 
+                                    name="size" 
+                                    value="{{ size.id }}" 
+                                    class="filter-checkbox form-checkbox custom-checkbox"
+                                    {% if size.id|stringformat:"s" in selected_sizes %}checked{% endif %}>
                                     <span class="ml-2">{{ size.name }}</span>
                                 </label>
                                 {% endfor %}
@@ -97,8 +118,12 @@
                         <div class="space-y-2">
                             {% if colors %}
                                 {% for color in colors %}
-                                <label class="flex items-center custom-color-checkbox" data-color="#ff0000">
-                                    <input type="checkbox" class="form-checkbox custom-checkbox">
+                                <label class="flex items-center custom-color-checkbox" data-color="{{ color.hex_code }}">
+                                    <input type="checkbox"
+                                    name="color"
+                                    value="{{ color.id }}"
+                                    class="filter-checkbox form-checkbox custom-checkbox"
+                                    {% if color.id|stringformat:"s" in selected_colors %}checked{% endif %}>
                                     <span class="ml-2 p-1 text-white" style="background: {{ color.hex_code }}">{{ color.name }}</span>
                                 </label>
                                 {% endfor %}
@@ -112,7 +137,11 @@
                             {% if brands %}
                                 {% for brand in brands %}
                                 <label class="flex items-center">
-                                    <input type="checkbox" class="form-checkbox custom-checkbox">
+                                    <input type="checkbox"
+                                    name="brand"
+                                    value="{{ brand.id }}"
+                                    class="filter-checkbox form-checkbox custom-checkbox"
+                                    {% if brand.id|stringformat:"s" in selected_brands %}checked{% endif %}>
                                     <span class="ml-2">{{ brand.name }}</span>
                                 </label>
                                 {% endfor %}
@@ -180,12 +209,14 @@
                     </div>
 
                     <!-- Pagination -->
+                    {% if products.paginator.num_pages > 1 %}
                     <div class="flex justify-center mt-8">
                         <nav aria-label="Page navigation">
                             <ul class="inline-flex space-x-2">
                                 {% if products.has_previous %}
                                     <li>
-                                        <a href="?q={{ query }}&page={{ products.previous_page_number }}" class="w-10 h-10 flex items-center justify-center rounded-full">Prev</a>
+                                        <a href="?{{ query_string }}&page={{ products.previous_page_number }}" 
+                                           class="w-10 h-10 flex items-center justify-center rounded-full hover:bg-primary hover:text-white">Prev</a>
                                     </li>
                                 {% endif %}
 
@@ -195,21 +226,23 @@
                                             <a href="#"
                                                 class="bg-primary text-white w-10 h-10 flex items-center justify-center rounded-full">{{ num }}</a>
                                         </li>
-                                    {% elif num > products.number|add:'-2' and num < products.number|add:'2' %}
+                                    {% elif num > products.number|add:'-3' and num < products.number|add:'3' %}
                                      <li>
-                                        <a href="?q={{ query }}&page={{ num }}"
+                                        <a href="?{{ query_string }}&page={{ num }}"
                                             class="w-10 h-10 flex items-center justify-center rounded-full hover:bg-primary hover:text-white">{{ num }}</a>
                                     </li>
                                     {% endif %}
                                 {% endfor %}
                                 {% if products.has_next %}
                                     <li>
-                                        <a href="?q={{ query }}&page={{ products.next_page_number }}" class="w-10 h-10 flex items-center justify-center rounded-full">Next</a>
+                                        <a href="?{{ query_string }}&page={{ products.next_page_number }}" 
+                                           class="w-10 h-10 flex items-center justify-center rounded-full hover:bg-primary hover:text-white">Next</a>
                                     </li>
                                 {% endif %}
                             </ul>
                         </nav>
                     </div>
+                    {% endif %}
                      {% else %}
                         <div class="col-span-full text-center py-10 bg-white rounded-lg shadow">
                             <p class="text-gray-500 text-lg font-medium">No products available at the moment.</p>
@@ -221,6 +254,7 @@
     </section>
 
     <!-- Shop category description -->
+    {% if current_category %}
     <section id="shop-category-description" class="py-8">
         <div class="container mx-auto">
             <div class="bg-white p-6 rounded-lg shadow-lg">
@@ -231,17 +265,76 @@
             </div>
         </div>
     </section>
+    {% endif %}
 
 {% endblock %}
 
 {% block script %}
 <script>
     document.addEventListener('DOMContentLoaded', () => {
-        const filterType = document.getElementById("filter-type");
-        const filterTypeForm = document.getElementById("filter-type-form");
-        filterType.addEventListener('change', ()=>{
-            filterTypeForm.submit();
+        const sortSelect = document.getElementById('filter-input');
+        const filterForm = document.getElementById('filter-input-form');
+        const filterCheckboxes = document.querySelectorAll('.filter-checkbox');
+
+        // Handle sort select change
+        if (sortSelect) {
+            sortSelect.addEventListener('change', function() {
+                filterForm.submit();
+            });
+        }
+
+        // Handle filter checkbox changes
+        filterCheckboxes.forEach(checkbox => {
+            checkbox.addEventListener('change', function() {
+                applyFilters();
+            });
         });
+
+        function applyFilters() {
+            // Build URL with all selected filters
+            const url = new URL(window.location.href);
+            const params = new URLSearchParams();
+
+            // Get sort value
+            const sortBy = document.getElementById('filter-input')?.value;
+            if (sortBy) {
+                params.append('sort_by', sortBy);
+            }
+
+            // Get all checked category filters
+            document.querySelectorAll('input[name="category"]:checked').forEach(input => {
+                params.append('category', input.value);
+            });
+
+            // Get all checked size filters
+            document.querySelectorAll('input[name="size"]:checked').forEach(input => {
+                params.append('size', input.value);
+            });
+
+            // Get all checked brand filters
+            document.querySelectorAll('input[name="brand"]:checked').forEach(input => {
+                params.append('brand', input.value);
+            });
+
+            // Get all checked color filters
+            document.querySelectorAll('input[name="color"]:checked').forEach(input => {
+                params.append('color', input.value);
+            });
+
+            // Navigate to new URL with filters
+            window.location.href = url.pathname + '?' + params.toString();
+        }
+
+        // Mobile filter toggle
+        const toggleFiltersBtn = document.getElementById('products-toggle-filters');
+        const filtersDiv = document.getElementById('filters');
+
+        if (toggleFiltersBtn && filtersDiv) {
+            toggleFiltersBtn.addEventListener('click', function() {
+                filtersDiv.classList.toggle('hidden');
+                this.textContent = filtersDiv.classList.contains('hidden') ? 'Show Filters' : 'Hide Filters';
+            });
+        }
     });
 </script>
 {% endblock script %}

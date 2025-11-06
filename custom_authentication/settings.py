@@ -33,12 +33,9 @@ SECRET_KEY = os.getenv('SECRET_KEY')
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = os.getenv('DJANGO_DEBUG', 'False') == 'True'
 
-FLY_APP_NAME = os.getenv('FLY_APP_NAME', '')
 
 ALLOWED_HOSTS = ['open-bazaar.onrender.com', 'localhost', '127.0.0.1']
 
-if FLY_APP_NAME:
-    ALLOWED_HOSTS.append(f'{FLY_APP_NAME}.fly.dev')
 
 # Application definition
 
@@ -145,7 +142,6 @@ DATABASES = {
 
 if not DEBUG:
     # CRITICAL: These settings enforce HTTPS and secure cookies in production
-    # Fly.io forces HTTPS, but these settings ensure Django recognizes it.
     SECURE_SSL_REDIRECT = True
     SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
     
