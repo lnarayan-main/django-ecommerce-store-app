@@ -88,11 +88,11 @@ class ProductForm(forms.ModelForm):
                 'class': 'w-full border rounded-md p-2 focus:ring-2 focus:ring-primary focus:outline-none',
             }),
 
-            'available_sizes': forms.SelectMultiple(attrs={
+            'available_sizes': forms.CheckboxSelectMultiple(attrs={
                 'class': 'w-full border rounded-md p-2 focus:ring-2 focus:ring-primary focus:outline-none h-32', 
                 'size': '5', # Shows 5 options at once
             }),
-            'available_colors': forms.SelectMultiple(attrs={
+            'available_colors': forms.CheckboxSelectMultiple(attrs={
                 # Adjusted size for better visibility of multiple selections
                 'class': 'w-full border rounded-md p-2 focus:ring-2 focus:ring-primary focus:outline-none h-32',
                 'size': '3', # Shows 3 options at once

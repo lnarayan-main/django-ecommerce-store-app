@@ -74,7 +74,7 @@
 {% block content %}
 
     <!-- Breadcrumbs -->
-    <section id="breadcrumbs" class="pt-6 bg-gray-50">
+    {% comment %} <section id="breadcrumbs" class="pt-6 bg-gray-50">
         <div class="container mx-auto px-4">
             <ol class="list-reset flex">
                 <li><a href="index.html" class="font-semibold hover:text-primary">Home</a></li>
@@ -86,7 +86,7 @@
                 <li>Preppy T-shirt</li>
             </ol>
         </div>
-    </section>
+    </section> {% endcomment %}
 
     <!-- Product info -->
     <section id="product-info">
@@ -136,8 +136,34 @@
                                 <a href="#" class="ml-4 text-primary font-semibold">Write a review</a>
                             </div> {% endcomment %}
                             <div class="mb-4 pb-4 border-b border-gray-line">
+                                <p class="mb-2">Category:<strong><a href="#" class="hover:text-primary">{{ product.category.name|default:"Generic" }}</a></strong>
+                                </p>
                                 <p class="mb-2">Brand:<strong><a href="#" class="hover:text-primary">{{ product.brand|default:"Generic" }}</a></strong>
                                 </p>
+                                {% if product.available_sizes.exists %}
+                                <div class="mb-2">
+                                    <strong>Sizes:</strong>
+                                    {% for size in product.available_sizes.all %}
+                                    <span class="inline-block bg-gray-100 text-sm px-2 py-1 rounded mr-1">{{ size.name }}</span>
+                                    {% empty %}
+                                    <span class="text-gray-400">No sizes available</span>
+                                    {% endfor %}
+                                </div>
+                                {% endif %}
+
+                                {% if product.available_colors.exists %}
+                                <div class="mb-2">
+                                    <strong>Colors:</strong>
+                                    {% for color in product.available_colors.all %}
+                                    <span class="inline-block w-5 h-5 rounded-full border border-gray-300 mr-2" 
+                                            title="{{ color.name }}" 
+                                            style="background-color: {{ color.hex_code }}"></span>
+                                    {% empty %}
+                                    <span class="text-gray-400">No colors available</span>
+                                    {% endfor %}
+                                </div>
+                                {% endif %}
+
                                 <p class="mb-2">Product code:<strong> {{ product.sku | default:"N/A" }}</strong></p>
                                 <p class="mb-2">Availability:
                                     {% if product.is_active %}

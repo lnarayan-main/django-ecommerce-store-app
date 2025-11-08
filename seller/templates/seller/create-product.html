@@ -7,6 +7,36 @@
 
 {% block style %}
     {{ block.super }}
+
+    <style>
+        /* Custom checkbox styling */
+        input[type="checkbox"] {
+            width: 18px;
+            height: 18px;
+            cursor: pointer;
+            accent-color: #ff0066; /* Your primary color */
+            flex-shrink: 0;
+        }
+
+        /* Checked state styling */
+        input[type="checkbox"]:checked + span {
+            font-weight: 600;
+            color: #ff0066;
+        }
+
+        /* Selected state for parent label */
+        label:has(input[type="checkbox"]:checked) {
+            border-color: #ff0066 !important;
+            background-color: #fff5f8 !important;
+        }
+
+        /* Focus state */
+        input[type="checkbox"]:focus {
+            outline: 2px solid #ff0066;
+            outline-offset: 2px;
+        }
+    </style>
+
 {% endblock style %}
 
 {% block seller_content %}
@@ -75,19 +105,39 @@
                     {% endif %}
                 </div>
 
-                <div>
-                    <label class="block text-gray-700 font-medium mb-2">Available Sizes</label>
-                    {{ form.available_sizes }}
+                <!-- Available Sizes -->
+                <div class="mb-6">
+                    <label class="block text-gray-700 font-semibold mb-3 text-lg">{{ form.available_sizes.label }}</label>
+                    <div class="bg-gray-50 p-4 rounded-lg border border-gray-200">
+                        <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3">
+                            {% for choice in form.available_sizes %}
+                                <label class="relative flex items-center p-3 border-2 border-gray-300 rounded-lg hover:border-primary hover:bg-white cursor-pointer transition-all group">
+                                    {{ choice.tag }}
+                                    <span class="ml-2 text-sm font-medium group-hover:text-primary">{{ choice.choice_label }}</span>
+                                </label>
+                            {% endfor %}
+                        </div>
+                    </div>
                     {% if form.available_sizes.errors %}
-                        <p class="text-sm text-red-600 mt-1">{{ form.available_sizes.errors|join:", " }}</p>
+                        <p class="text-sm text-red-600 mt-2">{{ form.available_sizes.errors|join:", " }}</p>
                     {% endif %}
                 </div>
 
-                <div>
-                    <label class="block text-gray-700 font-medium mb-2">Available Colors</label>
-                    {{ form.available_colors }}
+                <!-- Available Colors -->
+                <div class="mb-6">
+                    <label class="block text-gray-700 font-semibold mb-3 text-lg">{{ form.available_colors.label }}</label>
+                    <div class="bg-gray-50 p-4 rounded-lg border border-gray-200">
+                        <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3">
+                            {% for choice in form.available_colors %}
+                                <label class="relative flex items-center p-3 border-2 border-gray-300 rounded-lg hover:border-primary hover:bg-white cursor-pointer transition-all group">
+                                    {{ choice.tag }}
+                                    <span class="ml-2 text-sm font-medium group-hover:text-primary">{{ choice.choice_label }}</span>
+                                </label>
+                            {% endfor %}
+                        </div>
+                    </div>
                     {% if form.available_colors.errors %}
-                        <p class="text-sm text-red-600 mt-1">{{ form.available_colors.errors|join:", " }}</p>
+                        <p class="text-sm text-red-600 mt-2">{{ form.available_colors.errors|join:", " }}</p>
                     {% endif %}
                 </div>
 

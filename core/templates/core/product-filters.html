@@ -9,6 +9,22 @@
   .ratio-4-3 { position: relative; width: 100%; padding-top: 75%; background: #f8fafc; overflow: hidden; }
   .ratio-4-3 img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: contain; object-position: center; transition: transform .25s ease; background:#ebebeb;}
   .ratio-4-3 img:hover { transform: scale(1.04); }
+  
+  /* Category hierarchy styles */
+  .category-parent {
+    margin-bottom: 0.5rem;
+  }
+  
+  .category-children {
+    margin-left: 1.5rem;
+    margin-top: 0.5rem;
+    border-left: 2px solid #e5e7eb;
+    padding-left: 0.75rem;
+  }
+  
+  .category-child {
+    margin-bottom: 0.5rem;
+  }
 </style>
 
 {% endblock style %}
@@ -34,19 +50,19 @@
                 </div>
                 <div class="flex mt-5 md:mt-0 space-x-4">
                     <div class="relative">
-                        <form method="GET" id="filter-input-form" action="">
+                        <form method="GET" id="filter-input-form" action="{% url 'product_listing' %}">
                             <!-- Preserve all filter parameters -->
                             {% for category_id in selected_categories %}
-                                <input type="hidden" name="category" value="{{ category_id }}">
+                                <input type="hidden" name="category" value="{{ category_id }}" class="filter-hidden-input">
                             {% endfor %}
                             {% for size_id in selected_sizes %}
-                                <input type="hidden" name="size" value="{{ size_id }}">
+                                <input type="hidden" name="size" value="{{ size_id }}" class="filter-hidden-input">
                             {% endfor %}
                             {% for brand_id in selected_brands %}
-                                <input type="hidden" name="brand" value="{{ brand_id }}">
+                                <input type="hidden" name="brand" value="{{ brand_id }}" class="filter-hidden-input">
                             {% endfor %}
                             {% for color_id in selected_colors %}
-                                <input type="hidden" name="color" value="{{ color_id }}">
+                                <input type="hidden" name="color" value="{{ color_id }}" class="filter-hidden-input">
                             {% endfor %}
                             
                             <select name="sort_by" id="filter-input"
@@ -76,24 +92,48 @@
             <div class="flex flex-col md:flex-row">
                 <!-- Filters -->
                 <div id="filters" class="w-full md:w-1/4 p-4 hidden md:block">
-                    <!-- Category Filter -->
+                    <!-- Category Filter with Hierarchy -->
                     <div class="mb-6 pb-8 border-b border-gray-line">
                         <h3 class="text-lg font-semibold mb-6">Category</h3>
-                        <div class="space-y-2">
-                            {% if sibling_categories %}
-                                {% for category in sibling_categories %}
-                                <label class="flex items-center">
-                                    <input type="checkbox" 
-                                    name="category"
-                                    value="{{ category.id }}"
-                                    class="filter-checkbox form-checkbox custom-checkbox" 
-                                    {% if category.id|stringformat:"s" in selected_categories %}checked{% endif %}>
-                                    <span class="ml-2">{{ category.name }}</span>
-                                </label>
+                        <div class="space-y-3">
+                            {% if categories %}
+                                {% for parent in categories %}
+                                    <!-- Parent Category -->
+                                    <div class="category-parent">
+                                        <label class="flex items-center">
+                                            <input type="checkbox" 
+                                            name="category"
+                                            value="{{ parent.id }}"
+                                            class="filter-checkbox category-parent-checkbox form-checkbox custom-checkbox" 
+                                            data-parent-id="{{ parent.id }}"
+                                            {% if parent.id|stringformat:"s" in selected_categories %}checked{% endif %}>
+                                            <span class="ml-2">{{ parent.name }}</span>
+                                        </label>
+                                        
+                                        <!-- Child Categories -->
+                                        {% if parent.subcategories.all %}
+                                            <div class="category-children">
+                                                {% for child in parent.subcategories.all %}
+                                                    <div class="category-child">
+                                                        <label class="flex items-center">
+                                                            <input type="checkbox" 
+                                                            name="category"
+                                                            value="{{ child.id }}"
+                                                            class="filter-checkbox category-child-checkbox form-checkbox custom-checkbox" 
+                                                            data-parent-id="{{ parent.id }}"
+                                                            {% if child.id|stringformat:"s" in selected_categories %}checked{% endif %}>
+                                                            <span class="ml-2 text-sm">{{ child.name }}</span>
+                                                        </label>
+                                                    </div>
+                                                {% endfor %}
+                                            </div>
+                                        {% endif %}
+                                    </div>
                                 {% endfor %}
                             {% endif %}
                         </div>
                     </div>
+                    
                     <!-- Size Filter -->
                     <div class="mb-6 pb-8 border-b border-gray-line">
                         <h3 class="text-lg font-semibold mb-6">Size</h3>
@@ -112,6 +152,7 @@
                             {% endif %}
                         </div>
                     </div>
+                    
                     <!-- Color Filter -->
                     <div class="mb-6 pb-8 border-b border-gray-line">
                         <h3 class="text-lg font-semibold mb-6">Color</h3>
@@ -130,6 +171,7 @@
                             {% endif %}
                         </div>
                     </div>
+                    
                     <!-- Brand Filter -->
                     <div class="mb-6 pb-8 border-b border-gray-line">
                         <h3 class="text-lg font-semibold mb-6">Brand</h3>
@@ -148,6 +190,7 @@
                             {% endif %}
                         </div>
                     </div>
+                    
                     <!-- Rating Filter -->
                     <div class="mb-6">
                         <h3 class="text-lg font-semibold mb-6">Rating</h3>
@@ -167,6 +210,7 @@
                         </div>
                     </div>
                 </div>
+                
                 <!-- Products List -->
                 <div class="w-full md:w-3/4 p-4">
                     <!-- Products grid -->
@@ -183,7 +227,7 @@
                                                 class="w-full object-cover mb-4 rounded-lg h-64 bg-gray-100 object-center">
                                         {% endif %}
                                     </a>
-                                    <a href="{% url 'product_detail' product.id %}" class="text-lg font-semibold mb-2 block truncate">{{ product.name }}</a>
+                                    <a href="{% url 'product_detail' product.id %}" class="text-lg font-semibold mb-2 block">{{ product.name }}</a>
                                     <p class="my-2 text-gray-500">{{ product.category.name }}</p>
 
                                     <div class="flex items-center mb-4">
@@ -275,6 +319,8 @@
         const sortSelect = document.getElementById('filter-input');
         const filterForm = document.getElementById('filter-input-form');
         const filterCheckboxes = document.querySelectorAll('.filter-checkbox');
+        const parentCheckboxes = document.querySelectorAll('.category-parent-checkbox');
+        const childCheckboxes = document.querySelectorAll('.category-child-checkbox');
 
         // Handle sort select change
         if (sortSelect) {
@@ -283,16 +329,55 @@
             });
         }
 
-        // Handle filter checkbox changes
-        filterCheckboxes.forEach(checkbox => {
-            checkbox.addEventListener('change', function() {
+        // Handle parent category checkbox changes
+        parentCheckboxes.forEach(parentCheckbox => {
+            parentCheckbox.addEventListener('change', function() {
+                const parentId = this.dataset.parentId;
+                const isChecked = this.checked;
+                
+                // If parent is checked, uncheck all its children
+                if (isChecked) {
+                    const children = document.querySelectorAll(`.category-child-checkbox[data-parent-id="${parentId}"]`);
+                    children.forEach(child => {
+                        child.checked = false;
+                    });
+                }
+                
                 applyFilters();
             });
         });
 
+        // Handle child category checkbox changes
+        childCheckboxes.forEach(childCheckbox => {
+            childCheckbox.addEventListener('change', function() {
+                const parentId = this.dataset.parentId;
+                
+                // If any child is checked, uncheck the parent
+                if (this.checked) {
+                    const parentCheckbox = document.querySelector(`.category-parent-checkbox[data-parent-id="${parentId}"]`);
+                    if (parentCheckbox) {
+                        parentCheckbox.checked = false;
+                    }
+                }
+                
+                applyFilters();
+            });
+        });
+
+        // Handle other filter checkbox changes
+        filterCheckboxes.forEach(checkbox => {
+            // Skip if already handled by parent/child logic
+            if (!checkbox.classList.contains('category-parent-checkbox') && 
+                !checkbox.classList.contains('category-child-checkbox')) {
+                checkbox.addEventListener('change', function() {
+                    applyFilters();
+                });
+            }
+        });
+
         function applyFilters() {
-            // Build URL with all selected filters
-            const url = new URL(window.location.href);
+            // Use the base product listing URL (not category/brand specific URL)
+            const baseUrl = "{% url 'product_listing' %}";
             const params = new URLSearchParams();
 
             // Get sort value
@@ -301,7 +386,7 @@
                 params.append('sort_by', sortBy);
             }
 
-            // Get all checked category filters
+            // Get all checked category filters (both parent and child)
             document.querySelectorAll('input[name="category"]:checked').forEach(input => {
                 params.append('category', input.value);
             });
@@ -321,8 +406,8 @@
                 params.append('color', input.value);
             });
 
-            // Navigate to new URL with filters
-            window.location.href = url.pathname + '?' + params.toString();
+            // Navigate to base URL with filters (removes category_id/brand_id from URL)
+            window.location.href = baseUrl + '?' + params.toString();
         }
 
         // Mobile filter toggle
