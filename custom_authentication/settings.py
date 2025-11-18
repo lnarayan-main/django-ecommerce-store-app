@@ -35,7 +35,7 @@ DEBUG = os.getenv('DJANGO_DEBUG', 'False') == 'True'
 
 
 # ALLOWED_HOSTS = ['open-bazaar-o8co.onrender.com', 'localhost', '127.0.0.1']
-ALLOWED_HOSTS = os.getenv('ALLOWED_HOSTS', ['open-bazaar-o8co.onrender.com', 'localhost', '127.0.0.1'])
+ALLOWED_HOSTS = os.getenv('ALLOWED_HOSTS', '').split(',')
 
 
 # Application definition
