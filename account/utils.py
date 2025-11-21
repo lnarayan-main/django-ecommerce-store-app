@@ -27,7 +27,12 @@ def send_activation_email(recipient_email, activation_url):
 
     email = EmailMultiAlternatives(subject, text_content, from_email, to_email)
     email.attach_alternative(html_content, 'text/html')
-    SendEmailThread(email).start()
+    # SendEmailThread(email).start()
+    try:
+        SendEmailThread(email).start()
+    except Exception as e:
+        print(f"Error sending email: {e}") 
+        pass
 
 
 def send_reset_password_email(recipient_email, reset_url):
@@ -44,4 +49,9 @@ def send_reset_password_email(recipient_email, reset_url):
 
     email = EmailMultiAlternatives(subject, text_content, from_email, to_email)
     email.attach_alternative(html_content, 'text/html')
-    SendEmailThread(email).start()
+    # SendEmailThread(email).start()
+    try:
+        SendEmailThread(email).start()
+    except Exception as e:
+        print(f"Error sending email: {e}") 
+        pass
