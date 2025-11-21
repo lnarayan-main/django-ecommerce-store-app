@@ -70,6 +70,32 @@
                                     </div>
                                 {% endif %}
                         </div>
+                         <div class="mb-3">
+                            <label class="block mb-2 text-gray-700 font-medium">I want to register as:</label>
+                            <div class="flex space-x-6 gap-3">
+                                <label class="inline-flex items-center cursor-pointer p-2 bg-gray-50 rounded-full border border-gray-200 hover:bg-gray-100 transition-all">
+                                    <input type="radio" name="is_seller" value="False" 
+                                        class="form-radio text-primary h-4 w-4" required 
+                                        {% if form.is_seller.value == 'False' or not form.is_seller.value %}checked{% endif %}
+                                    >
+                                    <span class="ml-2 text-gray-700 font-semibold">Customer</span>
+                                </label>
+                                <label class="inline-flex items-center cursor-pointer p-2 bg-gray-50 rounded-full border border-gray-200 hover:bg-gray-100 transition-all">
+                                    <input type="radio" name="is_seller" value="True" 
+                                        class="form-radio text-primary h-4 w-4" required 
+                                        {% if form.is_seller.value == 'True' %}checked{% endif %}
+                                    >
+                                    <span class="ml-2 text-gray-700 font-semibold">Seller</span>
+                                </label>
+                            </div>
+                            {% if form.is_seller.errors %}
+                                <div class="text-red-500 text-sm mt-1">
+                                    {% for error in form.is_seller.errors %}
+                                        <p>{{ error }}</p>
+                                    {% endfor %}
+                                </div>
+                            {% endif %}
+                        </div>
                         <button type="submit" class="mt-5 bg-primary text-white border border-primary hover:bg-transparent hover:text-primary py-2 px-3 rounded-full w-full">Register</button>
                     </form>
                 </div>
